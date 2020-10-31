@@ -1,6 +1,7 @@
 # Oregon State University Mars Rover Team 2020-2021
 
 ## Software
+:) hello new people!!!
 
 ### Getting Started With Groundstation Code
 ROS Kinetic Setup: https://github.com/OSURoboticsClub/Rover_2019_2020/tree/master/software

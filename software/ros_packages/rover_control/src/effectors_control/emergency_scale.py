@@ -50,7 +50,7 @@ class EmergencyScale(object):
                 message.data = float(value)
                 self.publisher.publish(message)
             except:
-                print "No data"
+                print("No data")
 
 
 if __name__ == "__main__":

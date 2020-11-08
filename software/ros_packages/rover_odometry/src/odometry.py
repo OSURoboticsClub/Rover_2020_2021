@@ -64,11 +64,11 @@ class Odometry(object):
                 self.process_messages()
                 self.odom_last_seen_time = time()
 
-            except Exception, error:
+            except Exception as error:
                 pass
 
             if (time() - self.odom_last_seen_time) > ODOM_LAST_SEEN_TIMEOUT:
-                print "Odometry not seen for", ODOM_LAST_SEEN_TIMEOUT, "seconds. Exiting."
+                print("Odometry not seen for", ODOM_LAST_SEEN_TIMEOUT, "seconds. Exiting.")
                 return  # Exit so respawn can take over
 
             time_diff = time() - start_time

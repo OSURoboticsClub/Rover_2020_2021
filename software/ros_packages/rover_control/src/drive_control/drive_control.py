@@ -68,7 +68,7 @@ class DriveControl(object):
         self.port = rospy.get_param("~port", DEFAULT_PORT)
         self.baud = rospy.get_param("~baud", DEFAULT_BAUD)
 
-        print self.port
+        print(self.port)
 
         self.first_motor_id = rospy.get_param("~first_motor_id", FIRST_MOTOR_ID)
         self.second_motor_id = rospy.get_param("~second_motor_id", SECOND_MOTOR_ID)
@@ -118,11 +118,11 @@ class DriveControl(object):
                 self.send_drive_control_message()
                 self.get_drive_status()
 
-            except Exception, error:
+            except Exception as error:
                 pass
 
             if (time() - self.bogie_last_seen) > BOGIE_LAST_SEEN_TIMEOUT:
-                print "Bogie not seen for", BOGIE_LAST_SEEN_TIMEOUT, "seconds. Exiting."
+                print("Bogie not seen for", BOGIE_LAST_SEEN_TIMEOUT, "seconds. Exiting.")
                 return  # Exit so respawn can take over
 
             time_diff = time() - start_time
@@ -152,7 +152,7 @@ class DriveControl(object):
                 self.first_motor.write_registers(0, first_motor_register_data)
                 self.second_motor.write_registers(0, second_motor_register_data)
 
-            except Exception, error:
+            except Exception as error:
                 pass
 
             self.new_control_message = False

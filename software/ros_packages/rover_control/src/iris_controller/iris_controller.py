@@ -119,11 +119,11 @@ class IrisController(object):
                 self.broadcast_arm_if_current_mode()
                 self.broadcast_iris_status()
 
-            except Exception, error:
-                print "IRIS: Error occurred:", error
+            except Exception as error:
+                print("IRIS: Error occurred:", error)
 
             if (time() - self.iris_last_seen_time) > IRIS_LAST_SEEN_TIMEOUT:
-                print "Iris not seen for", IRIS_LAST_SEEN_TIMEOUT, "seconds. Exiting."
+                print("Iris not seen for", IRIS_LAST_SEEN_TIMEOUT, "seconds. Exiting.")
                 return  # Exit so respawn can take over
 
             time_diff = time() - start_time
@@ -134,7 +134,7 @@ class IrisController(object):
         try:
             self.registers = self.iris.read_registers(0, len(MODBUS_REGISTERS))
             self.iris_last_seen_time = time()
-        except Exception, error:
+        except Exception as error:
             self.iris_connected = False
 
     def broadcast_drive_if_current_mode(self):
@@ -168,7 +168,7 @@ class IrisController(object):
     def broadcast_arm_if_current_mode(self):
         if self.registers[MODBUS_REGISTERS[REGISTER_STATE_MAPPING["DRIVE_VS_ARM"]]] > \
                         SBUS_VALUES["SBUS_MIN"] + SBUS_VALUES["SBUS_DEADZONE"]:
-            print "Arm"
+            print("Arm")
 
     def broadcast_iris_status(self):
         status_message = IrisStatusMessage()

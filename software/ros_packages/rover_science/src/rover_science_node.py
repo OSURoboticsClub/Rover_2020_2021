@@ -124,12 +124,12 @@ class RoverScience(object):
                     registers = self.rdf_node.read_registers(0, 1)
                     self.rdf_publisher.publish(Float64MultiArray(data=[registers[0], time()]))
                     self.failed_rdf_modbus_count = 0
-                except Exception, e:
+                except Exception as e:
                     # print e
                     self.failed_rdf_modbus_count += 1
 
                 if self.failed_rdf_modbus_count == FAILED_RDF_LIMIT:
-                    print "RDF not present. Trying soil sensor"
+                    print("RDF not present. Trying soil sensor")
                     self.which_instrument = self.INSTRUMENTS.index("SOIL")
 
             elif self.which_instrument == self.INSTRUMENTS.index("SOIL"):
@@ -139,7 +139,7 @@ class RoverScience(object):
                 self.broadcast_soil_sensor_data()
 
                 if self.soil_probe_timeout_cumulative > SOIL_PROBE_EXIT_TIMEOUT:
-                    print "No science devices present. Exiting..."
+                    print("No science devices present. Exiting...")
                     return
 
     def switch_node_to_soil_probe(self):
@@ -184,7 +184,7 @@ class RoverScience(object):
                 self.soil_probe_publisher.publish(message)
 
             except:
-                print "Soil probe line corrupted. Trying again..."
+                print("Soil probe line corrupted. Trying again...")
 
     def get_probe_response_line(self):
         start_time = time()

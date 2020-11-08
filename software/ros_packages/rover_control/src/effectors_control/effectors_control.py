@@ -271,24 +271,24 @@ class EffectorsControl(object):
                 try:
                     self.run_arm()
                     self.failed_gripper_modbus_count = 0
-                except Exception, e:
-                    print e
+                except Exception as e:
+                    print(e)
                     self.failed_gripper_modbus_count += 1
 
                 if self.failed_gripper_modbus_count == FAILED_GRIPPER_MODBUS_LIMIT:
-                    print "Gripper not present. Trying mining."
+                    print("Gripper not present. Trying mining.")
                     self.which_effector = self.EFFECTORS.index("MINING")
 
             elif self.which_effector == self.EFFECTORS.index("MINING"):
                 try:
                     self.run_mining()
                     self.failed_mining_modbus_count = 0
-                except Exception, e:
-                    print e
+                except Exception as e:
+                    print(e)
                     self.failed_mining_modbus_count += 1
 
                 if self.failed_mining_modbus_count == FAILED_MINING_MODBUS_LIMIMT:
-                    print "No effectors present. Exiting...."
+                    print("No effectors present. Exiting....")
                     return
 
     def run_arm(self):
@@ -498,7 +498,7 @@ class EffectorsControl(object):
                     #print(self.gripper_registers[GRIPPER_MODBUS_REGISTERS["LASER"]])
                     #print(self.gripper_registers[GRIPPER_MODBUS_REGISTERS["IS_HOMED"]])
 
-                    print self.gripper_registers[GRIPPER_MODBUS_REGISTERS["IS_HOMED"]]
+                    print(self.gripper_registers[GRIPPER_MODBUS_REGISTERS["IS_HOMED"]])
                     if self.gripper_registers[GRIPPER_MODBUS_REGISTERS["IS_HOMED"]]:
                         homing_complete = True
                         self.gripper_registers = None

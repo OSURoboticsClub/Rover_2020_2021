@@ -105,12 +105,12 @@ class ChassisPanTiltControl(object):
                 self.send_pan_tilt_control_message()
                 self.modbus_nodes_seen_time = time()
 
-            except Exception, error:
+            except Exception as error:
                 pass
                 # print "Error occurred:", error
 
             if (time() - self.modbus_nodes_seen_time) > NODE_LAST_SEEN_TIMEOUT:
-                print "Chassis pan/tilt not seen for", NODE_LAST_SEEN_TIMEOUT, "seconds. Exiting."
+                print("Chassis pan/tilt not seen for", NODE_LAST_SEEN_TIMEOUT, "seconds. Exiting.")
                 return  # Exit so respawn can take over
 
             time_diff = time() - start_time

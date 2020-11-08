@@ -47,10 +47,10 @@ public:
             cap = new cv::VideoCapture(capture_device_path);
             ROS_INFO_STREAM("Connecting to USB camera with path: " << capture_device_path);
 
-            cap->set(CV_CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
-            cap->set(CV_CAP_PROP_FRAME_WIDTH, large_image_width);
-            cap->set(CV_CAP_PROP_FRAME_HEIGHT, large_image_height);
-            cap->set(CV_CAP_PROP_FPS, fps);
+            cap->set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+            cap->set(cv::CAP_PROP_FRAME_WIDTH, large_image_width);
+            cap->set(cv::CAP_PROP_FRAME_HEIGHT, large_image_height);
+            cap->set(cv::CAP_PROP_FPS, fps);
         }
 
         large_image_node_name = "image_" + std::to_string(large_image_width) + "x" + std::to_string(large_image_height);
@@ -73,7 +73,7 @@ public:
             loop_rate = new ros::Rate(fps + 2);
         }
 
-        image_black = cv::Mat(large_image_height, large_image_width, CV_8UC3, CvScalar(0, 0, 0));
+        image_black = cv::Mat(large_image_height, large_image_width, CV_8UC3, cv::Scalar(0, 0, 0));
     }
 
     void run(){
@@ -91,11 +91,11 @@ public:
 
                 float image_scalar = float(image_large.rows) / image_rtsp_raw.rows;
 
-                cv::resize(image_rtsp_raw, image_rtsp_scaled, CvSize(int(image_rtsp_raw.cols * image_scalar), int(image_rtsp_raw.rows * image_scalar)));
+                cv::resize(image_rtsp_raw, image_rtsp_scaled, cv::Size(int(image_rtsp_raw.cols * image_scalar), int(image_rtsp_raw.rows * image_scalar)));
 
                 int x = (image_large.cols - image_rtsp_scaled.cols) / 2;
 
-                image_rtsp_scaled.copyTo(image_large(CvRect(x , 0, image_rtsp_scaled.cols, image_rtsp_scaled.rows)));
+                image_rtsp_scaled.copyTo(image_large(cv::Rect(x , 0, image_rtsp_scaled.cols, image_rtsp_scaled.rows)));
             }
 
             if(!image_large.empty()){

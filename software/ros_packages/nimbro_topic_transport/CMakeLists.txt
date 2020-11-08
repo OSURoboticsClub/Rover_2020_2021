@@ -122,15 +122,21 @@ target_link_libraries(action_proxy
 )
 
 # GUI
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5PrintSupport REQUIRED)
 
-qt4_wrap_cpp(MOC_SRCS
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${Qt5Core_INCLUDE_DIRS})
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
+include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
+add_definitions(${Qt5Widgets_DEFINITIONS})
+
+qt5_wrap_cpp(MOC_SRCS
 	src/gui/topic_gui.h
 	src/gui/dot_widget.h
 )
 
-qt4_wrap_cpp(BAND_MOC_SRCS
+qt5_wrap_cpp(BAND_MOC_SRCS
 	src/gui/bandwidth_gui.h
 	src/gui/contrib/qcustomplot/qcustomplot.h
 )

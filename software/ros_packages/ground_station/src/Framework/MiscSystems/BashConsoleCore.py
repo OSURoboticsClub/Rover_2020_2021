@@ -80,7 +80,7 @@ class BashConsole(QtCore.QThread):
                 self.ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 self.ssh_client.connect(IP, username=USER, password=PASS, compress=True)
             except:
-                print "No connection"
+                print("No connection")
                 if not self.run_thread_flag:
                     return
                 self.ssh_client = None
@@ -125,7 +125,7 @@ class BashConsole(QtCore.QThread):
     def on_login_button_pressed__slot(self):
         current_ip = self.ssh_host_line_edit.text()
         self.new_command_text = "python equipment_servicing_interface.py '%s' 'LOGIN MTECH GITRDONE' HELP" % current_ip
-        print self.new_command_text
+        print(self.new_command_text)
         self.new_command = True
 
     def on_logout_button_pressed__slot(self):

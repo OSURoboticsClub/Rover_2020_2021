@@ -152,7 +152,7 @@ class RoverVideoReceiver(QtCore.QThread):
             if self.last_resolution_index != self.current_resolution_index:
                 self.camera_control_publisher.publish(
                     self.RESOLUTION_MAPPINGS[self.RESOLUTION_OPTIONS[self.current_resolution_index]])
-                print "Setting %s to %s" % (self.camera_title_name, self.RESOLUTION_OPTIONS[self.current_resolution_index])
+                print("Setting %s to %s" % (self.camera_title_name, self.RESOLUTION_OPTIONS[self.current_resolution_index]))
                 self.last_resolution_index = self.current_resolution_index
                 self.resolution_just_adjusted = True
 
@@ -170,8 +170,8 @@ class RoverVideoReceiver(QtCore.QThread):
                 self.__create_final_pixmaps(opencv_image)
 
                 self.image_ready_signal.emit(self.camera_name)
-            except Exception, error:
-                print "Failed with error:" + str(error)
+            except Exception as error:
+                print("Failed with error:" + str(error))
 
             self.new_frame = False
 

@@ -6,7 +6,7 @@
 # easier to keep track of things
 
 #install dependencies
-pip3 install QDarkStyle serial minimalmodbus pynmea2
+pip3 install QDarkStyle serial minimalmodbus pynmea2 tf
 
 
 # Which folders should be symbolically_linked?

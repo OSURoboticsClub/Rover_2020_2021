@@ -68,8 +68,8 @@ class UbiquitiStatus(QtCore.QThread):
 
             try:
                 self.get_and_show_ubiquiti_status()
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
 
             time_diff = time() - start_time
 

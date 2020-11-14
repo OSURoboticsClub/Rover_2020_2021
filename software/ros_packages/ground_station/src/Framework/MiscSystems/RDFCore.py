@@ -128,8 +128,8 @@ class RDF(QtCore.QThread):
                         self.beacon_valid_text_change_ready__signal.emit("Yes" if not variance_too_large else "No")
 
                     self.beacon_lcd_number_update_ready__signal.emit(freq)
-                except Exception, e:
-                    print e
+                except Exception as e:
+                    print(e)
 
                 self.raw_data = numpy.array([])
                 self.raw_data_timestamps = numpy.array([])

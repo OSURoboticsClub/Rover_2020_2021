@@ -9,7 +9,7 @@ from time import time
 import rospy
 
 # Custom Imports
-import RoverVideoReceiver
+from . import RoverVideoReceiver
 from rover_camera.msg import CameraControlMessage
 
 #####################################

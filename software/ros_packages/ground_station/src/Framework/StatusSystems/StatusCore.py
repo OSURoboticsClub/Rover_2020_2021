@@ -2,13 +2,13 @@
 # coding=utf-8
 
 import rospy
-from rover_status.msg import *
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from std_msgs.msg import Empty
 import PIL.Image
 from PIL.ImageQt import ImageQt
 import time
 
+from rover_status.msg import CameraStatuses, FrSkyStatus, GPSInfo, MiscStatuses, JetsonInfo, MotorStatus, BatteryStatusMessage
 from std_msgs.msg import UInt16
 
 # import Timer

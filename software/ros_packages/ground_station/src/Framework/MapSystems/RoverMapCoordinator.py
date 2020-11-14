@@ -13,13 +13,13 @@ import numpy
 import logging
 
 import rospy
-from tf import transformations
+import transformations
 from scipy.interpolate import interp1d
 import math
 from sensor_msgs.msg import Imu
 
 # Custom Imports
-import RoverMap
+from . import RoverMap
 from Resources.Settings import MappingSettings
 from sensor_msgs.msg import NavSatFix
 
@@ -155,12 +155,12 @@ class RoverMapCoordinator(QtCore.QThread):
         self.map_selection_name = MappingSettings.LAST_SELECTION
 
     def precache_all_maps(self):
-        print "Caching all map options!!!"
+        print("Caching all map options!!!")
         for map in MappingSettings.MAPPING_LOCATIONS:
             lat = MappingSettings.MAPPING_LOCATIONS[map]["latitude"]
             lon = MappingSettings.MAPPING_LOCATIONS[map]["longitude"]
             for zoom in MappingSettings.MAPPING_LOCATIONS[map]["valid_zoom_options"]:
-                print "Caching map: %s at zoom %d" % (map, zoom)
+                print("Caching map: %s at zoom %d" % (map, zoom))
 
                 try:
                     RoverMap.GMapsStitcher(1280,
@@ -171,10 +171,10 @@ class RoverMapCoordinator(QtCore.QThread):
                                            'satellite',
                                            None, 20)
                 except:
-                    print "Could not cache map: %s at zoom %d" % (map, zoom)
-                print "Finished caching map: %s at zoom %d" % (map, zoom)
+                    print("Could not cache map: %s at zoom %d" % (map, zoom))
+                print("Finished caching map: %s at zoom %d" % (map, zoom))
 
-        print "Map cache complete!"
+        print("Map cache complete!")
 
     def _map_setup(self):
         self.update_zoom_combo_box_items(

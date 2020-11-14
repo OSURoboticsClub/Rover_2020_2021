@@ -21,15 +21,15 @@ along with this code.  If not, see <http://www.gnu.org/licenses/>.
 #####################################
 # Python native imports
 import math
-import urllib2
+import urllib.request
 from io import StringIO, BytesIO
 import os
 import time
 import PIL.ImageDraw
 import PIL.Image
 import PIL.ImageFont
-import signing
-import RoverMapHelper as MapHelper
+from . import signing
+from . import RoverMapHelper as MapHelper
 import cv2
 import csv
 import numpy as np
@@ -142,10 +142,10 @@ class GMapsStitcher(object):
             url = urlbase % specs
             url = signing.sign_url(url, _KEYS[1])
             try:
-                result = urllib2.urlopen(urllib2.Request(url)).read()
-            except urllib2.HTTPError, e:
-                print "Error accessing url for reason:", e
-                print url
+                result = urllib.urlopen(urllib.Request(url)).read()
+            except urllib.HTTPError as e:
+                print("Error accessing url for reason:", e)
+                print(url)
                 return
 
             tile_object = PIL.Image.open(BytesIO(result))

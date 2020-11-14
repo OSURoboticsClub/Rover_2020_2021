@@ -10,7 +10,6 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
-  std_msgs
   message_generation
 )
 
@@ -106,7 +105,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES rover_arm
-  CATKIN_DEPENDS roscpp std_msgs message_generation
+  CATKIN_DEPENDS roscpp std_msgs message_generation message_runtime
 #  DEPENDS system_lib
 )
 
@@ -132,7 +131,8 @@ add_subdirectory(src/simplemotion)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(ArmControlMessage ArmControlMessage_generate_messages_cpp)
+#add_dependencies(ArmStatusMessage ArmStatusMessage_generate_messages_cpp)
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context

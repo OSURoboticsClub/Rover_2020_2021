@@ -64,6 +64,7 @@ add_message_files(
     CameraStatuses.msg
     GPSInfo.msg
     MiscStatuses.msg
+    MotorStatus.msg
 )
 
 ## Generate services in the 'srv' folder

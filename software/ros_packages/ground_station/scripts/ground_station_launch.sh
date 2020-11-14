@@ -16,4 +16,4 @@ cp ~/key .
 sleep 1
 
 export DISPLAY=:0
-python ground_station.py
+python3 ground_station.py

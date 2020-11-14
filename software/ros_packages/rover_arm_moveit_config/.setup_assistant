@@ -1,7 +1,7 @@
 moveit_setup_assistant_config:
   URDF:
     package: mr1718-arm-urdf_export
-    relative_path: robots/mr1718-arm-urdf_export.urdf
+    relative_path: urdf/mr1718-arm-urdf_export.urdf
     xacro_args: "--inorder "
   SRDF:
     relative_path: config/mr1718-arm-urdf_export.srdf

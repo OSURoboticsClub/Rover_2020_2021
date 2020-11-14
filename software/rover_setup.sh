@@ -5,6 +5,10 @@
 # By keeping this consistent across all development machines, it will make it
 # easier to keep track of things
 
+#install dependencies
+pip3 install QDarkStyle serial minimalmodbus pynmea2
+
+
 # Which folders should be symbolically_linked?
 folders_to_link=(
     rover_camera
@@ -26,7 +30,7 @@ catkin_workspace_path="$HOME/$catkin_workspace_dir"
 catkin_src_path="$catkin_workspace_path/src"
 
 # Get the rover software directory
-github_rover_repo_dir="Github/Rover_2019_2020"
+github_rover_repo_dir="/Rover_2020_2021"
 github_rover_packages_path="$HOME/$github_rover_repo_dir/software/ros_packages"
 
 # Remove existing symbolic links if necessary
@@ -47,7 +51,7 @@ done
 
 # catkin_make so the new pacakges are available and re-source bash
 cd "$catkin_workspace_path"
-catkin_make
+catkin build
 
 source ~/.bashrc
 

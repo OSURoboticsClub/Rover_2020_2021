@@ -1,41 +1,25 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>zed_wrapper</name>
-  <version>1.0.0</version>
-  <description>zed_wrapper is a ROS wrapper for the <a href="http://www.stereolabs.com/developers/">ZED library</a>
-    for interfacing with the ZED camera.
+  <version>3.1.0</version>
+  <description>
+    zed_wrapper is a ROS package containing the ZED wrapper node for the <a href="http://www.stereolabs.com/developers/">ZED library</a> for interfacing with the ZED camera.
+    The zed_wrapper_node is a simple loader for the ZEDWrapperNodelet that is the main interface between ROS and the ZED SDK.
   </description>
-<maintainer email="developers@stereolabs.com">STEREOLABS</maintainer>
-  <license>BSD</license>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <maintainer email="support@stereolabs.com">STEREOLABS</maintainer>
+  <license>MIT</license>
 
-  <build_depend>tf2_ros</build_depend>
-  <build_depend>tf2_geometry_msgs</build_depend>
-  <build_depend>nav_msgs</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rosconsole</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>opencv</build_depend>
-  <build_depend>image_transport</build_depend>
-  <build_depend>dynamic_reconfigure</build_depend>
-  <build_depend>pcl_conversions</build_depend>
-  <build_depend>urdf</build_depend>
-  <build_depend>nodelet</build_depend>
+  <url type="website">http://stereolabs.com/</url>
+  <url type="repository">https://github.com/stereolabs/zed-ros-wrapper</url>
+  <url type="bugtracker">https://github.com/stereolabs/zed-ros-wrapper/issues</url>
 
-  <run_depend>tf2_ros</run_depend>
-  <run_depend>tf2_geometry_msgs</run_depend>
-  <run_depend>nav_msgs</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>rosconsole</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>opencv</run_depend>
-  <run_depend>image_transport</run_depend>
-  <run_depend>dynamic_reconfigure</run_depend>
-  <run_depend>pcl_conversions</run_depend>
-  <run_depend>nodelet</run_depend>
-  <run_depend>robot_state_publisher</run_depend>
-  <export>
-    <nodelet plugin="${prefix}/nodelet_plugins.xml" />
-  </export>
+  <buildtool_depend>catkin</buildtool_depend>    
+ 
+  <depend>roscpp</depend>
+  <depend>rosconsole</depend>
+  <depend>zed_nodelets</depend>  
+
+  <exec_depend>robot_state_publisher</exec_depend>
+
 </package>

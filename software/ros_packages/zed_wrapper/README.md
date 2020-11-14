@@ -1,63 +1,113 @@
 # Stereolabs ZED Camera - ROS Integration
 
-This package lets you use the ZED stereo camera with ROS. It outputs the camera left and right images, depth map, point cloud, odometry information and supports the use of multiple ZED cameras.
+This package lets you use the ZED stereo camera with ROS. It outputs the camera left and right images, depth map, point cloud, pose information and supports the use of multiple ZED cameras.
+
+[More information](https://www.stereolabs.com/documentation/guides/using-zed-with-ros/introduction.html)
 
 ## Getting started
 
 - First, download the latest version of the ZED SDK on [stereolabs.com](https://www.stereolabs.com/developers/)
-- Download the ZED ROS wrapper [here](https://github.com/stereolabs/zed-ros-wrapper/archive/master.zip).
-- For more information, check out our [ROS documentation](https://www.stereolabs.com/documentation/guides/using-zed-with-ros/introduction.html), our [ROS wiki](http://wiki.ros.org/zed-ros-wrapper) or our [blog post](https://www.stereolabs.com/blog/index.php/2015/09/07/use-your-zed-camera-with-ros/). If you want to customize the wrapper, check the [ZED API documentation](https://www.stereolabs.com/developers/documentation/API/).
+- [Install](#build-the-program) the ZED ROS wrapper
+- For more information, check out our [ROS documentation](https://www.stereolabs.com/documentation/guides/using-zed-with-ros/introduction.html). If you want to customize the wrapper, check the [ZED API documentation](https://www.stereolabs.com/developers/documentation/API/)
 
 ### Prerequisites
 
-- Ubuntu 16.04
-- [ZED SDK **≥ 2.1**](https://www.stereolabs.com/developers/) and its dependencies ([OpenCV](http://docs.opencv.org/3.1.0/d7/d9f/tutorial_linux_install.html), [CUDA](https://developer.nvidia.com/cuda-downloads))
-- [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu)
-- [Point Cloud Library (PCL)](https://github.com/PointCloudLibrary/pcl)
+- Ubuntu 16.04 or newer (Ubuntu 18 recommended)
+- [ZED SDK **≥ 3.0**](https://www.stereolabs.com/developers/) and its dependency [CUDA](https://developer.nvidia.com/cuda-downloads)
+- [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu) or [ROS Melodic](http://wiki.ros.org/melodic/Installation/Ubuntu)
 
 ### Build the program
 
 The zed_ros_wrapper is a catkin package. It depends on the following ROS packages:
 
-   - tf2_ros
-   - tf2_geometry_msgs
    - nav_msgs
+   - tf2_geometry_msgs
+   - message_runtime
+   - catkin
    - roscpp
+   - stereo_msgs
    - rosconsole
-   - sensor_msgs
-   - opencv
-   - image_transport
-   - dynamic_reconfigure
+   - robot_state_publisher
    - urdf
+   - sensor_msgs
+   - image_transport
+   - diagnostic_updater
+   - dynamic_reconfigure
+   - tf2_ros
+   - message_generation
+   - nodelet
 
-Place the package folder `zed_wrapper` in your catkin workspace source folder `~/catkin_ws/src`.
+Open a terminal, clone the repository, update the dependencies and build the packages:
 
-Open a terminal and build the package:
-
-    cd ~/catkin_ws/
-    catkin_make
-    source ./devel/setup.bash
+    $ cd ~/catkin_ws/src
+    $ git clone https://github.com/stereolabs/zed-ros-wrapper.git
+    $ cd ../
+    $ rosdep install --from-paths src --ignore-src -r -y
+    $ catkin_make -DCMAKE_BUILD_TYPE=Release
+    $ source ./devel/setup.bash
 
 ### Run the program
 
-To launch the wrapper along with an Rviz preview, open a terminal and launch:
+To launch the ZED node use:
 
-    roslaunch zed_wrapper display.launch
+  - ZED camera: `$ roslaunch zed_wrapper zed.launch`
+  - ZED Mini camera: `$ roslaunch zed_wrapper zedm.launch`
+  - ZED2 camera: `$ roslaunch zed_wrapper zed2.launch`
 
-To launch the wrapper without Rviz, use:
+ To select the ZED from its serial number: 
+    `$ roslaunch zed_wrapper zed.launch serial_number:=1010 #replace 1010 with the actual SN`
 
-    roslaunch zed_wrapper zed.launch
-    
-### Helpful Links
+### Parameters
+To configure the features of the ZED node you can modify the configuration YAML files in the `params` folder.
+A detailed description of each parameter is available in the [official online documentation](https://www.stereolabs.com/documentation/guides/using-zed-with-ros/introduction.html).
 
-[ZED Interfaces and Integrations](https://www.stereolabs.com/docs/integrations/)
+### SVO recording
+[SVO recording](https://www.stereolabs.com/docs/video/#video-recording) can be started and stopped while the ZED node is running using the service `start_svo_recording` and the service `stop_svo_recording`.
+[More information](https://www.stereolabs.com/docs/ros/zed_node/#services)
 
-[ZED Tensorflow Integration](https://github.com/stereolabs/zed-tensorflow)
+### Object Detection
+The SDK v3.0 introduces the Object Detection and Tracking module. **The Object Detection module is available only with a ZED 2 camera**. 
+The Object Detection can be enabled automatically when the node start setting the parameter `object_detection/od_enabled` to `true` in the file `zed2.yaml`.
+The Object Detection can be enabled/disabled manually calling the services `start_object_detection` and `stop_object_detection`.
 
-[ZED OpenCV Integration Source](https://github.com/stereolabs/zed-opencv)
+### Spatial Mapping
+The Spatial Mapping can be enabled automatically when the node start setting the parameter `mapping/mapping_enabled` to `true` in the file `common.yaml`.
+The Spatial Mapping can be enabled/disabled manually calling the services `start_3d_mapping` and `stop_3d_mapping`.
 
-[ZED Python API Source](https://github.com/stereolabs/zed-python-api)
+### Diagnostic
+The ZED node publishes diagnostic information that can be used by the robotic system using a [diagnostic_aggregator node](http://wiki.ros.org/diagnostic_aggregator).
 
-[ZED Python API Guide](https://www.stereolabs.com/docs/video/using-video/)
+With the `rqt` plugin `Runtime monitor`, it is possible to retrieve all the diagnostic information, checking that the node 
+is working as expected.
 
-[Tutorials](https://www.stereolabs.com/documentation/guides/using-zed-with-ros/introduction.html)
+### 2D mode
+For robots moving on a planar surface it is possible to activate the "2D mode" (parameter `tracking/two_d_mode` in `common.yaml`). 
+The value of the coordinate Z for odometry and pose will have a fixed value (parameter `tracking/fixed_z_value` in `common.yaml`). 
+Roll and pitch and relative velocities will be fixed to zero.
+
+### Diagnostic
+The ZED node publishes diagnostic information that can be used by the robotic system using a [diagnostic_aggregator node](http://wiki.ros.org/diagnostic_aggregator).
+
+With the `rqt` plugin `Runtime monitor`, it is possible to retrieve all the diagnostic information, checking that the node is working as expected:
+
+![](../images/rqt_diagnostic.jpg)
+
+A brief explanation of each field:
+
+  -  `Component`: name of the diagnostic component
+  -  `Message`: summary of the status of the ZED node
+  -  `HardwareID`: Model of the ZED camera and its serial number
+  -  `Capture`: grabbing frequency (if video or depth data are subscribed) and the percentage respect to the camera frame rate
+  -  `Processing time`: time in seconds spent to elaborate data and the time limit to achieve max frame rate
+  -  `Depth status`: indicates if the depth processing is performed
+  -  `Point Cloud`: point cloud publishing frequency (if there is at least a subscriber) and the percentage respect to the camera frame rate
+  -  `Floor Detection`: if the floor detection is enabled, indicates if the floor has been detected and the camera position correctly initialized
+  -  `Tracking status`: indicates the status of the tracking, if enabled
+  -  `IMU`: the publishing frequency of the IMU topics, if the camera is the ZED Mini and there is at least a subscriber
+
+
+[Detailed information](https://www.stereolabs.com/documentation/guides/using-zed-with-ros/introduction.html)
+
+
+
+

@@ -226,7 +226,7 @@ class RoverVideoReceiver(QtCore.QThread):
         cv2.putText(
             camera_name_opencv_image,
             self.camera_title_name,
-            ((camera_name_width_buffered - camera_name_text_width) / 2, int((camera_name_height_buffered * 2) / 3)),
+            (int((camera_name_width_buffered - camera_name_text_width) / 2), int((camera_name_height_buffered * 2) / 3)),
             self.font,
             1,
             (255, 255, 255),
@@ -237,7 +237,7 @@ class RoverVideoReceiver(QtCore.QThread):
             cv2.resize(camera_name_opencv_image, (camera_name_width_buffered, camera_name_height_buffered))
 
         self.camera_name_opencv_640x360_image = \
-            cv2.resize(camera_name_opencv_image, (camera_name_width_buffered / 2, camera_name_height_buffered / 2))
+            cv2.resize(camera_name_opencv_image, (camera_name_width_buffered // 2, camera_name_height_buffered // 2))
 
     def set_hard_max_resolution(self, resolution):
         self.max_resolution_index = self.RESOLUTION_OPTIONS.index(resolution)

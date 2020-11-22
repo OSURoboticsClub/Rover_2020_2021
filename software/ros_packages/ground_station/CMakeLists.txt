@@ -179,7 +179,8 @@ include_directories(
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(DIRECTORY src DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
-install(FILES scripts/ground_station_launch.sh DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(PROGRAMS scripts/ground_station_launch.sh DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(PROGRAMS src/ground_station.py DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 #############
 ## Testing ##

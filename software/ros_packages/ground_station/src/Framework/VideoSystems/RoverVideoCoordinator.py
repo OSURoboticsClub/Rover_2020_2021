@@ -240,7 +240,7 @@ class RoverVideoCoordinator(QtCore.QThread):
 
         #Place two if statements below inside of larger scope
         #if statement that checks if zed camera device is
-        #connected to rover before even checking to append
+        #connected to rover before checking to append
         if "zed_left" in names:
             self.valid_cameras.append("zed_left")
 

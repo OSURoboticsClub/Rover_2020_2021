@@ -173,21 +173,5 @@
                 ]
             </rosparam>
         </node>
-
-        <node name="zed_left_1280x720" pkg="nimbro_topic_transport" type="udp_sender">
-            <param name="destination_addr" value="$(arg target)" />
-            <param name="destination_port" value="17021" />
-            <rosparam param="topics">
-                [{name: "/cameras/zed_left/image_1280x720/compressed", compress: false, rate: 0.0}]
-            </rosparam>
-        <node>
-
-        <node name="point_cloud_1280x720" pkg="nimbro_topic_transport" type="udp_sender">
-            <param name="destination_addr" value="$(arg target)" />
-            <param name="destination_port" value="17022" />
-            <rosparam param="topics">
-                [{name: "/cameras/point_cloud/image_1280x720/compressed", compress: false, rate: 0.0}]
-            </rosparam>
-        <node>
     </group>
 </launch>

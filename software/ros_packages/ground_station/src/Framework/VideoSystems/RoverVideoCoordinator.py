@@ -89,6 +89,8 @@ class RoverVideoCoordinator(QtCore.QThread):
         rospy.Publisher("/cameras/undercarriage/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
         rospy.Publisher("/cameras/main_navigation/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
         rospy.Publisher("/cameras/end_effector/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
+        rospy.Publisher("/cameras/zed_left/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
+        rospy.Publisher("/cameras/point_cloud/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
 
         self.msleep(3000)
 
@@ -213,6 +215,7 @@ class RoverVideoCoordinator(QtCore.QThread):
 
         names = set(names)
 
+        #Remove zed camera from EXCLUDED_CAMERAS above once in use
         for camera in EXCLUDED_CAMERAS:
             if camera in names:
                 names.remove(camera)
@@ -234,6 +237,16 @@ class RoverVideoCoordinator(QtCore.QThread):
 
         if "end_effector" in names:
             self.valid_cameras.append("end_effector")
+
+        #Place two if statements below inside of larger scope
+        #if statement that checks if zed camera device is
+        #connected to rover before checking to append
+        if "zed_left" in names:
+            self.valid_cameras.append("zed_left")
+
+        if "point_cloud" in names:
+            self.valid_cameras.append("point_cloud")
+
 
     def __setup_video_threads(self):
         for camera in self.valid_cameras:

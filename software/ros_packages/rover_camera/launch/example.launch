@@ -13,6 +13,12 @@
       <param name="device_path" value="/dev/rover/camera_chassis" />
     </node>
 
+    <node name="zed_left" pkg="rover_camera" type="rover_camera" launch-prefix="taskset -c 4" output="screen" >
+      <param name="device_path" value="/dev/rover/camera_zed_left" />
+    </node>
+
+    <node name="point_cloud" pkg="rover_camera" type="rover_camera" launch_prefix="taskset -c 5" output="screen" >
+      <param name="device_path" value="/dev/rover/camera_point_cloud" />
 
   </group>
 </launch>

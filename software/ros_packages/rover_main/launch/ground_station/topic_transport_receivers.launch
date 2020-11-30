@@ -47,6 +47,14 @@
         <node name="end_effector_256x144" pkg="nimbro_topic_transport" type="udp_receiver" output="screen">
             <param name="port" value="17012" />
         </node>
+
+        <node name="zed_left_1280x720" pkg="nimbro_topic_transport" type="udp_receiver" output="screen">
+            <param name="port" value="17021" />
+        </node>
+
+        <node name="point_cloud_1280x720" pkg="nimbro_topic_transport" type="udp_receiver" output="screen">
+            <param name="port" value="17022" />
+        <node>
     </group>
 
     <group>

@@ -1,5 +1,6 @@
+controller_manager_ns: /
 controller_list:
-  - name: /demo_controller
+  - name: demo_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: true

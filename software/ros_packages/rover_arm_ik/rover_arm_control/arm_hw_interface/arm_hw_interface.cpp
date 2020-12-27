@@ -11,14 +11,20 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) {
     
     n_joints_ = joint_names_.size(); //sets number of joints in list to variable
 
+    /* resize vectors to be the size of how many joints are on the robot */
+    joint_pos_.resize(n_joints_);
+    joint_eff_.resize(n_joints_);
+    joint_vel_.resize(n_joints_);
+    joint_pos_comm_.resize(n_joints_);
+
     /* initializing controllers for each joint */
 
     for(unsigned int i = 0; i < num_joints_; ++i) {
         /* init joint state interface for each joint */
-        joint_state_interface_.registerHandle(hardware_interface::JointStateHandle(joint_names_[i])); /* TODO: add vectors for pos, vel, effort */
+        joint_state_interface_.registerHandle(hardware_interface::JointStateHandle(joint_names_[i], &joint_pos_[i], &joint_vel_[i], &joint_eff_[i])); 
 
         /* init position interface for each joint */
-        pos_joint_interface_.registerHandle(hardware_interface::JointHandle(joint_state_interface_.getHandle(joint_names_[i]))); /* TODO add vector for cmds */
+        pos_joint_interface_.registerHandle(hardware_interface::JointHandle(joint_state_interface_.getHandle(joint_names_[i], &joint_pos_comm[i]))); 
 
         /* register interfaces */
         registerInterface(&joint_state_interface_);

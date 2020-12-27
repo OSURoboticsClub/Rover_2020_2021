@@ -3,6 +3,7 @@
 #include <hardware_interface/robot_hw.h>
 #include <controller_manager/controller_manager.h>
 #include <ros/ros.h>
+#include <vector>
 
 
 class ArmHWInterface: public hardware_interface::RobotHW {
@@ -23,6 +24,12 @@ private:
     hardware_interface::PositionJointInterface pos_joint_interface_;
 
     unsigned int n_joints_;
+
+    std::vector<std::string> joint_names_;
+	std::vector<double> joint_pos_;
+	std::vector<double> joint_vel_;
+	std::vector<double> joint_eff_;
+	std::vector<double> joint_pos_comm_;
 
     /** add additional functions/variables for hardware specific operations in **/
 

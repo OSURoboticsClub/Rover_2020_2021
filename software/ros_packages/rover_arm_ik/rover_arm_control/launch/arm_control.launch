@@ -1,7 +1,19 @@
+<!--launches ros_control specific files>
+
 <launch>
 
+    <!--brings up joint state cotroller-->
+    <rosparam file="$(find rover_arm_control)/controllers/joint_state_controller.yaml" command = "load" />
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" args="joint_state_controller" respawn="false" output="screen" />
 
+    <!--brings up joint traj controller-->
+    <rosparam file="$(find rover_arm_control)/controllers/arm_controller.yaml" command = "load" />
+    <node name="arm_controller_spawner" pkg="controller_manager" type="spawner" args="arm_controller" respawn="false" output="screen"/>
 
+    <!---brings up position controller for group of joints-->
+    <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" args="load joint_group_position_controller" respawn ="false" output="screen" />
 
+    <!-- Convert joint states to /tf tranforms -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
 </launch>

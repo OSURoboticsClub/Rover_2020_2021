@@ -39,7 +39,7 @@ void ArmHWInterface::write() {
 }
 
 void ArmHWInterface::read() {
-    /* add read functionality + hw specific code here */
+    std::vector<double> pos, vel, current;
 }
 
 }

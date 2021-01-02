@@ -1,3 +1,6 @@
+#ifndef ARM_ROS_CONTROL_ARM_HW_INTERFACE_H
+#define ARM_ROS_CONTROL_ARM_HW_INTERFACE_H
+
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
@@ -5,8 +8,9 @@
 #include <ros/ros.h>
 #include <vector>
 
+namespace arm_ros_control {
 
-class ArmHWInterface: public hardware_interface::RobotHW {
+class ArmHWInterface : public hardware_interface::RobotHW {
 public:
     ArmHWInterface(ros::NodeHandle& nh); //constructor for hw interface- registers controllers
     ~ArmHWInterface(); //destructor for hw interface
@@ -33,4 +37,8 @@ private:
 
     /** add additional functions/variables for hardware specific operations in **/
 
+};
+
 }
+
+#endif

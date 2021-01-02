@@ -4,6 +4,18 @@
   <version>0.0.0</version>
   <description>Ros Control package for rover arm autonomy</description>
 
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
+  <!-- Example:  -->
+  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
+  <maintainer email="kopchok@oregonstate.edu">Kira Kopcho</maintainer>
+  <!-- add team members in once I get emails :D-->
+
+
+  <!-- One license tag required, multiple allowed, one license per tag -->
+  <!-- Commonly used license strings: -->
+  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
+  <license>TODO</license>
+
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>hardware_interface</build_depend>
@@ -14,12 +26,13 @@
   <build_depend>trajectory_msgs</build_depend>
   <build_depend>tf</build_depend>
 
-  <run_depend>hardware_interface</run_depend>
-  <run_depend>controller_manager</run_depend>
-  <run_depend>actionlib</run_depend>
-  <run_depend>control_msgs</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>trajectory_msgs</run_depend>
-  <run_depend>arm_description</run_depend>
-  <run_depend>tf</run_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>hardware_interface</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>control_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>trajectory_msgs</exec_depend>
+  <exec_depend>arm_description</exec_depend>
+  <exec_depend>tf</exec_depend>
 </package>

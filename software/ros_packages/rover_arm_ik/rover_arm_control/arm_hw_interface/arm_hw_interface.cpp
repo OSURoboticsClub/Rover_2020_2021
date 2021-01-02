@@ -1,7 +1,7 @@
 #include "arm_hw_interface.h"
 
-ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) {
-    nh_.get_param("arm_joint_names.yaml", joint_names_); //get list of joints on the arm
+ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
+    nh_.getParam("arm_joint_names.yaml", joint_names_); //get list of joints on the arm
 
     if (joint_names_.size() == 0){ //checks to see if joint list is empty/empty file
         ROS_ERROR("Cannot find required parameter 'arm_joint_names' "
@@ -19,12 +19,12 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) {
 
     /* initializing controllers for each joint */
 
-    for(unsigned int i = 0; i < num_joints_; ++i) {
+    for(unsigned int i = 0; i < n_joints_; ++i) {
         /* init joint state interface for each joint */
         joint_state_interface_.registerHandle(hardware_interface::JointStateHandle(joint_names_[i], &joint_pos_[i], &joint_vel_[i], &joint_eff_[i])); 
 
         /* init position interface for each joint */
-        pos_joint_interface_.registerHandle(hardware_interface::JointHandle(joint_state_interface_.getHandle(joint_names_[i], &joint_pos_comm[i]))); 
+        pos_joint_interface_.registerHandle(hardware_interface::JointHandle(joint_state_interface_.getHandle(joint_names_[i]), &joint_pos_comm_[i])); 
 
         /* register interfaces */
         registerInterface(&joint_state_interface_);

@@ -1,5 +1,7 @@
 #include "arm_hw_interface.h"
 
+namespace arm_ros_control {
+
 ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
     nh_.getParam("arm_joint_names.yaml", joint_names_); //get list of joints on the arm
 
@@ -38,4 +40,6 @@ void ArmHWInterface::write() {
 
 void ArmHWInterface::read() {
     /* add read functionality + hw specific code here */
+}
+
 }

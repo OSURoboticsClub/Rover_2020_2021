@@ -86,46 +86,55 @@ class ArmState {
     private:
     /* sm variables */
     smbus arm_bus_handle;
+    bool arm_successfully_connected = false;
 
-    smint32 base_set_position;
-    smint32 base_current_position;
-    smint32 base_current_velocity;
-    smint32 base_current_effort;
-    smint32 base_comm_state;
-    smint32 base_status;
-    smint32 base_faults;
+    smint32 base_set_position = 0;
+    smint32 base_current_position = 0;
+    smint32 base_current_velocity = 0;
+    smint32 base_current_effort = 0;
+    smint32 base_comm_state = 0;
+    smint32 base_status = 0;
+    smint32 base_faults = 0;
 
-    smint32 shoulder_set_position;
-    smint32 shoulder_current_position;
-    smint32 shoulder_current_velocity;
-    smint32 shoulder_current_effort;
-    smint32 shoulder_comm_state;
-    smint32 shoulder_status;
-    smint32 shoulder_faults;
+    smint32 shoulder_set_position = 0;
+    smint32 shoulder_current_position = 0;
+    smint32 shoulder_current_velocity = 0;
+    smint32 shoulder_current_effort = 0;
+    smint32 shoulder_comm_state = 0;
+    smint32 shoulder_status = 0;
+    smint32 shoulder_faults = 0;
 
-    smint32 elbow_set_position;
-    smint32 elbow_current_position;
-    smint32 elbow_comm_state;
-    smint32 elbow_status;
-    smint32 elbow_faults;
+    smint32 elbow_set_position = 0;
+    smint32 elbow_current_position = 0;
+    smint32 elbow_current_velocity = 0;
+    smint32 elbow_current_effort = 0;
+    smint32 elbow_comm_state = 0;
+    smint32 elbow_status = 0;
+    smint32 elbow_faults = 0;
 
-    smint32 roll_set_position;
-    smint32 roll_current_position;
-    smint32 roll_comm_state;
-    smint32 roll_status;
-    smint32 roll_faults;
+    smint32 roll_set_position = 0;
+    smint32 roll_current_position = 0;
+    smint32 roll_current_velocity = 0;
+    smint32 roll_current_effort = 0;
+    smint32 roll_comm_state = 0;
+    smint32 roll_status = 0;
+    smint32 roll_faults = 0;
 
-    smint32 wrist_pitch_last_set_position;
-    smint32 wrist_pitch_set_position;
-    smint32 wrist_pitch_current_position;
-    smint32 wrist_pitch_comm_state;
-    smint32 wrist_pitch_status;
-    smint32 wrist_pitch_faults;
+    smint32 wrist_pitch_last_set_position = 0;
+    smint32 wrist_pitch_set_position = 0;
+    smint32 wrist_pitch_current_position = 0;
+    smint32 wrist_pitch_current_velocity = 0;
+    smint32 writst_pitch_current_effort = 0;
+    smint32 wrist_pitch_comm_state = 0;
+    smint32 wrist_pitch_status = 0;
+    smint32 wrist_pitch_faults = 0;
 
-    smint32 wrist_roll_set_position;
-    smint32 wrist_roll_current_position;
-    smint32 wrist_roll_comm_state;
-    smint32 wrist_roll_status;
-    smint32 wrist_roll_faults;
+    smint32 wrist_roll_set_position = 0;
+    smint32 wrist_roll_current_position = 0;
+    smint32 wrist_roll_current_velocity = 0;
+    smint32 wrist_roll_current_effort = 0;
+    smint32 wrist_roll_comm_state = 0;
+    smint32 wrist_roll_status = 0;
+    smint32 wrist_roll_faults = 0;
 }
 #endif

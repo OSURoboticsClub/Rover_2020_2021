@@ -21,6 +21,7 @@
 #define ARM_STATE_H
 
 #include "simplemotion/simplemotion.h"
+#include <vector>
 
 /* global vars taken from rover_arm.cpp */
 #define SMP_SERIAL_ENC_OFFSET 575 //This was missing from simplemotion_defs.h
@@ -79,9 +80,9 @@ class ArmState {
     ArmState();
     ~ArmState();
 
-    void get_joint_positions();
-    void get_joint_effort();
-    void get_joint_velocities();
+    void get_joint_positions(std::vector<double> &pos_state);
+    void get_joint_effort(std::vector<double> &vel_state);
+    void get_joint_velocities(std::vector<double> &eff_state);
     
     private:
     /* sm variables */

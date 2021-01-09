@@ -1,4 +1,5 @@
 #include "arm_state.h"
+#include <vector>
 
 ArmState::ArmState() {
     arm_bus_handle = smOpenBus(arm_port.c_str());
@@ -26,14 +27,14 @@ ArmState::ArmState() {
     wrist_pitch_max_rev_counts = smint32(wrist_pitch_max_rev * wrist_pitch_counts_per_rev);
 }
 
-void ArmState::get_joint_positions() {
-
-}
-
-void ArmState::get_joint_velocities() {
-
-}
-
-void ArmState::get_joint_effort() {
+void ArmState::get_joint_positions(std::vector<double> &pos_state) {
     
+}
+
+void ArmState::get_joint_velocities(std::vector<double> &vel_state) {
+
+}
+
+void ArmState::get_joint_effort(std::vector<double> &eff_state) {
+
 }

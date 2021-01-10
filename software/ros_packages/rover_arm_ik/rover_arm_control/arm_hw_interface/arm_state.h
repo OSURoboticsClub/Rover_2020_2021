@@ -93,7 +93,7 @@ class ArmState {
     smint32 base_current_position = 0;
     smint32 base_current_velocity = 0;
     smint32 base_current_effort = 0;
-    smint32 base_comm_state = 0;
+    smint32 base_pos_state = 0;
     smint32 base_status = 0;
     smint32 base_faults = 0;
 

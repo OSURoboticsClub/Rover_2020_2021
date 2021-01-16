@@ -1,5 +1,4 @@
 #include "arm_hw_interface.h"
-#include "arm_state.h"
 
 namespace arm_ros_control {
 
@@ -40,7 +39,19 @@ void ArmHWInterface::write() {
 }
 
 void ArmHWInterface::read() {
-    std::vector<double> pos, vel, current;
+    std::vector<double> pos, vel, torque;
+    /* read in current joint values into vectors */
+    arm_.get_joint_velocities(vel); 
+    arm_.get_joint_effort(torque);
+    arm_.get_joint_positions(pos);
+
+    for(int i = 1; i < n_joints_; ++i){
+        for(int j = 0; j < 6; j++) {
+            joint_pos_[i] = pos[j];
+            joint_eff_[i] = eff[j];
+            joint_vel_[i] = vel[j];
+        }
+    }
 }
 
 }

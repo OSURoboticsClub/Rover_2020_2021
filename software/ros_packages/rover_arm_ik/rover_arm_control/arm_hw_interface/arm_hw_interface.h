@@ -7,6 +7,7 @@
 #include <controller_manager/controller_manager.h>
 #include <ros/ros.h>
 #include <vector>
+#include "arm_state.h"
 
 namespace arm_ros_control {
 
@@ -35,7 +36,8 @@ private:
 	std::vector<double> joint_eff_;
 	std::vector<double> joint_pos_comm_;
 
-    /** add additional functions/variables for hardware specific operations in **/
+    //arm state variable
+    ArmState arm_;
 
 };
 

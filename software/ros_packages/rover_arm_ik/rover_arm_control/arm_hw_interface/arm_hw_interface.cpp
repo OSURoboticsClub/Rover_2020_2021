@@ -1,4 +1,5 @@
 #include "arm_hw_interface.h"
+#include "arm_state.h"
 
 namespace arm_ros_control {
 

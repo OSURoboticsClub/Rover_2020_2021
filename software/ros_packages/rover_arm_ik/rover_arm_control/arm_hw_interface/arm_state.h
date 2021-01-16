@@ -20,7 +20,7 @@
 #ifndef ARM_STATE_H
 #define ARM_STATE_H
 
-#include "simplemotion/simplemotion.h"
+#include "src/simplemotion/simplemotion.h"
 #include <vector>
 
 /* global vars taken from rover_arm.cpp */
@@ -30,7 +30,7 @@
 const smuint8 base_address = 1;
 const smint32 base_counts_per_rev = 5725807;
 const double base_min_rev = -0.5;
-const double base_max_rev.5;
+const double base_max_rev = 0.5;
 
 smint32 base_min_rev_counts;
 smint32 base_max_rev_counts;
@@ -39,7 +39,7 @@ smint32 base_max_rev_counts;
 const smuint8 shoulder_address = 2;
 const smint32 shoulder_counts_per_rev = 2620130;
 const double shoulder_min_rev = -0.25;
-const double shoulder_max_rev.25;
+const double shoulder_max_rev = 0.25;
 
 smint32 shoulder_min_rev_counts;
 smint32 shoulder_max_rev_counts;
@@ -48,7 +48,7 @@ smint32 shoulder_max_rev_counts;
 const smuint8 elbow_address = 3;
 const smint32 elbow_counts_per_rev = 4917661;
 const double elbow_min_rev = -0.5;
-const double elbow_max_rev.5;
+const double elbow_max_rev = 0.5;
 
 smint32 elbow_min_rev_counts;
 smint32 elbow_max_rev_counts;
@@ -57,7 +57,7 @@ smint32 elbow_max_rev_counts;
 const smuint8 roll_address = 4;
 const smint32 roll_counts_per_rev = 1637581;
 const double roll_min_rev = -0.25;
-const double roll_max_rev.25;
+const double roll_max_rev = 0.25;
 
 smint32 roll_min_rev_counts;
 smint32 roll_max_rev_counts;
@@ -66,7 +66,7 @@ smint32 roll_max_rev_counts;
 const smuint8 wrist_pitch_address = 5;
 const smint32 wrist_pitch_counts_per_rev = 4096000;
 const double wrist_pitch_min_rev = -0.25;
-const double wrist_pitch_max_rev.25;
+const double wrist_pitch_max_rev = 0.25;
 
 smint32 wrist_pitch_min_rev_counts;
 smint32 wrist_pitch_max_rev_counts;
@@ -137,5 +137,5 @@ class ArmState {
     smint32 wrist_roll_comm_state = 0;
     smint32 wrist_roll_status = 0;
     smint32 wrist_roll_faults = 0;
-}
+};
 #endif

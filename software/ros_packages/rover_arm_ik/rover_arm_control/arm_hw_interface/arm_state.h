@@ -83,6 +83,10 @@ class ArmState {
     void get_joint_positions(std::vector<double> &pos_state);
     void get_joint_effort(std::vector<double> &vel_state);
     void get_joint_velocities(std::vector<double> &eff_state);
+
+    /* setters for positions */
+    void set_joint_positions(std::vector<double> &joint_cmds);
+    void constrain_set_positions();
     
     private:
     /* sm variables */

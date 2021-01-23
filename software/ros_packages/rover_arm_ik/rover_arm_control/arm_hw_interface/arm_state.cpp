@@ -82,3 +82,29 @@ void ArmState::get_joint_positions(std::vector<double> &pos_state) {
     pos_state.insert(wrist_pitch_current_position, 4);
     pos_state.insert(wrist_roll_current_position, 5);
 }
+
+void ArmState::constrain_set_positions(){
+    base_set_position = min(max(base_set_position, base_min_rev_counts), base_max_rev_counts);
+    shoulder_set_position = min(max(shoulder_set_position, shoulder_min_rev_counts), shoulder_max_rev_counts);
+    elbow_set_position = min(max(elbow_set_position, elbow_min_rev_counts), elbow_max_rev_counts);
+    roll_set_position = min(max(roll_set_position, roll_min_rev_counts), roll_max_rev_counts);
+    wrist_pitch_set_position = min(max(wrist_pitch_set_position, wrist_pitch_min_rev_counts), wrist_pitch_max_rev_counts);
+}
+
+void ArmState::set_joint_positions(std::vector<double> &joint_cmds){
+    /* get joint position cmds from cmd vector */
+    base_set_position = joint_cmds.at(1); //starts at 1, because "fixed base" shouldn't have any cmds sent to it
+    shoulder_set_position = joint_cmds.at(2);
+    elbow_set_position = joint_cmds.at(3);
+    roll_set_position = joint_cmds.at(4);
+    wrist_pitch_set_position = joint_cmds.at(5);
+    wrist_roll_set_position = joint_cmds.at(6);
+
+    /* actually write/send cmds to IONI */
+    smSetParameter(arm_bus_handle, base_address, SMP_ABSOLUTE_SETPOINT, base_set_position);
+    smSetParameter(arm_bus_handle, shoulder_address, SMP_ABSOLUTE_SETPOINT, shoulder_set_position);
+    smSetParameter(arm_bus_handle, elbow_address, SMP_ABSOLUTE_SETPOINT, elbow_set_position);
+    smSetParameter(arm_bus_handle, roll_address, SMP_ABSOLUTE_SETPOINT, roll_set_position);
+    smSetParameter(arm_bus_handle, wrist_pitch_address, SMP_ABSOLUTE_SETPOINT, wrist_pitch_set_position);
+    smSetParameter(arm_bus_handle, wrist_roll_address, SMP_ABSOLUTE_SETPOINT, wrist_roll_set_position);
+}

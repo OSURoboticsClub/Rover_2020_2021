@@ -16,7 +16,6 @@ public:
     ArmHWInterface(ros::NodeHandle& nh); //constructor for hw interface- registers controllers
     ~ArmHWInterface(); //destructor for hw interface
 
-    /* might have to edit the types/args of these functions depending what's in them- for now they're void */
     void write();
     void read();
 
@@ -28,7 +27,9 @@ private:
     hardware_interface::JointStateInterface joint_state_interface_;
     hardware_interface::PositionJointInterface pos_joint_interface_;
 
+    //Constants
     unsigned int n_joints_;
+    unsigned int start_joint_ = 1;
 
     std::vector<std::string> joint_names_;
 	std::vector<double> joint_pos_;
@@ -36,7 +37,7 @@ private:
 	std::vector<double> joint_eff_;
 	std::vector<double> joint_pos_comm_;
 
-    //arm state variable
+    //arm state variable- allows us to interface with code responsible for the IONIs
     ArmState arm_;
 
 };

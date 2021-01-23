@@ -35,7 +35,8 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
 }
 
 void ArmHWInterface::write() {
-    /* add write functionality + hw specific code here */
+    arm_.set_joint_positions(joint_pos_comm_); /* send joint positions off to hardware */
+    arm_.constrain_set_positions(); /* makes sure joint positions are within constraints */
 }
 
 void ArmHWInterface::read() {
@@ -45,10 +46,10 @@ void ArmHWInterface::read() {
     arm_.get_joint_effort(torque);
     arm_.get_joint_positions(pos);
 
-    for(int i = 1; i < n_joints_; ++i){
+    for(int i = start_joint_; i < n_joints_; ++i){
         for(int j = 0; j < 6; j++) {
             joint_pos_[i] = pos[j];
-            joint_eff_[i] = eff[j];
+            joint_eff_[i] = torque[j];
             joint_vel_[i] = vel[j];
         }
     }

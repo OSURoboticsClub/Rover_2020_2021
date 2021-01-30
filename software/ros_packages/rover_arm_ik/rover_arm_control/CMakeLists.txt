@@ -139,7 +139,7 @@ include_directories(include
 ## Declare a C++ library
 
 # Hardware Interface
-add_library(arm_hw_interface arm_hw_interface/arm_hw_interface.cpp)
+add_library(arm_hw_interface arm_hw_interface/arm_hw_interface_node.cpp)
 target_link_libraries(arm_hw_interface
   ${catkin_LIBRARIES}
 )

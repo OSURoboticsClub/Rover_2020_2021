@@ -5,16 +5,19 @@
     <!--find urdf and publish it to param server-->
     <include file="$(find rover_arm_description)/launch/arm_upload.launch"/>
 
+    <!--bringup hardware interface-->
+    <node name="arm_hw_interface" pkg="rover_arm_control" type="arm_hw_interface_node" output="screen" />
+
     <!--brings up joint state cotroller-->
     <rosparam file="$(find rover_arm_control)/config/joint_state_controller.yaml" command = "load" />
-    <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" args="joint_state_controller" respawn="false" output="screen" />
+    <node name="joint_state_controller" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller" respawn="false" output="screen" />
 
     <!--brings up joint traj controller-->
     <rosparam file="$(find rover_arm_control)/config/arm_controller.yaml" command = "load" />
-    <node name="arm_controller_spawner" pkg="controller_manager" type="spawner" args="arm_controller" respawn="false" output="screen"/>
+    <node name="arm_controller" pkg="controller_manager" type="controller_manager" args="spawn arm_controller" respawn="false" output="screen"/>
 
     <!---brings up position controller for group of joints-->
-    <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" args="load joint_group_position_controller" respawn ="false" output="screen" />
+    <node name="joint_group_pos" pkg="controller_manager" type="controller_manager" args="load joint_group_position_controller" respawn ="false" output="screen" />
 
     <!-- Convert joint states to /tf tranforms -->
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />

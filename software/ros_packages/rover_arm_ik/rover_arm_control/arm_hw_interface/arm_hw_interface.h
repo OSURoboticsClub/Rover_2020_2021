@@ -6,10 +6,9 @@
 #include <hardware_interface/robot_hw.h>
 #include <controller_manager/controller_manager.h>
 #include <ros/ros.h>
-#include <vector>
 #include "arm_state.h"
 
-namespace arm_ros_control {
+namespace arm_hw_interface {
 
 class ArmHWInterface : public hardware_interface::RobotHW {
 public:

@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     auto stopwatch_last = std::chrono::steady_clock::now();
     auto stopwatch_now = stopwatch_last;
 
-    arm_ros_control::ArmHWInterface arm_hw_interface(nh); //create hw interface object
+    arm_hw_interface::ArmHWInterface arm_hw_interface(nh); //create hw interface object
     ROS_INFO_STREAM_NAMED("hardware_interface", "Starting hardware interface...");
     controller_manager::ControllerManager controller_manager(&arm_hw_interface, nh); //create controller manager
 

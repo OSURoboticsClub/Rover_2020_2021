@@ -131,7 +131,6 @@ endif()
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
 include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
@@ -139,26 +138,25 @@ include_directories(include
 ## Declare a C++ library
 
 # Hardware Interface
-add_library(arm_hw_interface arm_hw_interface/arm_hw_interface_node.cpp)
+add_library(arm_hw_interface arm_hw_interface/arm_hw_interface.cpp)
 target_link_libraries(arm_hw_interface
   ${catkin_LIBRARIES}
 )
 
-## Add cmake target dependencies of the library
-## as an example, code may need to be generated before libraries
-## either from message generation or dynamic reconfigure
-## add_dependencies(ur_modern_driver ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+## Specifying sources
+set(${PROJECT_NAME}_SOURCES
+  arm_hw_interface/arm_state.cpp
+  arm_hw_interface/arm_hw_interface.cpp)
+
 
 ## Declare a C++ executable
-# set(${PROJECT_NAME}_SOURCES
-# add_executable(ur_driver ${${PROJECT_NAME}_SOURCES})
+add_executable(arm_hw_interface_node ${${PROJECT_NAME}_SOURCES})
 
-## Add cmake target dependencies of the executable
-## same as for the library above
-# add_dependencies(ur_driver ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+## Add dependencies
+add_dependencies(arm_hw_interface_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(
+target_link_libraries(arm_hw_interface_node
   arm_hw_interface
   ${catkin_LIBRARIES}
  )
@@ -169,10 +167,9 @@ target_link_libraries(
 
 install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
 install(DIRECTORY config/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config)
-install(DIRECTORY arm_hw_interface/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/arm_hw_interface)
 
 ## Mark executables and/or libraries for installation
-install(TARGETS arm_hw_interface
+install(TARGETS arm_hw_interface arm_hw_interface_node
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

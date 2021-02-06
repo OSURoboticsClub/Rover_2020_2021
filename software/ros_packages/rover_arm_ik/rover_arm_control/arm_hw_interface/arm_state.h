@@ -21,7 +21,11 @@
 #define ARM_STATE_H
 
 #include "src/simplemotion/simplemotion.h"
-#include <vector>
+#include <ros/console.h>
+#include <ros/ros.h>
+#include <string>
+#include <unistd.h>
+#include <algorithm>
 
 /* global vars taken from rover_arm.cpp */
 #define SMP_SERIAL_ENC_OFFSET 575 //This was missing from simplemotion_defs.h
@@ -91,6 +95,7 @@ class ArmState {
     private:
     /* sm variables */
     smbus arm_bus_handle;
+    std::string arm_port;
     bool arm_successfully_connected = false;
 
     smint32 base_set_position = 0;
@@ -100,6 +105,10 @@ class ArmState {
     smint32 base_pos_state = 0;
     smint32 base_status = 0;
     smint32 base_faults = 0;
+    double base_cmd = 0;
+    double base_curr_pos = 0;
+    double base_curr_vel = 0;
+    double base_curr_eff = 0;
 
     smint32 shoulder_set_position = 0;
     smint32 shoulder_current_position = 0;
@@ -108,6 +117,10 @@ class ArmState {
     smint32 shoulder_comm_state = 0;
     smint32 shoulder_status = 0;
     smint32 shoulder_faults = 0;
+    double shoulder_cmd = 0;
+    double shoulder_curr_pos = 0;
+    double shoulder_curr_vel = 0;
+    double shoulder_curr_eff = 0;
 
     smint32 elbow_set_position = 0;
     smint32 elbow_current_position = 0;
@@ -116,6 +129,10 @@ class ArmState {
     smint32 elbow_comm_state = 0;
     smint32 elbow_status = 0;
     smint32 elbow_faults = 0;
+    double elbow_cmd = 0;
+    double elbow_curr_pos = 0;
+    double elbow_curr_vel = 0;
+    double elbow_curr_eff = 0;
 
     smint32 roll_set_position = 0;
     smint32 roll_current_position = 0;
@@ -124,6 +141,10 @@ class ArmState {
     smint32 roll_comm_state = 0;
     smint32 roll_status = 0;
     smint32 roll_faults = 0;
+    double roll_cmd = 0;
+    double roll_curr_pos = 0;
+    double roll_curr_vel = 0;
+    double roll_curr_eff = 0;
 
     smint32 wrist_pitch_last_set_position = 0;
     smint32 wrist_pitch_set_position = 0;
@@ -133,6 +154,10 @@ class ArmState {
     smint32 wrist_pitch_comm_state = 0;
     smint32 wrist_pitch_status = 0;
     smint32 wrist_pitch_faults = 0;
+    double wrist_pitch_cmd = 0;
+    double wrist_pitch_curr_pos = 0;
+    double wrist_pitch_curr_vel = 0;
+    double wrist_pitch_curr_eff = 0;
 
     smint32 wrist_roll_set_position = 0;
     smint32 wrist_roll_current_position = 0;
@@ -141,5 +166,9 @@ class ArmState {
     smint32 wrist_roll_comm_state = 0;
     smint32 wrist_roll_status = 0;
     smint32 wrist_roll_faults = 0;
+    double wrist_roll_cmd = 0;
+    double wrist_roll_curr_pos = 0;
+    double wrist_roll_curr_vel = 0;
+    double wrist_roll_curr_eff = 0;
 };
 #endif

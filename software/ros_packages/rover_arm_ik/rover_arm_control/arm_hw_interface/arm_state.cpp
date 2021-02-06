@@ -1,5 +1,4 @@
 #include "arm_state.h"
-#include <vector>
 
 ArmState::ArmState() {
     arm_bus_handle = smOpenBus(arm_port.c_str());
@@ -36,13 +35,21 @@ void ArmState::get_joint_velocities(std::vector<double> &vel_state) {
     smRead3Parameters(arm_bus_handle, wrist_pitch_address, SMP_STATUS, &wrist_pitch_status, SMP_FAULTS, &wrist_pitch_faults, SMP_ACTUAL_VELOCITY_FB, &wrist_pitch_current_velocity);
     smRead3Parameters(arm_bus_handle, wrist_roll_address, SMP_STATUS, &wrist_roll_status, SMP_FAULTS, &wrist_roll_faults, SMP_ACTUAL_VELOCITY_FB, &wrist_roll_current_velocity);
 
+    /* cast joint velocities to doubles so controller can work with them */
+    base_curr_vel = double(base_current_velocity);
+    shoulder_curr_vel = double(shoulder_current_velocity);
+    elbow_curr_vel = double(elbow_current_velocity);
+    roll_curr_vel = double(roll_current_velocity);
+    wrist_pitch_curr_vel = double(wrist_pitch_current_velocity);
+    wrist_roll_curr_vel = double(wrist_roll_current_velocity);
+
     /* put velocity states into vector */
-    vel_state.insert(base_current_velocity, 0);
-    vel_state.insert(shoulder_current_velocity, 1);
-    vel_state.insert(elbow_current_velocity, 2);
-    vel_state.insert(roll_current_velocity, 3);
-    vel_state.insert(wrist_pitch_current_velocity, 4);
-    vel_state.insert(wrist_roll_current_velocity, 5);
+    vel_state.insert(base_curr_vel, 0);
+    vel_state.insert(shoulder_curr_vel, 1);
+    vel_state.insert(elbow_curr_vel, 2);
+    vel_state.insert(roll_curr_vel, 3);
+    vel_state.insert(wrist_pitch_curr_vel, 4);
+    vel_state.insert(wrist_roll_curr_vel, 5);
 }
 
 void ArmState::get_joint_effort(std::vector<double> &eff_state) {
@@ -54,13 +61,21 @@ void ArmState::get_joint_effort(std::vector<double> &eff_state) {
     smRead3Parameters(arm_bus_handle, wrist_pitch_address, SMP_STATUS, &wrist_pitch_status, SMP_FAULTS, &wrist_pitch_faults, SMP_ACTUAL_TORQUE_FB, &wrist_pitch_current_effort);
     smRead3Parameters(arm_bus_handle, wrist_roll_address, SMP_STATUS, &wrist_roll_status, SMP_FAULTS, &wrist_roll_faults, SMP_ACTUAL_TORQUE_FB, &wrist_roll_current_effort);
 
-    /* put velocity states into vector */
-    eff_state.insert(base_current_effort, 0);
-    eff_state.insert(shoulder_current_effort, 1);
-    eff_state.insert(elbow_current_effort, 2);
-    eff_state.insert(roll_current_effort, 3);
-    eff_state.insert(wrist_pitch_current_effort, 4);
-    eff_state.insert(wrist_roll_current_effort, 5);
+    /* cast joint efforts to doubles for controllers */
+    base_current_eff = double(base_current_effort);
+    shoulder_current_eff = double(shoulder_current_effort);
+    elbow_current_eff = double(elbow_current_effort);
+    roll_current_eff = double(roll_current_effort);
+    wrist_pitch_current_eff = double(wrist_pitch_current_effort);
+    wrist_roll_current_eff = double(wrist_roll_current_effort);
+
+    /* put effort states into vector */
+    eff_state.insert(base_curr_eff, 0);
+    eff_state.insert(shoulder_curr_eff, 1);
+    eff_state.insert(elbow_curr_eff, 2);
+    eff_state.insert(roll_curr_eff, 3);
+    eff_state.insert(wrist_pitch_curr_eff, 4);
+    eff_state.insert(wrist_roll_curr_eff, 5);
 
 }
 
@@ -74,13 +89,21 @@ void ArmState::get_joint_positions(std::vector<double> &pos_state) {
     smRead3Parameters(arm_bus_handle, wrist_roll_address, SMP_STATUS, &wrist_roll_status, SMP_FAULTS, &wrist_roll_faults, SMP_ACTUAL_POSITION_FB, &wrist_roll_current_position);
     
     wrist_pitch_last_set_position = wrist_pitch_current_position;
+    /*cast smint32 to double bc that's the data type required for controllers in ros */
+    base_curr_pos = double(base_current_position);
+    shoulder_curr_pos = double(shoulder_current_position);
+    elbow_curr_pos = double(elbow_current_position);
+    roll_curr_pos = double(roll_current_position);
+    wrist_pitch_curr_pos = double(wrist_pitch_current_position);
+    wrist_roll_curr_pos = double(wrist_roll_current_position);
+
     /* put position states into vector */
-    pos_state.insert(base_current_position, 0);
-    pos_state.insert(shoulder_current_position, 1);
-    pos_state.insert(elbow_current_position, 2);
-    pos_state.insert(roll_current_position, 3);
-    pos_state.insert(wrist_pitch_current_position, 4);
-    pos_state.insert(wrist_roll_current_position, 5);
+    pos_state.insert(base_curr_pos, 0);
+    pos_state.insert(shoulder_curr_pos, 1);
+    pos_state.insert(elbow_curr_pos, 2);
+    pos_state.insert(roll_curr_pos, 3);
+    pos_state.insert(wrist_pitch_curr_pos, 4);
+    pos_state.insert(wrist_roll_curr_pos, 5);
 }
 
 void ArmState::constrain_set_positions(){
@@ -93,12 +116,20 @@ void ArmState::constrain_set_positions(){
 
 void ArmState::set_joint_positions(std::vector<double> &joint_cmds){
     /* get joint position cmds from cmd vector */
-    base_set_position = joint_cmds.at(1); //starts at 1, because "fixed base" shouldn't have any cmds sent to it
-    shoulder_set_position = joint_cmds.at(2);
-    elbow_set_position = joint_cmds.at(3);
-    roll_set_position = joint_cmds.at(4);
-    wrist_pitch_set_position = joint_cmds.at(5);
-    wrist_roll_set_position = joint_cmds.at(6);
+    base_cmd = joint_cmds.at(1); //starts at 1, because "fixed base" shouldn't have any cmds sent to it
+    shoulder_cmd = joint_cmds.at(2);
+    elbow_cmd = joint_cmds.at(3);
+    roll_cmd = joint_cmds.at(4);
+    wrist_pitch_cmd = joint_cmds.at(5);
+    wrist_roll_cmd = joint_cmds.at(6);
+
+    /*cast commands to long ints/smints so ionis can read them */
+    base_set_position = long(base_cmd);
+    shoulder_set_position = long(shoulder_cmd);
+    elbow_set_position = long(elbow_cmd);
+    roll_set_position = long(roll_cmd);
+    wrist_pitch_set_position = long(wrist_pitch_cmd);
+    wrist_roll_set_position = long(wrist_roll_cmd);
 
     /* actually write/send cmds to IONI */
     smSetParameter(arm_bus_handle, base_address, SMP_ABSOLUTE_SETPOINT, base_set_position);

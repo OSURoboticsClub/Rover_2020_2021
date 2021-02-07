@@ -36,7 +36,6 @@ private:
 	std::vector<double> joint_eff_;
 	std::vector<double> joint_pos_comm_;
 
-    //arm state variable- allows us to interface with code responsible for the IONIs
     ArmState arm_;
 
 };

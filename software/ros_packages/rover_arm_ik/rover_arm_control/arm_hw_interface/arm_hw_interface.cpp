@@ -20,6 +20,9 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
     joint_vel_.resize(n_joints_);
     joint_pos_comm_.resize(n_joints_);
 
+    /*creating arm_state obj so we can interface w ionis */
+    this->arm_;
+
     /* initializing controllers for each joint */
 
     for(unsigned int i = 0; i < n_joints_; ++i) {
@@ -35,17 +38,21 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
     }
 }
 
+ArmHWInterface::~ArmHWInterface(){
+    this->arm_.~ArmState();
+}
+
 void ArmHWInterface::write() {
-    arm_.set_joint_positions(joint_pos_comm_); /* send joint positions off to hardware */
-    arm_.constrain_set_positions(); /* makes sure joint positions are within constraints */
+    this->arm_.set_joint_positions(joint_pos_comm_); /* send joint positions off to hardware */
+    this->arm_.constrain_set_positions(); /* makes sure joint positions are within constraints */
 }
 
 void ArmHWInterface::read() {
     std::vector<double> pos, vel, torque;
     /* read in current joint values into vectors */
-    arm_.get_joint_velocities(vel); 
-    arm_.get_joint_effort(torque);
-    arm_.get_joint_positions(pos);
+    this->arm_.get_joint_velocities(vel); 
+    this->arm_.get_joint_effort(torque);
+    this->arm_.get_joint_positions(pos);
 
     for(int i = start_joint_; i < n_joints_; ++i){
         for(int j = 0; j < 6; j++) {

@@ -141,6 +141,7 @@ include_directories(include
 add_library(arm_hw_interface arm_hw_interface/arm_hw_interface.cpp)
 target_link_libraries(arm_hw_interface
   ${catkin_LIBRARIES}
+  simplemotion2
 )
 
 ## Specifying sources

@@ -12,13 +12,14 @@ namespace arm_hw_interface {
 
 class ArmHWInterface : public hardware_interface::RobotHW {
 public:
+    ArmHWInterface(); //default constructor hw interface
     ArmHWInterface(ros::NodeHandle& nh); //constructor for hw interface- registers controllers
     ~ArmHWInterface(); //destructor for hw interface
 
     void write();
     void read();
 
-private:
+protected:
     //Node handle
     ros::NodeHandle nh_;
 

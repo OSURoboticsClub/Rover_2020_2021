@@ -59,7 +59,8 @@ target_link_libraries(arm_hw_interface
 ## Specifying sources
 set(${PROJECT_NAME}_SOURCES
   arm_hw_interface/arm_state.cpp
-  arm_hw_interface/arm_hw_interface.cpp)
+  arm_hw_interface/arm_hw_interface.cpp
+  arm_hw_interface/arm_hw_interface_node.cpp)
 
 
 ## Declare a C++ executable

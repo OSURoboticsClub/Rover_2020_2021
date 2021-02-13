@@ -78,6 +78,10 @@ ArmState::ArmState() {
     wrist_pitch_max_rev_counts = smint32(wrist_pitch_max_rev * wrist_pitch_counts_per_rev);
 }
 
+ArmState::~ArmState() {
+    //arm state destructor
+}
+
 void ArmState::get_joint_velocities(std::vector<double> &vel_state) {
     /* read in joint velocities */
     smRead3Parameters(arm_bus_handle, base_address, SMP_STATUS, &base_status, SMP_FAULTS, &base_faults, SMP_ACTUAL_VELOCITY_FB, &base_current_velocity);

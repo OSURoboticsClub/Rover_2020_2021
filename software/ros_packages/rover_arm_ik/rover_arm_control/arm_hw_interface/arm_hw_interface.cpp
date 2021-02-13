@@ -24,11 +24,7 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
     joint_vel_.resize(n_joints_);
     joint_pos_comm_.resize(n_joints_);
 
-    /*creating arm_state obj so we can interface w ionis */
-    ArmState arm_();
-    
     /* initializing controllers for each joint */
-
     for(unsigned int i = 0; i < n_joints_; ++i) {
         /* init joint state interface for each joint */
         joint_state_interface_.registerHandle(hardware_interface::JointStateHandle(joint_names_[i], &joint_pos_[i], &joint_vel_[i], &joint_eff_[i])); 

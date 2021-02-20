@@ -8,14 +8,14 @@ ArmHWInterface::ArmHWInterface() {
 }
 
 ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
-    nh_.getParam("arm_joint_names.yaml", joint_names_); //get list of joints on the arm
+    
+    nh_.getParam("/rover_arm/arm_hw_interface/joints", joint_names_); //get list of joints on the arm
 
     if (joint_names_.size() == 0){ //checks to see if joint list is empty/empty file
-        ROS_ERROR("Cannot find required parameter 'arm_joint_names' "
+        ROS_FATAL_STREAM_NAMED("init", "Cannot find required parameter '/rover_arm/arm_hw_interface/joints' "
         "on the parameter server.");
-        exit(-1);
     }
-    
+
     n_joints_ = joint_names_.size(); //sets number of joints in list to variable
 
     /* resize vectors to be the size of how many joints are on the robot */
@@ -25,17 +25,26 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
     joint_pos_comm_.resize(n_joints_);
 
     /* initializing controllers for each joint */
-    for(unsigned int i = 0; i < n_joints_; ++i) {
+    for(int i = 0; i < n_joints_; ++i) {
         /* init joint state interface for each joint */
         joint_state_interface_.registerHandle(hardware_interface::JointStateHandle(joint_names_[i], &joint_pos_[i], &joint_vel_[i], &joint_eff_[i])); 
 
         /* init position interface for each joint */
         pos_joint_interface_.registerHandle(hardware_interface::JointHandle(joint_state_interface_.getHandle(joint_names_[i]), &joint_pos_comm_[i])); 
-
-        /* register interfaces */
-        registerInterface(&joint_state_interface_);
-        registerInterface(&pos_joint_interface_);
     }
+
+    /* register interfaces */
+    registerInterface(&joint_state_interface_);
+    registerInterface(&pos_joint_interface_);
+
+    controller_manager_.reset(new controller_manager::ControllerManager(this, nh_)); //create new controller manager
+
+    //Set the frequency of the control loop.
+    loop_hz=10;
+    ros::Duration update_freq = ros::Duration(1.0/loop_hz);
+
+    //start control loop
+    arm_control_loop = nh_.createTimer(update_freq, &ArmHWInterface::update, this);
 }
 
 ArmHWInterface::~ArmHWInterface() {
@@ -54,13 +63,20 @@ void ArmHWInterface::read() {
     arm_.get_joint_effort(torque);
     arm_.get_joint_positions(pos);
 
-    for(int i = start_joint_; i < n_joints_; ++i){
-        for(int j = 0; j < 6; j++) {
-            joint_pos_[i] = pos[j];
-            joint_eff_[i] = torque[j];
-            joint_vel_[i] = vel[j];
-        }
+    for(int i = 0; i < n_joints_; ++i){
+        joint_pos_[i] = pos[i];
+        joint_eff_[i] = torque[i];
+        joint_vel_[i] = vel[i];
     }
+}
+
+void ArmHWInterface::update(const ros::TimerEvent& e) {
+    /*get elapsed time between joint cmds */
+	elapsed_time_ = ros::Duration(e.current_real - e.last_real);
+	read();
+    /* update controllers */
+	controller_manager_->update(ros::Time::now(), elapsed_time_);
+    write();
 }
 
 }

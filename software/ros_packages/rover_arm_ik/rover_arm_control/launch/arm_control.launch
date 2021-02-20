@@ -5,19 +5,22 @@
     <!--find urdf and publish it to param server-->
     <include file="$(find rover_arm_description)/launch/arm_upload.launch"/>
 
+    <!--find and bring up config files-->
+    <rosparam file="$(find rover_arm_control)/config/arm_controller.yaml" command="load"/>
+    <rosparam file="$(find rover_arm_control)/config/hardware.yaml" command="load" />
+
+
     <!--bringup hardware interface-->
-    <node name="arm_hw_interface" pkg="rover_arm_control" type="arm_hw_interface_node" output="screen" />
+    <node name="arm_hw_interface" pkg="rover_arm_control" type="arm_hw_interface_node" output="screen"/>
 
     <!-- Convert joint states to /tf tranforms -->
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
     <!--bring up controllers-->
-    <rosparam file="$(find rover_arm_control)/config/arm_controller.yaml" command="load"/>
-    <rosparam file="$(find rover_arm_control)/config/joint_state_controller.yaml" command="load"/>
-
     <node name="rover_arm_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" 
-        args="joint_state_controller
-              /rover_arm/arm_controller
-              /rover_arm/joint_group_position_controller" />
+        args="
+                /rover_arm/arm_controller
+                /rover_arm/joint_state_controller
+                /rover_arm/joint_group_position_controller" />
 
 </launch>

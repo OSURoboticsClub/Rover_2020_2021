@@ -5,6 +5,7 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
 #include <controller_manager/controller_manager.h>
+#include <boost/scoped_ptr.hpp>
 #include <ros/ros.h>
 #include "arm_state.h"
 
@@ -18,6 +19,7 @@ public:
 
     void write();
     void read();
+    void update(const ros::TimerEvent& e); //function responsible for calling read/write
 
 protected:
     //Node handle
@@ -30,14 +32,23 @@ protected:
     //Constants
     unsigned int n_joints_;
     unsigned int start_joint_ = 1;
+    double loop_hz; //variable for controlling freq of control loop
 
+    //vectors for storing joint information
     std::vector<std::string> joint_names_;
 	std::vector<double> joint_pos_;
 	std::vector<double> joint_vel_;
 	std::vector<double> joint_eff_;
 	std::vector<double> joint_pos_comm_;
 
+    //variable that allows us to interface with ionis
     ArmState arm_;
+
+    //variables for controller manager/timing
+    boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
+    ros::Timer arm_control_loop;
+	ros::Duration control_period_;
+	ros::Duration elapsed_time_;
 
 };
 

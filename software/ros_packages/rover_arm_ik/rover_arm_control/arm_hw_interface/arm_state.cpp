@@ -55,12 +55,12 @@ const smint32 wrist_roll_counts_per_rev = 1638400;
 ArmState::ArmState() {
     arm_bus_handle = smOpenBus(arm_port.c_str());
 
-    if (arm_bus_handle < 0) {
-        ROS_ERROR("Could not connect to arm");
-        return;
-    } else {
-        arm_successfully_connected = true;
-    }
+    // if (arm_bus_handle < 0) {
+    //     ROS_ERROR("Could not connect to arm");
+    //     return;
+    // } else {
+    //     arm_successfully_connected = true;
+    // }
 
     base_min_rev_counts = smint32(base_min_rev * base_counts_per_rev);
     base_max_rev_counts = smint32(base_max_rev * base_counts_per_rev);
@@ -172,12 +172,12 @@ void ArmState::constrain_set_positions(){
 
 void ArmState::set_joint_positions(std::vector<double> &joint_cmds){
     /* get joint position cmds from cmd vector */
-    base_cmd = joint_cmds.at(1); //starts at 1, because "fixed base" shouldn't have any cmds sent to it
-    shoulder_cmd = joint_cmds.at(2);
-    elbow_cmd = joint_cmds.at(3);
-    roll_cmd = joint_cmds.at(4);
-    wrist_pitch_cmd = joint_cmds.at(5);
-    wrist_roll_cmd = joint_cmds.at(6);
+    base_cmd = joint_cmds.at(0);
+    shoulder_cmd = joint_cmds.at(1);
+    elbow_cmd = joint_cmds.at(2);
+    roll_cmd = joint_cmds.at(3);
+    wrist_pitch_cmd = joint_cmds.at(4);
+    wrist_roll_cmd = joint_cmds.at(5);
 
     /*cast commands to long ints/smints so ionis can read them */
     base_set_position = long(base_cmd);

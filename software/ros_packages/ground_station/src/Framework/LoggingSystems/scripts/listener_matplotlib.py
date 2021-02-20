@@ -13,18 +13,19 @@ from datetime import datetime
 
 
 def callback(data):
-	rospy.loginfo(rospy.get_caller_id() + "I heard %s %s", data.x,data.y)
+	rospy.loginfo(rospy.get_caller_id() + ',' + str(data.x-setup.starttime))
 	#setup.x_vec.append(data.x)
 	#setup.y_vec.append(data.y)
 	#setup.line1 = []
 	
 	#setup.line1 = live_plotter(setup.x_vec,setup.y_vec,setup.line1)
 
-	setup.x_vec = np.append(setup.x_vec[1:],datetime.now() - (datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)))
+	setup.x_vec = np.append(setup.x_vec[1:],data.x-setup.starttime)
 	setup.y_vec = np.append(setup.y_vec[1:],data.y)
 	if time.time() > setup.timer+1:
 		setup.line1 = live_plotter(setup.x_vec,setup.y_vec,setup.line1)
 		setup.timer = time.time()
+		
 
 
 
@@ -48,9 +49,9 @@ def setup():
 	#setup.x_vec = []
 	#setup.y_vec = []
 	#setup.line1 = []
-
+	setup.starttime = time.time()
 	size = 1000
-	setup.x_vec = [0]*size
+	setup.x_vec = [time.time()-setup.starttime]*size
 	setup.y_vec = [0]*size
 	setup.line1 = []
 	setup.timer = time.time()
@@ -60,4 +61,3 @@ def setup():
 if __name__ == '__main__':
 	setup()
 	listener()
-	

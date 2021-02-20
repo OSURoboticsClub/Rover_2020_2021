@@ -4,6 +4,7 @@ from geometry_msgs.msg import Point
 import apsw
 import sys
 import time
+from datetime import datetime
 
 def talker(rows):
 	if not rospy.is_shutdown():
@@ -13,7 +14,7 @@ def talker(rows):
 		for x in range(1,len(rows)):
 		
 			talker_point = Point()
-			talker_point.x = 0#float(time.time())
+			talker_point.x = time.time()
 			talker_point.y = rows[x][2]
 			talker_point.z = 0
 			#message_str = ''

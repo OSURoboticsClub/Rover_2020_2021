@@ -1,5 +1,8 @@
+import matplotlib
+matplotlib.use('tkagg')
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 # use ggplot style for more sophisticated visuals
 plt.style.use('ggplot')
@@ -21,10 +24,18 @@ def live_plotter(x_vec,y1_data,line1,identifier='',pause_time=0.001):
     line1.set_ydata(y1_data)
     line1.set_xdata(x_vec)
     # adjust limits if new data goes beyond bounds
-    if np.min(x_vec)<=line1.axes.get_xlim()[0] or np.max(x_vec)>=line1.axes.get_xlim()[1]:
-        plt.xlim([np.min(x_vec)-np.std(x_vec),np.max(x_vec)+np.std(x_vec)])
-    if np.min(y1_data)<=line1.axes.get_ylim()[0] or np.max(y1_data)>=line1.axes.get_ylim()[1]:
-        plt.ylim([np.min(y1_data)-np.std(y1_data),np.max(y1_data)+np.std(y1_data)])
+
+    #archived if statement. This runs if the graph exceed its boundaries
+    #if np.min(x_vec)<=line1.axes.get_xlim()[0] or np.max(x_vec)>=line1.axes.get_xlim()[1]:
+        #plt.xlim([np.min(x_vec)-np.std(x_vec),np.max(x_vec)+np.std(x_vec)])
+
+    #archived if statement. This runs if the graph exceed its boundaries
+    #if np.min(y1_data)<=line1.axes.get_ylim()[0] or np.max(y1_data)>=line1.axes.get_ylim()[1]:
+        #plt.ylim([np.min(y1_data)-np.std(y1_data),np.max(y1_data)+np.std(y1_data)])
+    
+    plt.xlim([np.min(x_vec),np.max(x_vec)])
+    plt.ylim([np.min(y1_data),np.max(y1_data)])
+
     # this pauses the data so the figure/axis can catch up - the amount of pause can be altered above
     plt.pause(pause_time)
     

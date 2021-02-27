@@ -40,7 +40,7 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
     controller_manager_.reset(new controller_manager::ControllerManager(this, nh_)); //create new controller manager
 
     //Set the frequency of the control loop + error threshold for timeout.
-    loop_hz = 10;
+    loop_hz = 300;
     error_threshold = 0.01;
 
     // Get current time for use with first update
@@ -80,6 +80,13 @@ void ArmHWInterface::update() {
       ros::Duration(current_time_.tv_sec - last_time_.tv_sec + (current_time_.tv_nsec - last_time_.tv_nsec) / BILLION);
     last_time_ = current_time_; /* updates timing variables for next loop */
     ros::Time now = ros::Time::now();
+
+    /* check for cycle timeout */
+    const double time_error = (elapsed_time - update_freq).toSec();
+    if(time_error > error_threshold){
+        ROS_WARN_STREAM_NAMED("Cycle Time Error:", "Cycle time exceed error threshold by: " << time_error << ", cycle time: " << elapsed_time << 
+        ", threshold:" << error_threshold);
+    }
 
     read(now, elapsed_time); /* read in the joint states */
     controller_manager_->update(now, elapsed_time); /* update controller manager */

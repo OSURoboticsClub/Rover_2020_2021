@@ -45,7 +45,7 @@ def callback(data):
 
 	#setup.x_vec = np.append(setup.x_vec[1:],data.x-setup.starttime)
 	#setup.y_vec = np.append(setup.y_vec[1:],data.y)
-	append_value(setup.cursor,data.x-setup.starttime,data.y)
+	append_value(setup.cursor,data.x,data.y)
 	setup.timer2 += 1
 	if setup.timer2 > 1000 or time.time() > setup.timer + 1:
 		setup.cursor.execute('COMMIT')

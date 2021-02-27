@@ -12,6 +12,9 @@ def grab_100(cursor):
 	cursor.execute(statement)
 	#returns the last 1000 rows as the list named "rows"
 	rows = cursor.fetchall()
+	if len(rows) < 1000 and len(rows) > 0:
+		setup.x_vec = [rows[0][1]]*1000
+		setup.y_vec = [rows[0][2]]*1000
 	#inserts "rows" onto the end of the x and y values for the live plotter. x_vec and y_vec CANNOT change in length
 	for i in range(len(rows)):
 			setup.x_vec = np.append(setup.x_vec[1:],rows[i][1])

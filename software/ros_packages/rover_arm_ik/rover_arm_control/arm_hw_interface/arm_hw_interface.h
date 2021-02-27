@@ -4,9 +4,13 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
+#include <joint_limits_interface/joint_limits.h>
+#include <joint_limits_interface/joint_limits_interface.h>
+#include <joint_limits_interface/joint_limits_urdf.h>
 #include <controller_manager/controller_manager.h>
 #include <boost/scoped_ptr.hpp>
 #include <ros/ros.h>
+#include <urdf/model.h>
 #include "arm_state.h"
 #include <time.h>
 
@@ -22,6 +26,8 @@ public:
     void read(ros::Time &Time, ros::Duration &elapsed_time);
     void run(); //function that runs the main loop
     void update(); //function responsible for calling read/write
+    void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, std::size_t joint_names); //function that ensures joints are limited
+    void enforceLimits(ros::Duration &period); //function to enforce all joint limits before writing out
 
 protected:
     //Node handle
@@ -30,6 +36,12 @@ protected:
     //Interfaces for ROS Control
     hardware_interface::JointStateInterface joint_state_interface_;
     hardware_interface::PositionJointInterface pos_joint_interface_;
+
+    //Interfaces for Joint Limits - Saturation
+    joint_limits_interface::PositionJointSaturationInterface pos_jnt_sat_interface_;
+
+    //Interfaces for Joint Limits - Soft
+    joint_limits_interface::PositionJointSoftLimitsInterface pos_jnt_soft_limits_;
 
     //Constants
     unsigned int n_joints_;
@@ -42,6 +54,11 @@ protected:
 	std::vector<double> joint_vel_;
 	std::vector<double> joint_eff_;
 	std::vector<double> joint_pos_comm_;
+
+    //vectors for storing joint limits
+    std::vector<double> joint_position_lower_limits_;
+    std::vector<double> joint_position_upper_limits_;
+
 
     //variable that allows us to interface with ionis
     ArmState arm_;

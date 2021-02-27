@@ -9,6 +9,8 @@ add_compile_options(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   hardware_interface
+  joint_limits_interface
+  urdf
   controller_manager
   actionlib
   control_msgs
@@ -17,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   trajectory_msgs
   tf
+  transmission_interface
 )
 
 ## System dependencies are found with CMake's conventions
@@ -34,7 +37,7 @@ find_package(Boost REQUIRED COMPONENTS system)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES arm_hw_interface
-  CATKIN_DEPENDS hardware_interface controller_manager actionlib control_msgs roscpp trajectory_msgs
+  CATKIN_DEPENDS hardware_interface joint_limits_interface urdf controller_manager actionlib control_msgs roscpp sensor_msgs std_msgs trajectory_msgs tf transmission_interface
 #  DEPENDS arm_hw_interface
 )
 

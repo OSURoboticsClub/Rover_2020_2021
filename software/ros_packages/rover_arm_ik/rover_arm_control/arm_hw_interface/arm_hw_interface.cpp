@@ -39,24 +39,27 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
 
     controller_manager_.reset(new controller_manager::ControllerManager(this, nh_)); //create new controller manager
 
-    //Set the frequency of the control loop.
-    loop_hz=10;
-    ros::Duration update_freq = ros::Duration(1.0/loop_hz);
+    //Set the frequency of the control loop + error threshold for timeout.
+    loop_hz = 10;
+    error_threshold = 0.01;
 
-    //start control loop
-    arm_control_loop = nh_.createTimer(update_freq, &ArmHWInterface::update, this);
+    // Get current time for use with first update
+    clock_gettime(CLOCK_MONOTONIC, &last_time_);
+    
+    //set update frequency for control loop
+    update_freq = ros::Duration(1/loop_hz);
 }
 
 ArmHWInterface::~ArmHWInterface() {
     //destructor 
 }
 
-void ArmHWInterface::write() {
+void ArmHWInterface::write(ros::Time &Time, ros::Duration &elapsed_time) {
     arm_.set_joint_positions(joint_pos_comm_); /* send joint positions off to hardware */
     arm_.constrain_set_positions(); /* makes sure joint positions are within constraints */
 }
 
-void ArmHWInterface::read() {
+void ArmHWInterface::read(ros::Time &Time, ros::Duration &elapsed_time) {
     std::vector<double> pos, vel, torque;
     /* read in current joint values into vectors */
     arm_.get_joint_velocities(vel); 
@@ -70,13 +73,27 @@ void ArmHWInterface::read() {
     }
 }
 
-void ArmHWInterface::update(const ros::TimerEvent& e) {
-    /*get elapsed time between joint cmds */
-	elapsed_time_ = ros::Duration(e.current_real - e.last_real);
-	read();
-    /* update controllers */
-	controller_manager_->update(ros::Time::now(), elapsed_time_);
-    write();
+void ArmHWInterface::update() {
+    /* gets elapsed time difference */
+    clock_gettime(CLOCK_MONOTONIC, &current_time_);
+    elapsed_time =
+      ros::Duration(current_time_.tv_sec - last_time_.tv_sec + (current_time_.tv_nsec - last_time_.tv_nsec) / BILLION);
+    last_time_ = current_time_; /* updates timing variables for next loop */
+    ros::Time now = ros::Time::now();
+
+    read(now, elapsed_time); /* read in the joint states */
+    controller_manager_->update(now, elapsed_time); /* update controller manager */
+    write(now, elapsed_time); /* write out new joint states */
+}
+
+void ArmHWInterface::run()
+{
+  ros::Rate rate(loop_hz);
+  while (ros::ok())
+  {
+    update();
+    rate.sleep();
+  }
 }
 
 }

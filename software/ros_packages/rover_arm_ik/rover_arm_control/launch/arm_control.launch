@@ -20,7 +20,6 @@
     <node name="rover_arm_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" 
         args="
                 /rover_arm/arm_controller
-                /rover_arm/joint_state_controller
-                /rover_arm/joint_group_position_controller" />
+                /rover_arm/joint_state_controller" />
 
 </launch>

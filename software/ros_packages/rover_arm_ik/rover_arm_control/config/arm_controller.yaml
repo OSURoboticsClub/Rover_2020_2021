@@ -22,12 +22,3 @@ rover_arm:
     stop_trajectory_duration: 0.5
     state_publish_rate:  25
     action_monitor_rate: 10
-  joint_group_position_controller:
-    type: position_controllers/JointGroupPositionController
-    joints:
-      - base_roll
-      - shoulder_pitch
-      - elbow_pitch
-      - elbow_roll
-      - wrist_pitch
-      - wrist_roll

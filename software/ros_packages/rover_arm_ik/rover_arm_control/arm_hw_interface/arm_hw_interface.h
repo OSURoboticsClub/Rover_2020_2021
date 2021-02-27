@@ -8,6 +8,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <ros/ros.h>
 #include "arm_state.h"
+#include <time.h>
 
 namespace arm_hw_interface {
 
@@ -17,9 +18,10 @@ public:
     ArmHWInterface(ros::NodeHandle& nh); //constructor for hw interface- registers controllers
     ~ArmHWInterface(); //destructor for hw interface
 
-    void write();
-    void read();
-    void update(const ros::TimerEvent& e); //function responsible for calling read/write
+    void write(ros::Time &Time, ros::Duration &elapsed_time);
+    void read(ros::Time &Time, ros::Duration &elapsed_time);
+    void run(); //function that runs the main loop
+    void update(); //function responsible for calling read/write
 
 protected:
     //Node handle
@@ -32,8 +34,8 @@ protected:
     //Constants
     unsigned int n_joints_;
     unsigned int start_joint_ = 1;
-    double loop_hz; //variable for controlling freq of control loop
-
+    double BILLION = 1000000000.0; //convert seconds elapsed to nanoseconds
+    
     //vectors for storing joint information
     std::vector<std::string> joint_names_;
 	std::vector<double> joint_pos_;
@@ -45,11 +47,13 @@ protected:
     ArmState arm_;
 
     //variables for controller manager/timing
+    double loop_hz; //variable for controlling freq of control loop
+    double error_threshold; //variable for timeout for timer
     boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
-    ros::Timer arm_control_loop;
-	ros::Duration control_period_;
-	ros::Duration elapsed_time_;
-
+    ros::Duration update_freq;
+    ros::Duration elapsed_time;
+    struct timespec last_time_;
+    struct timespec current_time_;
 };
 
 }

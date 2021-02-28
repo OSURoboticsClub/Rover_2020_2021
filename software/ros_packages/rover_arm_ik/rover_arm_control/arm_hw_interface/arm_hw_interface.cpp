@@ -3,11 +3,20 @@
 
 namespace arm_hw_interface {
 
+/* constructors and destructor */
+
 ArmHWInterface::ArmHWInterface() {
     //default constructor- not used
 }
 
 ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
+
+    if (rover_arm_urdf_ = NULL) {
+        getURDF(nh_, "robot_description");
+    }
+    else {
+        rover_arm_urdf_ = rover_arm_urdf_;
+    }
     
     nh_.getParam("/rover_arm/arm_hw_interface/joints", joint_names_); //get list of joints on the arm
 
@@ -23,6 +32,8 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
     joint_eff_.resize(n_joints_);
     joint_vel_.resize(n_joints_);
     joint_pos_comm_.resize(n_joints_);
+    joint_position_lower_limits_.resize(n_joints_);
+    joint_position_upper_limits_.resize(n_joints_);
 
     /* initializing controllers for each joint */
     for(int i = 0; i < n_joints_; ++i) {
@@ -31,6 +42,9 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
 
         /* init position interface for each joint */
         pos_joint_interface_.registerHandle(hardware_interface::JointHandle(joint_state_interface_.getHandle(joint_names_[i]), &joint_pos_comm_[i])); 
+
+        /* register the joint limits of each joint */
+        registerJointLim(pos_joint_interface_, i);
     }
 
     /* register interfaces */
@@ -54,7 +68,10 @@ ArmHWInterface::~ArmHWInterface() {
     //destructor 
 }
 
+/* write/read functions */
+
 void ArmHWInterface::write(ros::Time &Time, ros::Duration &elapsed_time) {
+    enforceLimits(elapsed_time);
     arm_.set_joint_positions(joint_pos_comm_); /* send joint positions off to hardware */
     arm_.constrain_set_positions(); /* makes sure joint positions are within constraints */
 }
@@ -72,6 +89,94 @@ void ArmHWInterface::read(ros::Time &Time, ros::Duration &elapsed_time) {
         joint_vel_[i] = vel[i];
     }
 }
+
+/* joint limit functions */
+void ArmHWInterface::registerJointLim(const hardware_interface::JointHandle &pos_joint_interface_, int jn){
+  /*set default limits */
+  joint_pos_ll[jn] = -std::numeric_limits<double>::max();
+  joint_pos_ul[jn] = std::numeric_limits<double>::max();
+
+  /* create data structures */
+  joint_limits_interface::JointLimits joint_lim;
+  //TODO Add functionality for soft limits as needed
+
+  if(rover_arm_urdf_ == NULL){
+        ROS_WARN_STREAM_NAMED("URDF: ", "No URDF model loaded, unable to get joint limits");
+        return;
+  }
+
+  /* Get limits from URDF */
+  urdf::JointConstSharedPtr arm_joint = rover_arm_urdf_->getJoint(joint_names_[jn]);
+
+  if(arm_joint == NULL){
+    ROS_ERROR_STREAM_NAMED("URDF: ", "URDF joint not found " << joint_names_[jn]);
+    return;
+  }
+
+  if(joint_limits_interface::getJointLimits(arm_joint, joint_lim)){
+    has_joint_limits = true;
+    ROS_DEBUG_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " has URDF position limits [" << joint_limits.min_position << ", " << joint_limits.max_position << "]");                          
+  }
+  else {
+    if (urdf_joint->type != urdf::Joint::CONTINUOUS){
+      ROS_WARN_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " does not have a URDF position limit");
+    }
+  }
+
+  /* if we haven't found any joints, quit */
+  if (!has_joint_limits){
+    return;
+  }
+
+  /* Copy position limits if available */
+  if (joint_limits.has_position_limits)
+  {
+    // Slighly reduce the joint limits to prevent floating point errors
+    joint_limits.min_position += std::numeric_limits<double>::epsilon();
+    joint_limits.max_position -= std::numeric_limits<double>::epsilon();
+
+    joint_pos_ll[jn] = joint_limits.min_position;
+    joint_pos_ul[jn] = joint_limits.max_position;
+  }
+
+  //TODO ADD SOFT LIMIT/SAT LIMIT FUNCTIONALITY
+
+}
+
+void ArmHWInterface::enforceLimits(ros::Duration &period){
+    pos_jnt_sat_interface_.enforceLimits(period);
+    pos_jnt_soft_limits_.enforceLimits(period);
+}
+
+
+/* urdf loading function */
+void ArmHWInterface::getURDF(const ros::NodeHandle &nh, std::string param_name){
+    std::string urdf_string;
+    rover_arm_urdf_ = new urdf::Model();
+
+    while(urdf_string.empty() && ros::ok()) {
+        std::string search_param_name;    
+        if (nh.searchParam(param_name, search_param_name)){
+        ROS_INFO_STREAM_NAMED("URDF: ", "Waiting for model URDF on the ROS param server at location: " << nh.getNamespace() << search_param_name);
+            nh.getParam(search_param_name, urdf_string);
+        }
+        else{
+        ROS_INFO_STREAM_NAMED("URDF: ", "Waiting for model URDF on the ROS param server at location: " << nh.getNamespace() << param_name);
+            nh.getParam(param_name, urdf_string);
+        }
+
+        usleep(100000);
+    }
+
+    if (!rover_arm_urdf_->initString(urdf_string)) {
+        ROS_ERROR_STREAM_NAMED("URDF: ", "Unable to load URDF model");
+    }
+    else{
+        ROS_DEBUG_STREAM_NAMED("URDF: ", "Received URDF from param server");
+    }
+}
+
+/* main implementation functions */
 
 void ArmHWInterface::update() {
     /* gets elapsed time difference */

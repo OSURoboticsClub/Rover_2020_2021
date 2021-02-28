@@ -26,7 +26,7 @@ public:
     void read(ros::Time &Time, ros::Duration &elapsed_time);
     void run(); //function that runs the main loop
     void update(); //function responsible for calling read/write
-    void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, std::size_t joint_names); //function that ensures joints are limited
+    void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, int jn); //function that ensures joints are limited
     void enforceLimits(ros::Duration &period); //function to enforce all joint limits before writing out
 
 protected:
@@ -56,12 +56,15 @@ protected:
 	std::vector<double> joint_pos_comm_;
 
     //vectors for storing joint limits
-    std::vector<double> joint_position_lower_limits_;
-    std::vector<double> joint_position_upper_limits_;
-
+    std::vector<double> joint_pos_ll;
+    std::vector<double> joint_pos_ul;
 
     //variable that allows us to interface with ionis
     ArmState arm_;
+
+    //urdf variable for grabbing pos limits + function
+    urdf::Model *rover_arm_urdf_ = NULL;
+    void getURDF(const ros::NodeHandle& nh, std::string param_name);
 
     //variables for controller manager/timing
     double loop_hz; //variable for controlling freq of control loop

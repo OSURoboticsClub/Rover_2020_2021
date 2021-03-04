@@ -19,9 +19,10 @@ namespace arm_hw_interface {
 class ArmHWInterface : public hardware_interface::RobotHW {
 public:
     ArmHWInterface(); //default constructor hw interface
-    ArmHWInterface(ros::NodeHandle& nh); //constructor for hw interface- registers controllers
+    ArmHWInterface(ros::NodeHandle& nh); //constructor for hw interface - sets up basic params
     ~ArmHWInterface(); //destructor for hw interface
 
+    void init(); //main function for setting up + registering controllers
     void write(ros::Time &Time, ros::Duration &elapsed_time);
     void read(ros::Time &Time, ros::Duration &elapsed_time);
     void run(); //function that runs the main loop
@@ -36,6 +37,7 @@ protected:
     //Interfaces for ROS Control
     hardware_interface::JointStateInterface joint_state_interface_;
     hardware_interface::PositionJointInterface pos_joint_interface_;
+    hardware_interface::JointHandle pos_jnt_handle_;
 
     //Interfaces for Joint Limits - Saturation
     joint_limits_interface::PositionJointSaturationInterface pos_jnt_sat_interface_;
@@ -47,6 +49,7 @@ protected:
     unsigned int n_joints_;
     unsigned int start_joint_ = 1;
     double BILLION = 1000000000.0; //convert seconds elapsed to nanoseconds
+    bool has_joint_limits;
     
     //vectors for storing joint information
     std::vector<std::string> joint_names_;

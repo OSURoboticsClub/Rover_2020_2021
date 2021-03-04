@@ -24,7 +24,13 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
         ROS_FATAL_STREAM_NAMED("init", "Cannot find required parameter '/rover_arm/arm_hw_interface/joints' "
         "on the parameter server.");
     }
+}
 
+ArmHWInterface::~ArmHWInterface() {
+    //destructor 
+}
+
+void ArmHWInterface::init() {
     n_joints_ = joint_names_.size(); //sets number of joints in list to variable
 
     /* resize vectors to be the size of how many joints are on the robot */
@@ -32,8 +38,8 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
     joint_eff_.resize(n_joints_);
     joint_vel_.resize(n_joints_);
     joint_pos_comm_.resize(n_joints_);
-    joint_position_lower_limits_.resize(n_joints_);
-    joint_position_upper_limits_.resize(n_joints_);
+    joint_pos_ll.resize(n_joints_);
+    joint_pos_ul.resize(n_joints_);
 
     /* initializing controllers for each joint */
     for(int i = 0; i < n_joints_; ++i) {
@@ -41,10 +47,12 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
         joint_state_interface_.registerHandle(hardware_interface::JointStateHandle(joint_names_[i], &joint_pos_[i], &joint_vel_[i], &joint_eff_[i])); 
 
         /* init position interface for each joint */
-        pos_joint_interface_.registerHandle(hardware_interface::JointHandle(joint_state_interface_.getHandle(joint_names_[i]), &joint_pos_comm_[i])); 
+        hardware_interface::JointHandle pos_jnt_handle_ = hardware_interface::JointHandle(joint_state_interface_.getHandle(joint_names_[i]), &joint_pos_comm_[i]);
+        pos_joint_interface_.registerHandle(pos_jnt_handle_);
+        
 
         /* register the joint limits of each joint */
-        registerJointLim(pos_joint_interface_, i);
+        registerJointLim(pos_jnt_handle_, i);
     }
 
     /* register interfaces */
@@ -62,10 +70,6 @@ ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
     
     //set update frequency for control loop
     update_freq = ros::Duration(1/loop_hz);
-}
-
-ArmHWInterface::~ArmHWInterface() {
-    //destructor 
 }
 
 /* write/read functions */
@@ -115,10 +119,10 @@ void ArmHWInterface::registerJointLim(const hardware_interface::JointHandle &pos
 
   if(joint_limits_interface::getJointLimits(arm_joint, joint_lim)){
     has_joint_limits = true;
-    ROS_DEBUG_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " has URDF position limits [" << joint_limits.min_position << ", " << joint_limits.max_position << "]");                          
+    ROS_DEBUG_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " has URDF position limits [" << joint_lim.min_position << ", " << joint_lim.max_position << "]");                          
   }
   else {
-    if (urdf_joint->type != urdf::Joint::CONTINUOUS){
+    if (arm_joint->type != urdf::Joint::CONTINUOUS){
       ROS_WARN_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " does not have a URDF position limit");
     }
   }
@@ -129,18 +133,20 @@ void ArmHWInterface::registerJointLim(const hardware_interface::JointHandle &pos
   }
 
   /* Copy position limits if available */
-  if (joint_limits.has_position_limits)
+  if (joint_lim.has_position_limits)
   {
     // Slighly reduce the joint limits to prevent floating point errors
-    joint_limits.min_position += std::numeric_limits<double>::epsilon();
-    joint_limits.max_position -= std::numeric_limits<double>::epsilon();
+    joint_lim.min_position += std::numeric_limits<double>::epsilon();
+    joint_lim.max_position -= std::numeric_limits<double>::epsilon();
 
-    joint_pos_ll[jn] = joint_limits.min_position;
-    joint_pos_ul[jn] = joint_limits.max_position;
+    joint_pos_ll[jn] = joint_lim.min_position;
+    joint_pos_ul[jn] = joint_lim.max_position;
   }
 
-  //TODO ADD SOFT LIMIT/SAT LIMIT FUNCTIONALITY
+  ROS_DEBUG_STREAM_NAMED("URDF", "Using saturation limits (not soft limits)");
 
+    const joint_limits_interface::PositionJointSaturationHandle sat_handle_position(pos_jnt_handle_, joint_lim);
+    pos_jnt_sat_interface_.registerHandle(sat_handle_position);
 }
 
 void ArmHWInterface::enforceLimits(ros::Duration &period){

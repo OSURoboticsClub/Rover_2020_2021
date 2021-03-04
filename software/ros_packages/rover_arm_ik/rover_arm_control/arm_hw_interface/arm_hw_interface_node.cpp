@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
     spinner.start();
 
     arm_hw_interface::ArmHWInterface arm_hw_interface(nh); //create hw interface object
+    arm_hw_interface.init();
     ROS_INFO_STREAM_NAMED("hardware_interface", "Starting hardware interface...");
     arm_hw_interface.run(); /* run hw interface */
     

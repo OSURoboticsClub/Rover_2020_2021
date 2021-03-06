@@ -30,9 +30,16 @@ The ```rover_arm_gazebo``` package is responsible for taking the URDF model of t
 
 ## Generating IK Solutions and Plugins
 
-The below instructions were adapted from the official Moveit! Documentatation on IKFAST. A link to these docs can be found in the references section at the end of this document. These instructions assume you already have installed OpenRAVE on your machine. If you need to do that a good tutorial can be found [here](https://scaron.info/teaching/installing-openrave-on-ubuntu-16.04.html). 
+The below instructions were adapted from the official Moveit! Documentatation on IKFAST. A link to these docs can be found in the references section at the end of this document. These instructions assume you already have installed OpenRAVE on your machine. If you need to do that a good tutorial can be found [here](https://scaron.info/teaching/installing-openrave-on-ubuntu-16.04.html). <br>
 
+### 1. Converting URDF to COLLADA
 
+IKFAST works with a 3D file type called COLLADA (COLLAborative Design Activity). The standard file used for Moveit! is URDF, so in order to utilize OpenRAVE and IKFAST, URDF files must be converted to COLLADA. Luckily, there is a nice script that is meant for this specific purpose. <br>
+
+* First, run ```sudo apt-get install ros-kinetic-collada-urdf``` to install the necessary scripts for conversion
+* Then, run ```rosrun collada_urdf urdf_to_collada "$MYROBOT_NAME".urdf "$MYROBOT_NAME".dae``` where ```$MYROBOT_NAME``` is the file name for the URDF file to be converted.
+* To test if the file has been correctly converted run ```openrave "$MYROBOT_NAME".dae``` where ```$MYROBOT_NAME``` is the file name for the COLLADA file
+* Joint link information can be displayed with the command ```openrave-robot.py "$MYROBOT_NAME".dae --info links```
 
 ## References
 

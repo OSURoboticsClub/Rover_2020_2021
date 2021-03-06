@@ -28,21 +28,27 @@ The ```rover_arm_gazebo``` package is responsible for taking the URDF model of t
 
 ## Running the Arm With ROS Control
 
+## Generating IK Solutions and Plugins
+
+The below instructions were adapted from the official Moveit! Documentatation on IKFAST. A link to these docs can be found in the references section at the end of this document. This tutorial assumes you already have installed OpenRAVE on your machine. If you need to do that a good tutorial can be found [here](https://scaron.info/teaching/installing-openrave-on-ubuntu-16.04.html).
+
+
+
 ## References
 
 ### General References for Moveit! and Gazebo
 
-[Official Moveit! Documentation](https://docs.ros.org/en/kinetic/api/moveit_tutorials/html/index.html)
-[Official Gazebo Documentation for ROS](http://gazebosim.org/tutorials?cat=connect_ros)
+[Official Moveit! Documentation](https://docs.ros.org/en/kinetic/api/moveit_tutorials/html/index.html).
+[Official Gazebo Documentation for ROS](http://gazebosim.org/tutorials?cat=connect_ros).
 
 
 ### ROS Control Resources
 
-[ROS Control Boilerplate Code](https://github.com/PickNikRobotics/ros_control_boilerplate/tree/kinetic-devel) by PikNik Robotics 
-[ROS Control Tutorial](https://medium.com/%40slaterobotics/how-to-implement-ros-control-on-a-custom-robot-748b52751f2e) by Slate Robotics 
-[Official ROS Control Repository](https://github.com/ros-controls/ros_control)
+[ROS Control Boilerplate Code](https://github.com/PickNikRobotics/ros_control_boilerplate/tree/kinetic-devel) by PikNik Robotics.
+[ROS Control Tutorial](https://medium.com/%40slaterobotics/how-to-implement-ros-control-on-a-custom-robot-748b52751f2e) by Slate Robotics. 
+[Official ROS Control Repository](https://github.com/ros-controls/ros_control).
 
 ### Inverse Kinematics Resources
 
-[Documentation for using Moveit! and IKFAST](https://docs.ros.org/en/kinetic/api/moveit_tutorials/html/doc/ikfast/ikfast_tutorial.html)
-[Offical OpenRAVE documentation](http://www.openrave.org/docs/latest_stable/)
+[Documentation for using Moveit! and IKFAST](https://docs.ros.org/en/kinetic/api/moveit_tutorials/html/doc/ikfast/ikfast_tutorial.html).
+[Offical OpenRAVE documentation](http://www.openrave.org/docs/latest_stable/).

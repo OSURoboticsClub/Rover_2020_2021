@@ -9,13 +9,13 @@ ArmHWInterface::ArmHWInterface() {
     //default constructor- not used
 }
 
-ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh) : nh_(nh) {
+ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh, urdf::Model* urdf_model) : nh_(nh) {
 
-    if (rover_arm_urdf_ = NULL) {
+    if (rover_arm_urdf_ == NULL) {
         getURDF(nh_, "robot_description");
     }
     else {
-        rover_arm_urdf_ = rover_arm_urdf_;
+        rover_arm_urdf_ = urdf_model;
     }
     
     nh_.getParam("/rover_arm/arm_hw_interface/joints", joint_names_); //get list of joints on the arm
@@ -70,6 +70,8 @@ void ArmHWInterface::init() {
     
     //set update frequency for control loop
     update_freq = ros::Duration(1/loop_hz);
+
+    ROS_INFO_STREAM_NAMED("Hardware Interface", "Arm HW interface ready");
 }
 
 /* write/read functions */
@@ -143,9 +145,9 @@ void ArmHWInterface::registerJointLim(const hardware_interface::JointHandle &pos
     joint_pos_ul[jn] = joint_lim.max_position;
   }
 
-  ROS_DEBUG_STREAM_NAMED("URDF", "Using saturation limits (not soft limits)");
+    ROS_DEBUG_STREAM_NAMED("URDF", "Using saturation limits (not soft limits)");
 
-    const joint_limits_interface::PositionJointSaturationHandle sat_handle_position(pos_jnt_handle_, joint_lim);
+    joint_limits_interface::PositionJointSaturationHandle sat_handle_position(pos_joint_interface_, joint_lim);
     pos_jnt_sat_interface_.registerHandle(sat_handle_position);
 }
 

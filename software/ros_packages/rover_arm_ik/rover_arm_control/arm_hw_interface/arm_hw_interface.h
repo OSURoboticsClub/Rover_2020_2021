@@ -19,7 +19,7 @@ namespace arm_hw_interface {
 class ArmHWInterface : public hardware_interface::RobotHW {
 public:
     ArmHWInterface(); //default constructor hw interface
-    ArmHWInterface(ros::NodeHandle& nh); //constructor for hw interface - sets up basic params
+    ArmHWInterface(ros::NodeHandle& nh, urdf::Model* urdf_model = NULL); //constructor for hw interface - sets up basic params
     ~ArmHWInterface(); //destructor for hw interface
 
     void init(); //main function for setting up + registering controllers

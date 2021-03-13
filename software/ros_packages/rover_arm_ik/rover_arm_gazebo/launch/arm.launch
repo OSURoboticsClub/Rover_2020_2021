@@ -18,7 +18,7 @@
   </include>
 -->
 
-  <param name="robot_description" textfile="$(find rover_arm_description)/urdf/mr1920_arm_urdf_export.urdf" />
+  <param name="robot_description" textfile="$(find rover_arm_description)/urdf/rover_arm.urdf" />
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 0.1" respawn="false" output="screen" />

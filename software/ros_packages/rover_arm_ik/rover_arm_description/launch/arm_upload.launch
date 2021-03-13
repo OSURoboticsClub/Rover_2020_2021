@@ -1,6 +1,6 @@
 <launch>
 
 <!--upload arm to parameter server-->
-<param name="robot_description" textfile="$(find rover_arm_description)/urdf/mr1920_arm_urdf_export.urdf" />
+<param name="robot_description" textfile="$(find rover_arm_description)/urdf/rover_arm.urdf" />
 
 </launch>

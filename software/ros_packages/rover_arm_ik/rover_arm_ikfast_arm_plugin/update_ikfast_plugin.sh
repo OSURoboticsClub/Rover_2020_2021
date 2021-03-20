@@ -1,0 +1,1 @@
+rosrun moveit_kinematics create_ikfast_moveit_plugin.py rover_arm arm rover_arm_ikfast_arm_plugin /home/garden/catkin_workspace/src/rover_arm_ik/rover_arm_ikfast_arm_plugin/src/rover_arm_arm_ikfast_solver.cpp

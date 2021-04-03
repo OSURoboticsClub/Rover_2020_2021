@@ -2,7 +2,7 @@
 <package format="2">
   <name>rover_arm_control</name>
   <version>0.0.0</version>
-  <description>Ros Control package for rover arm autonomy</description>
+  <description>Ros Control package for rover arm autonomy based on code from the UR5 robot + PikNik Robotics</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -15,6 +15,10 @@
   <!-- Commonly used license strings: -->
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
   <license>TODO</license>
+
+  <!--URLS of resource code used-->
+  <url type="UR Modern Driver">https://github.com/ros-industrial/ur_modern_driver</url>
+  <url type="PikNik Robotics ros_control_boilerplate">https://github.com/PickNikRobotics/ros_control_boilerplate/tree/kinetic-devel</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>

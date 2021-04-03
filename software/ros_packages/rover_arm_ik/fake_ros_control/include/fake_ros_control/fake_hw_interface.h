@@ -18,5 +18,8 @@ public:
     FakeHWInterface(); //default constructor
     FakeHWInterface(ros::NodeHandle& nh, urdf::Model* urdf_model = NULL);
     ~FakeHWInterface();
-private:
-}
+
+    void init();
+    void write();
+protected:
+    void fakePosControl(); //function for spoofing "joint feedback"

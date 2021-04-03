@@ -2,7 +2,8 @@
 <package format="2">
   <name>fake_ros_control</name>
   <version>0.0.0</version>
-  <description>The fake_ros_control package based on the "fake joint driver" by Tokyo Opensource Robotics Kyokai Association</description>
+  <description>The fake_ros_control package based on the "fake joint driver" by Tokyo Opensource Robotics Kyokai Association 
+    + PikNik Robotics Sim HW Interface</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -20,6 +21,7 @@
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
   <url type="Fake Joint Driver Code">https://github.com/tork-a/fake_joint</url>
+  <url type="Ros Control Sim HW Interface">https://github.com/PickNikRobotics/ros_control_boilerplate/tree/kinetic-devel/src</url>
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
@@ -53,16 +55,22 @@
   <build_depend>hardware_interface</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>urdf</build_depend>
-  <build_export_depend>controller_manager</build_export_depend>
-  <build_export_depend>hardware_interface</build_export_depend>
-  <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>urdf</build_export_depend>
+  <build_depend>joint_limits_interface</build_depend>
+  <build_depend>control_msgs</build_depend>
+  <build_depend>trajectory_messages</build_depend>
+  <build_depend>actionlib</build_depend>
+  <build_depend>transmission_interface</build_depend>
+
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>hardware_interface</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>urdf</exec_depend>
   <exec_depend>arm_description</exec_depend>
-
+  <exec_depend>joint_limits_interface</exec_depend>
+  <exec_depend>control_msgs</exec_depend>
+  <exec_depend>trajectory_messages</exec_depend>
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>transmission_interface</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

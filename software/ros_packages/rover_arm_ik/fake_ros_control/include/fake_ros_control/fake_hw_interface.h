@@ -20,7 +20,7 @@ public:
     ~FakeHWInterface();
 
     void init();
-    void write(ros::Duration &elapsed_time);
+    void write(ros::Time &Time, ros::Duration &elapsed_time);
     void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, int jn); //function that ensures joints are limited
     void enforceLimits(ros::Duration &period); //function to enforce all joint limits before writing out
     void update(); //function responsible for calling read/write

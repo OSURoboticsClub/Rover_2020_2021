@@ -92,7 +92,7 @@ void FakeHWInterface::fakePosControl(ros::Duration &elapsed_time, int jn) {
     joint_pos_prev_[jn] = joint_pos_[jn];
 }
 
-void FakeHWInterface::write(ros::Duration &elapsed_time) {
+void FakeHWInterface::write(ros::Time &Time, ros::Duration &elapsed_time) {
     for(int jn = start_joint_; jn < n_joints_; ++jn){
         fakePosControl(elapsed_time, jn);
     }
@@ -186,3 +186,32 @@ void FakeHWInterface::getURDF(const ros::NodeHandle &nh, std::string param_name)
 }
 
 /* main implementation functions */
+
+void FakeHWInterface::update() {
+    /* gets elapsed time difference */
+    clock_gettime(CLOCK_MONOTONIC, &current_time_);
+    elapsed_time =
+      ros::Duration(current_time_.tv_sec - last_time_.tv_sec + (current_time_.tv_nsec - last_time_.tv_nsec) / BILLION);
+    last_time_ = current_time_; /* updates timing variables for next loop */
+    ros::Time now = ros::Time::now();
+
+    /* check for cycle timeout */
+    const double time_error = (elapsed_time - update_freq).toSec();
+    if(time_error > error_threshold){
+        ROS_WARN_STREAM_NAMED("Cycle Time Error:", "Cycle time exceed error threshold by: " << time_error << ", cycle time: " << elapsed_time << 
+        ", threshold:" << error_threshold);
+    }
+
+    controller_manager_->update(now, elapsed_time); /* update controller manager */
+    write(now, elapsed_time); /* write out new joint states */
+}
+
+void FakeHWInterface::run()
+{
+  ros::Rate rate(loop_hz);
+  while (ros::ok())
+  {
+    update();
+    rate.sleep();
+  }
+}

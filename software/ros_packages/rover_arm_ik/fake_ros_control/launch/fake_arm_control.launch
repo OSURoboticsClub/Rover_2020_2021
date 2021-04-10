@@ -1,0 +1,24 @@
+<!--launches ros_control specific files-->
+
+<launch>
+    <!--find urdf and publish it to param server-->
+    <include file="$(find rover_arm_description)/launch/arm_upload.launch"/>
+
+    <!--find and bring up config files-->
+    <rosparam file="$(find fake_ros_control)/config/arm_controller.yaml" command="load"/>
+    <rosparam file="$(find fake_ros_control)/config/hardware.yaml" command="load" />
+
+
+    <!--bringup hardware interface-->
+    <node name="fake_hw_interface" pkg="fake_ros_control" type="fake_hw_interface_node" output="screen"/>
+
+    <!-- Convert joint states to /tf tranforms -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+    <!--bring up controllers-->
+    <node name="rover_arm_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" 
+        args="
+                /rover_arm/arm_controller
+                /rover_arm/joint_state_controller" />
+
+</launch>

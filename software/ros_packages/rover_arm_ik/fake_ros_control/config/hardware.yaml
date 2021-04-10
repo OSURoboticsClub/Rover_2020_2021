@@ -1,0 +1,9 @@
+rover_arm:
+  fake_hw_interface:
+    joints:
+      - base_roll
+      - shoulder_pitch
+      - elbow_pitch
+      - elbow_roll
+      - wrist_pitch
+      - wrist_roll

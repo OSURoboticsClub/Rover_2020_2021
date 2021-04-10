@@ -74,3 +74,6 @@ protected:
     ros::Duration elapsed_time;
     struct timespec last_time_;
     struct timespec current_time_;
+
+};
+#endif

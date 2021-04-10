@@ -18,6 +18,7 @@ from random import randint
 import rospy
 from geometry_msgs.msg import Point
 
+THREAD_HERTZ = 20
 
 class Ui_MainWindow(object):
 
@@ -25,7 +26,21 @@ class Ui_MainWindow(object):
         self.shared_objects = shared_objects
         self.right_screen = self.shared_objects["screens"]["right_screen"]
 
-        
+        self.spectrometer_graph = self.right_screen.spectrometer
+        self.co2_graph = self.right_screen.co2
+        self.voc_graph = self.right_screen.voc
+        self.soil_graph = self.right_screen.soilvalues
+        self.lcd_1 = self.right_screen.soil1
+        self.lcd_2 = self.right_screen.soil2
+        self.lcd_3 = self.right_screen.soil3
+
+        self.settings = QtCore.QSettings()
+
+        self.logger = logging.getLogger("groundstation")
+
+        self.run_thread_flag = True
+
+        self.wait_time = 1.0 / THREAD_HERTZ
 
         self.spectrometer_x = [0]  # 100 time points
         self.spectrometer_y = [0]  # 100 data points
@@ -79,7 +94,7 @@ class Ui_MainWindow(object):
         # pen = pg.mkPen(color=(255, 0, 0))
         self.voc_data_line =  self.graphicsView.plot(self.voc_x, self.voc_y, pen=pen)
 
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(right_screen)
 
         rospy.init_node('listener', anonymous=True)
 
@@ -103,7 +118,7 @@ class Ui_MainWindow(object):
         self.lcdNumber_2.display(self.spectrometer_y[-1])
         self.lcdNumber_3.display(self.spectrometer_y[-1])
 
-def spectrometer_callback(data):
+    def spectrometer_callback(data):
         #rospy.loginfo(rospy.get_caller_id() + ',' + str(data.y))
         #ui.x = ui.x[1:]  # Remove the first x element.
         ui.spectrometer_x.append(ui.spectrometer_x[-1] + 1)  # Add a new value 1 higher than the last.
@@ -113,26 +128,45 @@ def spectrometer_callback(data):
 
         #ui.data_line.setData(ui.x, ui.y)
 
-def temp_callback(data):
+    def temp_callback(data):
         #ui.x = ui.x[1:]  # Remove the first x element.
         ui.temp_x.append(ui.temp_x[-1] + 1)  # Add a new value 1 higher than the last.
 
         #ui.y = ui.y[1:]  # Remove the first  y element.
         ui.temp_y.append(data.y)  # Add a new value.
 
-def co2_callback(data):
+    def co2_callback(data):
         #ui.x = ui.x[1:]  # Remove the first x element.
         ui.co2_x.append(ui.co2_x[-1] + 1)  # Add a new value 1 higher than the last.
 
         #ui.y = ui.y[1:]  # Remove the first  y element.
         ui.co2_y.append(data.y)  # Add a new value.
 
-def voc_callback(data):
+    def voc_callback(data):
         #ui.x = ui.x[1:]  # Remove the first x element.
         ui.voc_x.append(ui.voc_x[-1] + 1)  # Add a new value 1 higher than the last.
 
         #ui.y = ui.y[1:]  # Remove the first  y element.
         ui.voc_y.append(data.y)  # Add a new value.
+
+    def connect_signals_and_slots(self):
+        self.show_compass_image__signal.connect(self.on_new_compass_image_ready__slot)
+        self.heading_text_update_ready__signal.connect(self.heading_text_label.setText)
+        self.heading_text_update_ready__signal.connect(self.next_goal_label.setText)
+        self.new_speed_update_ready__signal.connect(self.current_speed_label.setText)
+
+        self.heading_compass_label.mousePressEvent = self.__on_heading_clicked__slot
+
+        self.pitch_update_ready__signal.connect(self.imu_pitch_lcd_number.display)
+        self.roll_update_ready__signal.connect(self.imu_roll_lcd_number.display)
+
+    def setup_signals(self, start_signal, signals_and_slots_signal, kill_signal):
+        start_signal.connect(self.start)
+        signals_and_slots_signal.connect(self.connect_signals_and_slots)
+        kill_signal.connect(self.on_kill_threads_requested__slot)
+
+    def on_kill_threads_requested__slot(self):
+        self.run_thread_flag = False
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

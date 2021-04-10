@@ -2,8 +2,7 @@
 <package format="2">
   <name>fake_ros_control</name>
   <version>0.0.0</version>
-  <description>The fake_ros_control package based on the "fake joint driver" by Tokyo Opensource Robotics Kyokai Association 
-    + PikNik Robotics Sim HW Interface</description>
+  <description>The fake_ros_control package based on the PikNik Robotics Sim HW Interface</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -20,7 +19,6 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <url type="Fake Joint Driver Code">https://github.com/tork-a/fake_joint</url>
   <url type="Ros Control Sim HW Interface">https://github.com/PickNikRobotics/ros_control_boilerplate/tree/kinetic-devel/src</url>
 
 

@@ -20,13 +20,13 @@ public:
     ~FakeHWInterface();
 
     void init();
-    void write();
+    void write(ros::Duration &elapsed_time);
     void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, int jn); //function that ensures joints are limited
     void enforceLimits(ros::Duration &period); //function to enforce all joint limits before writing out
     void update(); //function responsible for calling read/write
     void run(); //function that runs the main loop
 protected:
-    void fakePosControl(); //function for spoofing "joint feedback"- takes care of "read" as well
+    void fakePosControl(ros::Duration &elapsed_time, int jn); //function for spoofing "joint feedback"- takes care of "read" as well
 
     /*begin copied values from real hw interface */
     //Node handle

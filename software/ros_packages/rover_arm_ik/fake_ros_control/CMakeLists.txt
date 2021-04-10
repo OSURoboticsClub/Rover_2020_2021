@@ -12,6 +12,13 @@ find_package(catkin REQUIRED COMPONENTS
   hardware_interface
   roscpp
   urdf
+  sensor_msgs
+  std_msgs
+  trajectory_msgs
+  tf
+  transmission_interface
+  joint_limits_interface
+  actionlib
 )
 
 ## System dependencies are found with CMake's conventions

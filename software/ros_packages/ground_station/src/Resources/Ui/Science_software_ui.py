@@ -21,7 +21,7 @@ from geometry_msgs.msg import Point
 
 class Ui_MainWindow(object):
 
-    def setupUi(self, MainWindow):
+    def __init__(self, shared_objects):
 
         self.spectrometer_x = [0]  # 100 time points
         self.spectrometer_y = [0]  # 100 data points
@@ -32,72 +32,49 @@ class Ui_MainWindow(object):
         self.voc_x = [0]
         self.voc_y = [0]
 
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(960, 1080)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 960, 1080))
-        self.tabWidget.setObjectName("tabWidget")
-        self.tab = QtWidgets.QWidget()
-        self.tab.setObjectName("tab")
-
         #self.centralwidget = QtWidgets.QWidget(self.tab)
         #self.centralwidget.setObjectName("centralwidget")
         #setting up graph for spectrometer data in tab 1
-        self.graphicsView = PlotWidget(self.tab)
-        self.graphicsView.setGeometry(QtCore.QRect(10, 30, 900, 400))
-        self.graphicsView.setObjectName("graphicsView")
-        self.graphicsView.setBackground('w')
-        pen = pg.mkPen(color=(255, 0, 0))
+        # self.graphicsView = PlotWidget(self.tab)
+        # self.graphicsView.setGeometry(QtCore.QRect(10, 30, 900, 400))
+        # self.graphicsView.setObjectName("graphicsView")
+        # self.graphicsView.setBackground('w')
+        # pen = pg.mkPen(color=(255, 0, 0))
         self.spectrometer_data_line =  self.graphicsView.plot(self.spectrometer_x, self.spectrometer_y, pen=pen)
 
-        self.lcdNumber = QtWidgets.QLCDNumber(self.tab)
-        self.lcdNumber.setGeometry(QtCore.QRect(10, 490, 131, 51))
-        self.lcdNumber.setObjectName("lcdNumber")
-        self.lcdNumber_2 = QtWidgets.QLCDNumber(self.tab)
-        self.lcdNumber_2.setGeometry(QtCore.QRect(180, 490, 131, 51))
-        self.lcdNumber_2.setObjectName("lcdNumber_2")
-        self.lcdNumber_3 = QtWidgets.QLCDNumber(self.tab)
-        self.lcdNumber_3.setGeometry(QtCore.QRect(350, 490, 131, 51))
-        self.lcdNumber_3.setObjectName("lcdNumber_3")
-        self.tabWidget.addTab(self.tab, "")
+        # self.lcdNumber = QtWidgets.QLCDNumber(self.tab)
+        # self.lcdNumber.setGeometry(QtCore.QRect(10, 490, 131, 51))
+        # self.lcdNumber.setObjectName("lcdNumber")
+        # self.lcdNumber_2 = QtWidgets.QLCDNumber(self.tab)
+        # self.lcdNumber_2.setGeometry(QtCore.QRect(180, 490, 131, 51))
+        # self.lcdNumber_2.setObjectName("lcdNumber_2")
+        # self.lcdNumber_3 = QtWidgets.QLCDNumber(self.tab)
+        # self.lcdNumber_3.setGeometry(QtCore.QRect(350, 490, 131, 51))
+        # self.lcdNumber_3.setObjectName("lcdNumber_3")
 
-        self.tab_2 = QtWidgets.QWidget()
-        self.tab_2.setObjectName("tab_2")
 
         #setting up graphs for tab 2
-        self.graphicsView = PlotWidget(self.tab_2)
-        self.graphicsView.setGeometry(QtCore.QRect(10, 30, 900, 230))
-        self.graphicsView.setObjectName("graphicsView")
-        self.graphicsView.setBackground('w')
-        pen = pg.mkPen(color=(255, 0, 0))
+        # self.graphicsView = PlotWidget(self.tab_2)
+        # self.graphicsView.setGeometry(QtCore.QRect(10, 30, 900, 230))
+        # self.graphicsView.setObjectName("graphicsView")
+        # self.graphicsView.setBackground('w')
+        # pen = pg.mkPen(color=(255, 0, 0))
         self.temp_data_line =  self.graphicsView.plot(self.temp_x, self.temp_y, pen=pen)
 
-        self.graphicsView = PlotWidget(self.tab_2)
-        self.graphicsView.setGeometry(QtCore.QRect(10, 260, 900, 230))
-        self.graphicsView.setObjectName("graphicsView")
-        self.graphicsView.setBackground('w')
-        pen = pg.mkPen(color=(255, 0, 0))
+        # self.graphicsView = PlotWidget(self.tab_2)
+        # self.graphicsView.setGeometry(QtCore.QRect(10, 260, 900, 230))
+        # self.graphicsView.setObjectName("graphicsView")
+        # self.graphicsView.setBackground('w')
+        # pen = pg.mkPen(color=(255, 0, 0))
         self.co2_data_line =  self.graphicsView.plot(self.co2_x, self.co2_y, pen=pen)
 
-        self.graphicsView = PlotWidget(self.tab_2)
-        self.graphicsView.setGeometry(QtCore.QRect(10, 520, 900, 230))
-        self.graphicsView.setObjectName("graphicsView")
-        self.graphicsView.setBackground('w')
-        pen = pg.mkPen(color=(255, 0, 0))
+        # self.graphicsView = PlotWidget(self.tab_2)
+        # self.graphicsView.setGeometry(QtCore.QRect(10, 520, 900, 230))
+        # self.graphicsView.setObjectName("graphicsView")
+        # self.graphicsView.setBackground('w')
+        # pen = pg.mkPen(color=(255, 0, 0))
         self.voc_data_line =  self.graphicsView.plot(self.voc_x, self.voc_y, pen=pen)
 
-        #finishing setup for tab 2
-        self.tabWidget.addTab(self.tab_2, "")
-
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-
-        self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         rospy.init_node('listener', anonymous=True)
@@ -112,20 +89,11 @@ class Ui_MainWindow(object):
         self.timer.timeout.connect(self.update_data)
         self.timer.start()
 
-    
-
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Spectrometer/Soil Probes"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Other"))
-
     def update_data(self):
         self.spectrometer_data_line.setData(self.spectrometer_x, self.spectrometer_y)  # Update the data.
         self.temp_data_line.setData(self.temp_x, self.temp_y)
         self.co2_data_line.setData(self.co2_x, self.co2_y)
         self.voc_data_line.setData(self.voc_x, self.voc_y)
-
 
         self.lcdNumber.display(self.spectrometer_y[-1])
         self.lcdNumber_2.display(self.spectrometer_y[-1])

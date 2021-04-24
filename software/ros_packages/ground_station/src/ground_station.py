@@ -27,12 +27,14 @@ import Framework.MiscSystems.MiningCore as MiningCore
 import Framework.MiscSystems.BashConsoleCore as BashConsoleCore
 import Framework.MiscSystems.MiscArmCore as MiscArmCore
 import Framework.MiscSystems.RDFCore as RDFCore
+import Resources.Ui.test as test
 
 #####################################
 # Global Variables
 #####################################
 UI_FILE_LEFT = "Resources/Ui/left_screen.ui"
-UI_FILE_RIGHT = "Resources/Ui/right_screen.ui"
+#UI_FILE_RIGHT = "Resources/Ui/right_screen.ui"
+UI_FILE_RIGHT = test.Ui_MainWindow()
 
 #####################################
 # Class Organization

@@ -27,14 +27,13 @@ import Framework.MiscSystems.MiningCore as MiningCore
 import Framework.MiscSystems.BashConsoleCore as BashConsoleCore
 import Framework.MiscSystems.MiscArmCore as MiscArmCore
 import Framework.MiscSystems.RDFCore as RDFCore
-import Resources.Ui.test as test
+import Framework.ScienceSystems.Science_software as ScienceSoftware
 
 #####################################
 # Global Variables
 #####################################
 UI_FILE_LEFT = "Resources/Ui/left_screen.ui"
-#UI_FILE_RIGHT = "Resources/Ui/right_screen.ui"
-UI_FILE_RIGHT = test.Ui_MainWindow()
+UI_FILE_RIGHT = "Resources/Ui/right_screen.ui"
 
 #####################################
 # Class Organization
@@ -123,6 +122,7 @@ class GroundStation(QtCore.QObject):
         self.__add_thread("Bash Console", BashConsoleCore.BashConsole(self.shared_objects))
         self.__add_thread("Misc Arm", MiscArmCore.MiscArm(self.shared_objects))
         self.__add_thread("RDF", RDFCore.RDF(self.shared_objects))
+        self.__add_thread("Science_software", ScienceSoftware.Science_software(self.shared_objects))
 
         self.connect_signals_and_slots_signal.emit()
         self.__connect_signals_to_slots()

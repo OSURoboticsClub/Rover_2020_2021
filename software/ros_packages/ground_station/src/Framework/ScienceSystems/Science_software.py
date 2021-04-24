@@ -21,6 +21,15 @@ from geometry_msgs.msg import Point
 THREAD_HERTZ = 20
 
 class Ui_MainWindow(object):
+    spectrometer_update_ready_signal = QtCore.pyqtSignal()
+    temp_update_ready_signal = QtCore.pyqtSignal()
+    co2_update_ready_signal = QtCore.pyqtSignal()
+    voc_update_ready_signal = QtCore.pyqtSignal()
+    soil_update_ready_signal = QtCore.pyqtSignal()
+    lcd1_update_ready_signal = QtCore.pyqtSignal()
+    lcd2_update_ready_signal = QtCore.pyqtSignal()
+    lcd3_update_ready_signal = QtCore.pyqtSignal()
+
 
     def __init__(self, shared_objects):
         self.shared_objects = shared_objects
@@ -102,6 +111,9 @@ class Ui_MainWindow(object):
         rospy.Subscriber("science_sensor/temp", Point, temp_callback)
         rospy.Subscriber("science_sensor/temp", Point, co2_callback)
         rospy.Subscriber("science_sensor/temp", Point, voc_callback)
+        rospy.Subscriber("science_sensor/temp", Point, lcd1_callback)
+        rospy.Subscriber("science_sensor/temp", Point, lcd2_callback)
+        rospy.Subscriber("science_sensor/temp", Point, lcd3_callback)
 
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
@@ -118,6 +130,28 @@ class Ui_MainWindow(object):
         self.lcdNumber_2.display(self.spectrometer_y[-1])
         self.lcdNumber_3.display(self.spectrometer_y[-1])
 
+    def update_spectrometer(self):
+        self.spectrometer_data_line.setData(self.spectrometer_x, self.spectrometer_y)
+
+    def update_co2(self):
+        self.co2_data_line.setData(self.co2_x, self.co2_y)
+
+    def update_temp(self):
+        self.temp_data_line.setData(self.temp_x, self.temp_y)
+    
+    def update_voc(self):
+        self.voc_data_line.setData(self.voc_x, self.voc_y)
+
+    def update_lcd1(self):
+        self.lcdNumber.display(self.spectrometer_y[-1])
+
+    def update_lcd2(self):
+        self.lcdNumber_2.display(self.spectrometer_y[-1])
+
+    def update_lcd3(self):
+        self.lcdNumber_3.display(self.spectrometer_y[-1])
+
+
     def spectrometer_callback(data):
         #rospy.loginfo(rospy.get_caller_id() + ',' + str(data.y))
         #ui.x = ui.x[1:]  # Remove the first x element.
@@ -125,6 +159,8 @@ class Ui_MainWindow(object):
 
         #ui.y = ui.y[1:]  # Remove the first  y element.
         ui.spectrometer_y.append(data.y)  # Add a new value.
+
+        spectrometer_update_ready_signal.emit()
 
         #ui.data_line.setData(ui.x, ui.y)
 
@@ -135,12 +171,16 @@ class Ui_MainWindow(object):
         #ui.y = ui.y[1:]  # Remove the first  y element.
         ui.temp_y.append(data.y)  # Add a new value.
 
+        temp_update_ready_signal.emit()
+
     def co2_callback(data):
         #ui.x = ui.x[1:]  # Remove the first x element.
         ui.co2_x.append(ui.co2_x[-1] + 1)  # Add a new value 1 higher than the last.
 
         #ui.y = ui.y[1:]  # Remove the first  y element.
         ui.co2_y.append(data.y)  # Add a new value.
+
+        co2_update_ready_signal.emit()
 
     def voc_callback(data):
         #ui.x = ui.x[1:]  # Remove the first x element.
@@ -149,16 +189,29 @@ class Ui_MainWindow(object):
         #ui.y = ui.y[1:]  # Remove the first  y element.
         ui.voc_y.append(data.y)  # Add a new value.
 
+        voc_update_ready_signal.emit()
+
+    def lcd1_callback(data):
+        ui.lcd_1 = data.co2_y
+        lcd1_update_ready_signal.emit()
+
+    def lcd2_callback(data):
+        ui.lcd_2 = data.co2_y
+        lcd2_update_ready_signal.emit()
+
+    def lcd3_callback(data):
+        ui.lcd_3 = data.co2_y
+        lcd3_update_ready_signal.emit()
+
     def connect_signals_and_slots(self):
-        self.show_compass_image__signal.connect(self.on_new_compass_image_ready__slot)
-        self.heading_text_update_ready__signal.connect(self.heading_text_label.setText)
-        self.heading_text_update_ready__signal.connect(self.next_goal_label.setText)
-        self.new_speed_update_ready__signal.connect(self.current_speed_label.setText)
+        self.spectrometer_update_ready_signal.connect(self.update_spectrometer)
+        self.co2_update_ready_signal.connect(self.update_co2)
+        self.temp_update_ready_signal.connect(self.update_temp)
+        self.voc_update_ready_signal.connect(self.update_voc)
 
-        self.heading_compass_label.mousePressEvent = self.__on_heading_clicked__slot
-
-        self.pitch_update_ready__signal.connect(self.imu_pitch_lcd_number.display)
-        self.roll_update_ready__signal.connect(self.imu_roll_lcd_number.display)
+        self.lcd1_update_ready_signal.connect(self.update_lcd1)
+        self.lcd2_update_ready_signal.connect(self.update_lcd2)
+        self.lcd3_update_ready_signal.connect(self.update_lcd3)
 
     def setup_signals(self, start_signal, signals_and_slots_signal, kill_signal):
         start_signal.connect(self.start)

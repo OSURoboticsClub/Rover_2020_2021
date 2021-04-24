@@ -2400,7 +2400,7 @@ Position</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0" colspan="3">
-             <widget class="QwtPlot" name="soilvalues"/>
+             <widget class="QwtPlot" name="voc"/>
             </item>
             <item row="1" column="0">
              <widget class="QLCDNumber" name="soil1"/>

@@ -13,13 +13,13 @@
     <!--bringup hardware interface-->
     <node name="arm_hw_interface" pkg="rover_arm_control" type="arm_hw_interface_node" output="screen"/>
 
-    <!-- Convert joint states to /tf tranforms -->
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-
     <!--bring up controllers-->
     <node name="rover_arm_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" 
         args="
                 /rover_arm/arm_controller
                 /rover_arm/joint_state_controller" />
+
+    <!-- Convert joint states to /tf tranforms -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
 </launch>

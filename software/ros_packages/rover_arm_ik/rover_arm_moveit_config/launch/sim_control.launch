@@ -14,12 +14,9 @@
     <arg name="limited" value="$(arg limited)"/>
   </include>
 
-  <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
-  <include file="$(find rover_arm_moveit_config)/launch/move_group.launch">
-    <arg name="allow_trajectory_execution" value="true"/>  
-    <arg name="fake_execution" value="false"/>
-    <arg name="info" value="true"/>
-    <arg name="debug" value="$(arg debug)"/>
+  <!--load the planning execution file-->
+  <include file="$(find rover_arm_moveit_config)/launch/rover_arm_moveit_planning_execution.launch">
+    <arg name="sim" value="true"/>
   </include>
 
   <!-- Run Rviz and load the default config to see the state of the move_group node -->

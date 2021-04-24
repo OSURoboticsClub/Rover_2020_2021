@@ -13,12 +13,12 @@ rover_arm:
       - wrist_roll
     constraints:
       goal_time: 5.0
-      stopped_velocity_tolerance: 0.4
-      base_roll: {trajectory: 0.60, goal: 0.15}
-      shoulder_pitch: {trajectory: 0.60, goal: 0.15}
-      elbow_pitch: {trajectory: 0.60, goal: 0.15}
-      elbow_roll: {trajectory: 0.60, goal: 0.15}
-      wrist_pitch: {trajectory: 0.60, goal: 0.15}
-    stop_trajectory_duration: 0.5
-    state_publish_rate:  50
-    action_monitor_rate: 20
+      #stopped_postion_tolerance: 0.4
+      base_roll: {trajectory: 0.6, goal: 0.15}
+      shoulder_pitch: {trajectory: 0.6, goal: 0.15}
+      elbow_pitch: {trajectory: 0.6, goal: 0.15}
+      elbow_roll: {trajectory: 0.6, goal: 0.15}
+      wrist_pitch: {trajectory: 0.6, goal: 0.15}
+    #stop_trajectory_duration: 0.5
+    #state_publish_rate:  50
+    #action_monitor_rate: 20

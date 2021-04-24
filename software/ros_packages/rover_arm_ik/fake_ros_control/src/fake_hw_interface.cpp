@@ -93,6 +93,8 @@ void FakeHWInterface::fakePosControl(ros::Duration &elapsed_time, int jn) {
 }
 
 void FakeHWInterface::write(ros::Time &Time, ros::Duration &elapsed_time) {
+    enforceLimits(elapsed_time);
+
     for(int jn = start_joint_; jn < n_joints_; ++jn){
         fakePosControl(elapsed_time, jn);
     }

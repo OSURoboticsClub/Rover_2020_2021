@@ -16,11 +16,15 @@ FakeHWInterface::FakeHWInterface(ros::NodeHandle& nh, urdf::Model* urdf_model) :
     }
     
     nh_.getParam("/rover_arm/fake_hw_interface/joints", joint_names_); //get list of joints on the arm
+    if(joint_names_.size() != 0){
+        ROS_INFO_STREAM_NAMED("init", "Found list of joints on the parameter server!");
+    }
 
     if (joint_names_.size() == 0){ //checks to see if joint list is empty/empty file
         ROS_FATAL_STREAM_NAMED("init", "Cannot find required parameter '/rover_arm/fake_hw_interface/joints' "
         "on the parameter server.");
     }
+    
 }
 
 FakeHWInterface::~FakeHWInterface() {
@@ -95,7 +99,7 @@ void FakeHWInterface::fakePosControl(ros::Duration &elapsed_time, int jn) {
 }
 
 void FakeHWInterface::write(ros::Time &Time, ros::Duration &elapsed_time) {
-    enforceLimits(elapsed_time);
+    pos_jnt_sat_interface_.enforceLimits(elapsed_time);
 
     for(int jn = start_joint_; jn < n_joints_; ++jn){
         fakePosControl(elapsed_time, jn);
@@ -112,31 +116,40 @@ void FakeHWInterface::registerJointLim(const hardware_interface::JointHandle &po
   joint_limits_interface::JointLimits joint_lim;
   //TODO Add functionality for soft limits as needed
 
-  if(rover_arm_urdf_ == NULL){
-        ROS_WARN_STREAM_NAMED("URDF: ", "No URDF model loaded, unable to get joint limits");
-        return;
-  }
+//   if(rover_arm_urdf_ == NULL){
+//         ROS_WARN_STREAM_NAMED("URDF: ", "No URDF model loaded, unable to get joint limits");
+//         return;
+//   }
 
-  /* Get limits from URDF */
-  urdf::JointConstSharedPtr arm_joint = rover_arm_urdf_->getJoint(joint_names_[jn]);
+//   /* Get limits from URDF */
+//   urdf::JointConstSharedPtr arm_joint = rover_arm_urdf_->getJoint(joint_names_[jn]);
 
-  if(arm_joint == NULL){
-    ROS_ERROR_STREAM_NAMED("URDF: ", "URDF joint not found " << joint_names_[jn]);
-    return;
-  }
+//   if(arm_joint == NULL){
+//     ROS_ERROR_STREAM_NAMED("URDF: ", "URDF joint not found " << joint_names_[jn]);
+//     return;
+//   }
 
-  if(joint_limits_interface::getJointLimits(arm_joint, joint_lim)){
-    has_joint_limits = true;
-    ROS_DEBUG_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " has URDF position limits [" << joint_lim.min_position << ", " << joint_lim.max_position << "]");                          
-  }
-  else {
-    if (arm_joint->type != urdf::Joint::CONTINUOUS){
-      ROS_WARN_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " does not have a URDF position limit");
-    }
-  }
+//   if(joint_limits_interface::getJointLimits(arm_joint, joint_lim)){
+//     has_joint_limits = true;
+//     ROS_INFO_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " has URDF position limits [" << joint_lim.min_position << ", " << joint_lim.max_position << "]");                          
+//   }
+//   else {
+//     if (arm_joint->type != urdf::Joint::CONTINUOUS){
+//       ROS_WARN_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " does not have a URDF position limit");
+//     }
+//   }
+
+    if (joint_limits_interface::getJointLimits(joint_names_[jn], nh_, joint_lim))
+    {
+      has_joint_limits = true;
+      ROS_INFO_STREAM_NAMED("ROSPARAM:",
+                             "Joint " << joint_names_[jn] << " has rosparam position limits ["
+                                      << joint_lim.min_position << ", " << joint_lim.max_position << "]");
+    }  // the else debug message provided internally by joint_limits_interface
 
   /* if we haven't found any joints, quit */
   if (!has_joint_limits){
+    ROS_ERROR_STREAM_NAMED("JOINTS:", "No Joint Limits have been specified!");
     return;
   }
 
@@ -151,14 +164,10 @@ void FakeHWInterface::registerJointLim(const hardware_interface::JointHandle &po
     joint_pos_ul[jn] = joint_lim.max_position;
   }
 
-    ROS_DEBUG_STREAM_NAMED("URDF", "Using saturation limits (not soft limits)");
+    ROS_INFO_STREAM_NAMED("URDF", "Using saturation limits (not soft limits)");
 
     joint_limits_interface::PositionJointSaturationHandle sat_handle_position(pos_joint_interface_, joint_lim);
     pos_jnt_sat_interface_.registerHandle(sat_handle_position);
-}
-
-void FakeHWInterface::enforceLimits(ros::Duration &period){
-    pos_jnt_sat_interface_.enforceLimits(period);
 }
 
 /* urdf loading function */
@@ -184,7 +193,7 @@ void FakeHWInterface::getURDF(const ros::NodeHandle &nh, std::string param_name)
         ROS_ERROR_STREAM_NAMED("URDF: ", "Unable to load URDF model");
     }
     else{
-        ROS_DEBUG_STREAM_NAMED("URDF: ", "Received URDF from param server");
+        ROS_INFO_STREAM_NAMED("URDF: ", "Received URDF from param server");
     }
 }
 

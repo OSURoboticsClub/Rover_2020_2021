@@ -7,6 +7,7 @@
 #include <joint_limits_interface/joint_limits.h>
 #include <joint_limits_interface/joint_limits_interface.h>
 #include <joint_limits_interface/joint_limits_urdf.h>
+#include <joint_limits_interface/joint_limits_rosparam.h>
 #include <controller_manager/controller_manager.h>
 #include <boost/scoped_ptr.hpp>
 #include <ros/ros.h>
@@ -22,7 +23,6 @@ public:
     void init();
     void write(ros::Time &Time, ros::Duration &elapsed_time);
     void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, int jn); //function that ensures joints are limited
-    void enforceLimits(ros::Duration &period); //function to enforce all joint limits before writing out
     void update(); //function responsible for calling read/write
     void run(); //function that runs the main loop
 protected:

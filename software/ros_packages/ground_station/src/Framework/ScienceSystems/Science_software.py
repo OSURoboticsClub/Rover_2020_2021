@@ -38,14 +38,14 @@ class Ui_MainWindow(object):
         self.spectrometer_graph = self.right_screen.spectrometer
         self.co2_graph = self.right_screen.co2
         self.voc_graph = self.right_screen.voc
-        self.soil_graph = self.right_screen.soilvalues
+        #self.soil_graph = self.right_screen.soilvalues
         self.lcd_1 = self.right_screen.soil1
         self.lcd_2 = self.right_screen.soil2
         self.lcd_3 = self.right_screen.soil3
 
         self.settings = QtCore.QSettings()
 
-        self.logger = logging.getLogger("groundstation")
+        #self.logger = logging.getLogger("groundstation")
 
         self.run_thread_flag = True
 
@@ -68,7 +68,7 @@ class Ui_MainWindow(object):
         # self.graphicsView.setObjectName("graphicsView")
         # self.graphicsView.setBackground('w')
         # pen = pg.mkPen(color=(255, 0, 0))
-        self.spectrometer_data_line =  self.graphicsView.plot(self.spectrometer_x, self.spectrometer_y, pen=pen)
+        self.spectrometer_data_line =  pg.GraphicsView(parent=None, useOpenGL=None, background='default')
 
         # self.lcdNumber = QtWidgets.QLCDNumber(self.tab)
         # self.lcdNumber.setGeometry(QtCore.QRect(10, 490, 131, 51))
@@ -87,33 +87,33 @@ class Ui_MainWindow(object):
         # self.graphicsView.setObjectName("graphicsView")
         # self.graphicsView.setBackground('w')
         # pen = pg.mkPen(color=(255, 0, 0))
-        self.temp_data_line =  self.graphicsView.plot(self.temp_x, self.temp_y, pen=pen)
+        self.temp_data_line =  pg.GraphicsView(parent=None, useOpenGL=None, background='default')
 
         # self.graphicsView = PlotWidget(self.tab_2)
         # self.graphicsView.setGeometry(QtCore.QRect(10, 260, 900, 230))
         # self.graphicsView.setObjectName("graphicsView")
         # self.graphicsView.setBackground('w')
         # pen = pg.mkPen(color=(255, 0, 0))
-        self.co2_data_line =  self.graphicsView.plot(self.co2_x, self.co2_y, pen=pen)
+        self.co2_data_line =  pg.GraphicsView(parent=None, useOpenGL=None, background='default')
 
         # self.graphicsView = PlotWidget(self.tab_2)
         # self.graphicsView.setGeometry(QtCore.QRect(10, 520, 900, 230))
         # self.graphicsView.setObjectName("graphicsView")
         # self.graphicsView.setBackground('w')
         # pen = pg.mkPen(color=(255, 0, 0))
-        self.voc_data_line =  self.graphicsView.plot(self.voc_x, self.voc_y, pen=pen)
+        self.voc_data_line =  pg.GraphicsView(parent=None, useOpenGL=None, background='default')
 
-        QtCore.QMetaObject.connectSlotsByName(right_screen)
+        QtCore.QMetaObject.connectSlotsByName(self.right_screen)
 
-        rospy.init_node('listener', anonymous=True)
+        #rospy.init_node('listener', anonymous=True)
 
-        rospy.Subscriber("science_sensor/temp", Point, spectrometer_callback)
-        rospy.Subscriber("science_sensor/temp", Point, temp_callback)
-        rospy.Subscriber("science_sensor/temp", Point, co2_callback)
-        rospy.Subscriber("science_sensor/temp", Point, voc_callback)
-        rospy.Subscriber("science_sensor/temp", Point, lcd1_callback)
-        rospy.Subscriber("science_sensor/temp", Point, lcd2_callback)
-        rospy.Subscriber("science_sensor/temp", Point, lcd3_callback)
+        rospy.Subscriber("science_sensor/temp", Point, self.spectrometer_callback)
+        rospy.Subscriber("science_sensor/temp", Point, self.temp_callback)
+        rospy.Subscriber("science_sensor/temp", Point, self.co2_callback)
+        rospy.Subscriber("science_sensor/temp", Point, self.voc_callback)
+        rospy.Subscriber("science_sensor/temp", Point, self.lcd1_callback)
+        rospy.Subscriber("science_sensor/temp", Point, self.lcd2_callback)
+        rospy.Subscriber("science_sensor/temp", Point, self.lcd3_callback)
 
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
@@ -214,7 +214,7 @@ class Ui_MainWindow(object):
         self.lcd3_update_ready_signal.connect(self.update_lcd3)
 
     def setup_signals(self, start_signal, signals_and_slots_signal, kill_signal):
-        start_signal.connect(self.start)
+        #start_signal.connect(self.start)
         signals_and_slots_signal.connect(self.connect_signals_and_slots)
         kill_signal.connect(self.on_kill_threads_requested__slot)
 

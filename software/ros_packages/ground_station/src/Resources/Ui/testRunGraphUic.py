@@ -12,23 +12,24 @@ import os
 # app = QtWidgets.QApplication(sys.argv)
 # main = graph.MainWindow(app) 
 
-UI_FILE_RIGHT = "Resources/Ui/MainWindow.ui"
+UI_FILE_RIGHT = "MainWindow.ui"
+ui_file_path = "MainWindow.ui"
 
 # import Resources.Ui.test_graph_uic as test_graph_uic
 
-class MainWindow(QtWidgets.QMainWindow):
+class ApplicationWindow(QtWidgets.QMainWindow):
     
     exit_requested_signal = QtCore.pyqtSignal()
 
     kill_threads_signal = QtCore.pyqtSignal()
 
     def __init__(self, app, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
+        super(ApplicationWindow, self).__init__(*args, **kwargs)
 
         #Load the UI Page
         uic.loadUi('MainWindow.ui', self)
 
-        self.plot(app)
+        test_graph_uic.MainWindow(app)
 
 
 class ScienceSystems(QtCore.QObject):
@@ -51,7 +52,7 @@ class ScienceSystems(QtCore.QObject):
         }
 
         self.shared_objects["screens"]["right_screen"] = \
-            self.create_application_window(UI_FILE_RIGHT, "Rover Testing Science Plotting", self.RIGHT_SCREEN_ID)
+            self.create_application_window("MainWindow.ui", "Rover Testing Science Plotting", self.RIGHT_SCREEN_ID)
 
         self.__add_thread("Science Plotting", test_graph_uic.test_graph_uic(self.shared_objects))
 
@@ -78,7 +79,7 @@ class ScienceSystems(QtCore.QObject):
     def create_application_window(ui_file_path, title, display_screen):
         system_desktop = QtWidgets.QDesktopWidget()
 
-        app_window = ApplicationWindow(parent = None, ui_file_path = ui_file_path)
+        app_window = ApplicationWindow(application, parent = None, ui_file_path = ui_file_path)
         app_window.setWindowTitle(title)
 
         app_window.setWindowFlags(app_window.windowFlags() | QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.X11BypassWindowManagerHint)
@@ -95,5 +96,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     application = QtWidgets.QApplication(sys.argv)
+    win = ApplicationWindow(application)
+    sci = ScienceSystems()
     
     application.exec_()

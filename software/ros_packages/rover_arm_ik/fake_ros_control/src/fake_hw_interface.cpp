@@ -116,36 +116,36 @@ void FakeHWInterface::registerJointLim(const hardware_interface::JointHandle &po
   joint_limits_interface::JointLimits joint_lim;
   //TODO Add functionality for soft limits as needed
 
-//   if(rover_arm_urdf_ == NULL){
-//         ROS_WARN_STREAM_NAMED("URDF: ", "No URDF model loaded, unable to get joint limits");
-//         return;
-//   }
+  if(rover_arm_urdf_ == NULL){
+        ROS_WARN_STREAM_NAMED("URDF: ", "No URDF model loaded, unable to get joint limits");
+        return;
+  }
 
-//   /* Get limits from URDF */
-//   urdf::JointConstSharedPtr arm_joint = rover_arm_urdf_->getJoint(joint_names_[jn]);
+  /* Get limits from URDF */
+  urdf::JointConstSharedPtr arm_joint = rover_arm_urdf_->getJoint(joint_names_[jn]);
 
-//   if(arm_joint == NULL){
-//     ROS_ERROR_STREAM_NAMED("URDF: ", "URDF joint not found " << joint_names_[jn]);
-//     return;
-//   }
+  if(arm_joint == NULL){
+    ROS_ERROR_STREAM_NAMED("URDF: ", "URDF joint not found " << joint_names_[jn]);
+    return;
+  }
 
-//   if(joint_limits_interface::getJointLimits(arm_joint, joint_lim)){
-//     has_joint_limits = true;
-//     ROS_INFO_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " has URDF position limits [" << joint_lim.min_position << ", " << joint_lim.max_position << "]");                          
-//   }
-//   else {
-//     if (arm_joint->type != urdf::Joint::CONTINUOUS){
-//       ROS_WARN_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " does not have a URDF position limit");
-//     }
-//   }
+  if(joint_limits_interface::getJointLimits(arm_joint, joint_lim)){
+    has_joint_limits = true;
+    ROS_INFO_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " has URDF position limits [" << joint_lim.min_position << ", " << joint_lim.max_position << "]");                          
+  }
+  else {
+    if (arm_joint->type != urdf::Joint::CONTINUOUS){
+      ROS_WARN_STREAM_NAMED("URDF: ", "Joint " << joint_names_[jn] << " does not have a URDF position limit");
+    }
+  }
 
-    if (joint_limits_interface::getJointLimits(joint_names_[jn], nh_, joint_lim))
-    {
-      has_joint_limits = true;
-      ROS_INFO_STREAM_NAMED("ROSPARAM:",
-                             "Joint " << joint_names_[jn] << " has rosparam position limits ["
-                                      << joint_lim.min_position << ", " << joint_lim.max_position << "]");
-    }  // the else debug message provided internally by joint_limits_interface
+    // if (joint_limits_interface::getJointLimits(joint_names_[jn], nh_, joint_lim))
+    // {
+    //   has_joint_limits = true;
+    //   ROS_INFO_STREAM_NAMED("ROSPARAM:",
+    //                          "Joint " << joint_names_[jn] << " has rosparam position limits ["
+    //                                   << joint_lim.min_position << ", " << joint_lim.max_position << "]");
+    // }  // the else debug message provided internally by joint_limits_interface
 
   /* if we haven't found any joints, quit */
   if (!has_joint_limits){

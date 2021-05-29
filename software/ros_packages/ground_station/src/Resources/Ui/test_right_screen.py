@@ -20,7 +20,16 @@ from geometry_msgs.msg import Point
 
 
 class Ui_MainWindow(object):
+    #code
+    exit_requested_signal = QtCore.pyqtSignal()
+
+    kill_threads_signal = QtCore.pyqtSignal()
+
     def setupUi(self, MainWindow):
+        #code
+        
+
+        #imported
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1920, 1080)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)

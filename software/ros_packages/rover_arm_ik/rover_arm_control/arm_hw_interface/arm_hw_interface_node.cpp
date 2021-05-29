@@ -1,5 +1,14 @@
 #include "arm_hw_interface.h"
 
+//global variables
+//msg string
+const std::string default_ik_controls_topic = "IKControl/control_status";
+const std::string default_ik_status_topic = "IKControl/button_status";
+
+//booleans for start and stop
+bool controllers_started, controllers_stopped;
+bool start_button_pushed, stop_button_pushed;
+
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "arm_hw_interface");
@@ -11,9 +20,10 @@ int main(int argc, char** argv) {
     spinner.start();
 
     arm_hw_interface::ArmHWInterface arm_hw_interface(nh); //create hw interface object
-    arm_hw_interface.init();
+    arm_hw_interface.init(default_ik_controls_topic, default_ik_status_topic);
     ROS_INFO_STREAM_NAMED("hardware_interface", "Starting hardware interface...");
-    arm_hw_interface.run(); /* run hw interface */
+    arm_hw_interface.run(start_button_pushed, controllers_started); /* run hw interface */
+    arm_hw_interface.stop(stop_button_pushed, controllers_stopped, ros::Time& time); /* stops controllers on button push */
     
     return 0;
 }

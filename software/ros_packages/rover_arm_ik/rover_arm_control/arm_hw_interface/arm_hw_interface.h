@@ -1,6 +1,7 @@
 #ifndef ARM_ROS_CONTROL_ARM_HW_INTERFACE_H
 #define ARM_ROS_CONTROL_ARM_HW_INTERFACE_H
 
+#include <stdlib.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
@@ -8,6 +9,8 @@
 #include <joint_limits_interface/joint_limits_interface.h>
 #include <joint_limits_interface/joint_limits_urdf.h>
 #include <controller_manager/controller_manager.h>
+#include <controller_manager_msgs/ControllerState.h>
+#include <controller_manager/controller_loader.h>
 #include <boost/scoped_ptr.hpp>
 #include <ros/ros.h>
 #include <urdf/model.h>
@@ -26,8 +29,8 @@ public:
     void init(); //main function for setting up + registering controllers
     void write(ros::Time &Time, ros::Duration &elapsed_time);
     void read(ros::Time &Time, ros::Duration &elapsed_time);
-    void run(); //function that runs the main loop
-    void stop(); //function that stops the hw interface + shuts down controllers
+    void run(bool started, bool start_status); //function that runs the main loop
+    void stop(bool stopped, bool stop_status, const ros::Time& time); //function that stops the hw interface + shuts down controllers
     void update(); //function responsible for calling read/write
     void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, int jn); //function that ensures joints are limited
     void enforceLimits(ros::Duration &period); //function to enforce all joint limits before writing out
@@ -79,14 +82,6 @@ protected:
     ros::Duration elapsed_time;
     struct timespec last_time_;
     struct timespec current_time_;
-
-    //msg string
-    const default_ik_controls_topic = "IKControl/control_status";
-    const default_ik_status_topic = "IKControl/button_status";
-
-    //booleans for start and stop
-    bool controllers_started, controllers_stopped;
-    bool start_button_pushed, stop_button_pushed;
 };
 
 }

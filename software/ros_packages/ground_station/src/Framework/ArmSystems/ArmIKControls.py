@@ -12,4 +12,5 @@ import rospy
 #####################################
 # Global Variables
 #####################################
-ARM_JOINT_STATUS = "
+ARM_CONTROLLER_STATUS = "/rover_arm_control/IKControl/control_status"
+

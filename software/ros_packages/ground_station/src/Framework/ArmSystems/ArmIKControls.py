@@ -12,4 +12,4 @@ import rospy
 #####################################
 # Global Variables
 #####################################
-ARM_JOINT_STATUS = /rover_arm/arm_controller/state 
+ARM_JOINT_STATUS = "

@@ -13,6 +13,7 @@
 #include <urdf/model.h>
 #include "arm_state.h"
 #include <time.h>
+#include <rover_arm_control/IKControlMessage.h>
 
 namespace arm_hw_interface {
 
@@ -26,6 +27,7 @@ public:
     void write(ros::Time &Time, ros::Duration &elapsed_time);
     void read(ros::Time &Time, ros::Duration &elapsed_time);
     void run(); //function that runs the main loop
+    void stop(); //function that stops the hw interface + shuts down controllers
     void update(); //function responsible for calling read/write
     void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, int jn); //function that ensures joints are limited
     void enforceLimits(ros::Duration &period); //function to enforce all joint limits before writing out
@@ -77,6 +79,14 @@ protected:
     ros::Duration elapsed_time;
     struct timespec last_time_;
     struct timespec current_time_;
+
+    //msg string
+    const default_ik_controls_topic = "IKControl/control_status";
+    const default_ik_status_topic = "IKControl/button_status";
+
+    //booleans for start and stop
+    bool controllers_started, controllers_stopped;
+    bool start_button_pushed, stop_button_pushed;
 };
 
 }

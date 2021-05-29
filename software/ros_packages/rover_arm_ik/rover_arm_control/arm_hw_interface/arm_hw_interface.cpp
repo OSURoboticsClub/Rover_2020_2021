@@ -216,4 +216,6 @@ void ArmHWInterface::run()
   }
 }
 
+void ArmHWInterface::stop()
+
 }

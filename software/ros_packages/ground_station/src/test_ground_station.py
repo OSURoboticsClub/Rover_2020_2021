@@ -28,6 +28,8 @@ import Framework.MiscSystems.BashConsoleCore as BashConsoleCore
 import Framework.MiscSystems.MiscArmCore as MiscArmCore
 import Framework.MiscSystems.RDFCore as RDFCore
 
+import Resources.Ui.test_right_screen as test2
+
 #####################################
 # Global Variables
 #####################################

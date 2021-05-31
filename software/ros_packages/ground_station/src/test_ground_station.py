@@ -63,6 +63,20 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Q"), self, self.exit_requested_signal.emit)
 
 
+class RightApplicationWindow(QtWidgets.QMainWindow):
+    exit_requested_signal = QtCore.pyqtSignal()
+
+    kill_threads_signal = QtCore.pyqtSignal()
+
+    def __init__(self, parent=None):
+        super(RightApplicationWindow, self).__init__(parent)
+
+        ui = test2.Ui_MainWindow()
+        ui.setupUi(self)  # Make a window in this application
+
+        QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Q"), self, self.exit_requested_signal.emit)
+
+
 #####################################
 # GroundStation Class Definition
 #####################################
@@ -98,8 +112,8 @@ class GroundStation(QtCore.QObject):
                                            self.LEFT_SCREEN_ID)  # type: ApplicationWindow
 
         self.shared_objects["screens"]["right_screen"] = \
-            self.create_application_window(UI_FILE_RIGHT, "Rover Ground Station Right Screen",
-                                           self.RIGHT_SCREEN_ID)  # type: ApplicationWindow
+                self.create_application_window_right("Rover Ground Station Right Screen",
+                                            self.RIGHT_SCREEN_ID)  # type: ApplicationWindow
 
         # ###### Initialize the Ground Station Node ######
         rospy.init_node("ground_station")
@@ -174,6 +188,30 @@ class GroundStation(QtCore.QObject):
         app_window.showFullScreen()  # Shows the window in full screen mode
 
         return app_window
+    
+    @staticmethod
+    def create_application_window_right(title, display_screen):
+        system_desktop = QtWidgets.QDesktopWidget()  # This gets us access to the desktop geometry
+
+        
+
+        app_window = RightApplicationWindow(parent=None)
+        
+        app_window.setWindowTitle(title)  # Sets the window title
+        #QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Q"), app_window, app_window.exit_requested_signal.emit)
+
+        app_window.setWindowFlags(app_window.windowFlags() |  # Sets the windows flags to:
+                                QtCore.Qt.FramelessWindowHint |  # remove the border and frame on the application,
+                                QtCore.Qt.WindowStaysOnTopHint |  # and makes the window stay on top of all others
+                                QtCore.Qt.X11BypassWindowManagerHint)  # This is needed to show fullscreen in gnome
+
+        app_window.setGeometry(
+            system_desktop.screenGeometry(display_screen))  # Sets the window to be on the first screen
+
+        #app_window.showFullScreen()  # Shows the window in full screen mode
+        app_window.show()
+
+        return app_window
 
 
 #####################################
@@ -205,4 +243,3 @@ if __name__ == "__main__":
     # ########## Start Ground Station If Ready ##########
     ground_station = GroundStation()
     application.exec_()  # Execute launching of the application
-    

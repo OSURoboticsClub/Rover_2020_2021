@@ -20,6 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
   trajectory_msgs
   tf
   transmission_interface
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -28,6 +29,18 @@ find_package(Boost REQUIRED COMPONENTS system)
 ###################################
 ## catkin specific configuration ##
 ###################################
+## Generate messages in the 'msg' folder
+add_message_files(
+    FILES
+    IKControlMessage.msg
+)
+
+## Generate added messages and services with any dependencies listed here
+generate_messages(
+    DEPENDENCIES
+    std_msgs
+)
+
 ## The catkin_package macro generates cmake config files for your package
 ## Declare things to be passed to dependent projects
 ## INCLUDE_DIRS: uncomment this if you package contains header files

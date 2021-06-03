@@ -10,7 +10,6 @@ ArmHWInterface::ArmHWInterface() {
 }
 
 ArmHWInterface::ArmHWInterface(ros::NodeHandle& nh, urdf::Model* urdf_model) : nh_(nh) {
-
     if (rover_arm_urdf_ == NULL) {
         getURDF(nh_, "robot_description");
     }
@@ -206,14 +205,22 @@ void ArmHWInterface::update() {
     write(now, elapsed_time); /* write out new joint states */
 }
 
-void ArmHWInterface::run()
+void ArmHWInterface::run(bool start, bool start_status)
 {
   ros::Rate rate(loop_hz);
   while (ros::ok())
   {
+    start_status = true;
     update();
     rate.sleep();
   }
+}
+
+void ArmHWInterface::stop(bool stop, bool stop_status, const ros::Time& time){
+    if(stop == true){
+        controller_manager_->stopControllers(const ros::Time& time);
+        stop_status = true;
+    }
 }
 
 }

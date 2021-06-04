@@ -1,4 +1,0 @@
-bool controllers_started
-bool controllers_stopped
-bool start_button
-bool stop_button

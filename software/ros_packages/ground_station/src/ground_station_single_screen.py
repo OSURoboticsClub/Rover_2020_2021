@@ -9,7 +9,6 @@ import rospy
 import logging
 import qdarkstyle
 
-
 # Custom Imports
 import Framework.StartupSystems.ROSMasterChecker as ROSMasterChecker
 import Framework.LoggingSystems.Logger as Logger
@@ -28,11 +27,34 @@ import Framework.MiscSystems.BashConsoleCore as BashConsoleCore
 import Framework.MiscSystems.MiscArmCore as MiscArmCore
 import Framework.MiscSystems.RDFCore as RDFCore
 
+import roslib
+import rospkg
+import sys
+import rospy
+
+##"python_qt_binding" package which hides differences between PyQt and PySide
+from python_qt_binding.QtGui import *
+from python_qt_binding.QtCore import *
+from PyQt5.QtWidgets import QApplication, QWidget, \
+    QVBoxLayout, QSlider, QHBoxLayout, QPushButton
+import rviz
+
 #####################################
 # Global Variables
 #####################################
-UI_FILE_LEFT = "Resources/Ui/left_screen.ui"
-UI_FILE_RIGHT = "Resources/Ui/right_screen.ui"
+
+param = rospy.get_param("one_screen")
+
+if param == True:
+    UI_FILE_LEFT = "Resources/Ui/single_screen.ui"
+    left = "onescreen"
+    right = "onescreen"
+
+else:
+    UI_FILE_LEFT = "Resources/Ui/left_screen.ui"
+    UI_FILE_RIGHT = "Resources/Ui/right_screen.ui"
+    left = "left_screen"
+    right = "right_screen"
 
 #####################################
 # Class Organization
@@ -62,6 +84,39 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Q"), self, self.exit_requested_signal.emit)
 
+class moveit_rviz(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+
+        self.frame = rviz.VisualizationFrame()
+
+
+        self.frame.setSplashPath( "" )
+
+
+        self.frame.initialize()
+
+        reader = rviz.YamlConfigReader()
+        config = rviz.Config()
+        reader.readFile( config, "" ) #moveit ui
+        self.frame.load( config )
+
+        self.setWindowTitle( config.mapGetChild( "Title" ).getValue() )
+
+        self.frame.setMenuBar( None )
+        self.frame.setStatusBar( None )
+        self.frame.setHideButtonVisibility( False )
+
+        self.manager = self.frame.getManager()
+
+        self.grid_display = self.manager.getRootDisplayGroup().getDisplayAt( 0 )
+
+        layout = QVBoxLayout()
+        layout.addWidget( self.frame )
+
+        h_layout = QHBoxLayout()
+        layout.addLayout( h_layout )
+        self.setLayout( layout )
 
 #####################################
 # GroundStation Class Definition
@@ -93,12 +148,14 @@ class GroundStation(QtCore.QObject):
         }
 
         # ###### Instantiate Left And Right Screens ######
-        self.shared_objects["screens"]["left_screen"] = \
-            self.create_application_window(UI_FILE_LEFT, "Rover Ground Station Left Screen",
+        if param == True:
+            self.shared_objects["screens"]["onescreen"] = self.create_application_window(UI_FILE_LEFT,     "Rover Ground Station Left Screen", self.LEFT_SCREEN_ID)  # type: ApplicationWindow
+        else:
+            self.shared_objects["screens"]["left_screen"] = \
+                   self.create_application_window(UI_FILE_LEFT, "Rover Ground Station Left Screen",
                                            self.LEFT_SCREEN_ID)  # type: ApplicationWindow
-
-        self.shared_objects["screens"]["right_screen"] = \
-            self.create_application_window(UI_FILE_RIGHT, "Rover Ground Station Right Screen",
+            self.shared_objects["screens"]["right_screen"] = \
+                           self.create_application_window(UI_FILE_RIGHT, "Rover Ground Station Right Screen",
                                            self.RIGHT_SCREEN_ID)  # type: ApplicationWindow
 
         # ###### Initialize the Ground Station Node ######
@@ -144,8 +201,11 @@ class GroundStation(QtCore.QObject):
         self.shared_objects["regular_classes"][name] = instance
 
     def __connect_signals_to_slots(self):
-        self.shared_objects["screens"]["left_screen"].exit_requested_signal.connect(self.on_exit_requested__slot)
-        self.shared_objects["screens"]["right_screen"].exit_requested_signal.connect(self.on_exit_requested__slot)
+        if param:
+            self.shared_objects["screens"]["onescreen"].exit_requested_signal.connect(self.on_exit_requested__slot)
+        else:
+            self.shared_objects["screens"]["left_screen"].exit_requested_signal.connect(self.on_exit_requested__slot)
+            self.shared_objects["screens"]["right_screen"].exit_requested_signal.connect(self.on_exit_requested__slot)
 
     def on_exit_requested__slot(self):
         self.kill_threads_signal.emit()
@@ -172,7 +232,7 @@ class GroundStation(QtCore.QObject):
             system_desktop.screenGeometry(display_screen))  # Sets the window to be on the first screen
 
         app_window.showFullScreen()  # Shows the window in full screen mode
-
+        rviz = moveit_rviz()
         return app_window
 
 
@@ -202,6 +262,10 @@ if __name__ == "__main__":
         message_box.exec_()
         exit()
 
+    app = QApplication( sys.argv )
+
+
     # ########## Start Ground Station If Ready ##########
     ground_station = GroundStation()
+
     application.exec_()  # Execute launching of the application

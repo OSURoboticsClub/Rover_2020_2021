@@ -1141,32 +1141,7 @@ class Ui_MainWindow(object):
         self.tertiary_video_label.setObjectName("tertiary_video_label")
         self.gridLayout_4.addWidget(self.tertiary_video_label, 1, 1, 1, 1)
         self.camgraphtab.addTab(self.camstab, "")
-        self.graphstab = QtWidgets.QWidget()
-        self.graphstab.setObjectName("graphstab")
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.graphstab)
-        self.gridLayout_3.setObjectName("gridLayout_3")
-        self.temp = PlotWidget(self.graphstab)
-        self.temp.setObjectName("temp")
-        self.gridLayout_3.addWidget(self.temp, 0, 0, 1, 3)
-        self.soil1 = QtWidgets.QLCDNumber(self.graphstab)
-        self.soil1.setObjectName("soil1")
-        self.gridLayout_3.addWidget(self.soil1, 1, 0, 1, 1)
-        self.soil3 = QtWidgets.QLCDNumber(self.graphstab)
-        self.soil3.setObjectName("soil3")
-        self.gridLayout_3.addWidget(self.soil3, 1, 1, 1, 1)
-        self.soil2 = QtWidgets.QLCDNumber(self.graphstab)
-        self.soil2.setObjectName("soil2")
-        self.gridLayout_3.addWidget(self.soil2, 1, 2, 1, 1)
-        self.spectrometer = PlotWidget(self.graphstab)
-        self.spectrometer.setObjectName("spectrometer")
-        self.gridLayout_3.addWidget(self.spectrometer, 2, 0, 1, 3)
-        self.co2 = PlotWidget(self.graphstab)
-        self.co2.setObjectName("co2")
-        self.gridLayout_3.addWidget(self.co2, 3, 0, 1, 3)
-        self.voc = PlotWidget(self.graphstab)
-        self.voc.setObjectName("voc")
-        self.gridLayout_3.addWidget(self.voc, 4, 0, 1, 3)
-        self.camgraphtab.addTab(self.graphstab, "")
+        
         self.horizontalLayout_3.addWidget(self.camgraphtab)
         self.verticalLayout_3.addLayout(self.horizontalLayout_3)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -1198,44 +1173,44 @@ class Ui_MainWindow(object):
         #self.centralwidget.setObjectName("centralwidget")
 
         #template for new tabs
+        self.tab_2 = QtWidgets.QWidget()
+        self.tab_2.setObjectName("tab_2")
+        self.gridLayout_7 = QtWidgets.QGridLayout(self.tab_2)
+        self.gridLayout_7.setObjectName("gridLayout_7")
+        self.camgraphtab.addTab(self.tab_2, "")
+
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
-        self.gridLayout_7 = QtWidgets.QGridLayout(self.tab_3)
-        self.gridLayout_7.setObjectName("gridLayout_7")
+        self.gridLayout_8 = QtWidgets.QGridLayout(self.tab_3)
+        self.gridLayout_8.setObjectName("gridLayout_8")
         self.camgraphtab.addTab(self.tab_3, "")
 
         self.tab_4 = QtWidgets.QWidget()
         self.tab_4.setObjectName("tab_4")
-        self.gridLayout_8 = QtWidgets.QGridLayout(self.tab_4)
-        self.gridLayout_8.setObjectName("gridLayout_8")
-        self.camgraphtab.addTab(self.tab_4, "")
-
-        self.tab_5 = QtWidgets.QWidget()
-        self.tab_5.setObjectName("tab_5")
-        self.gridLayout_9 = QtWidgets.QGridLayout(self.tab_5)
+        self.gridLayout_9 = QtWidgets.QGridLayout(self.tab_4)
         self.gridLayout_9.setObjectName("gridLayout_9")
-        self.camgraphtab.addTab(self.tab_5, "")
+        self.camgraphtab.addTab(self.tab_4, "")
         
         
 
         #self.centralwidget = QtWidgets.QWidget(self.tab)
         #self.centralwidget.setObjectName("centralwidget")
         #setting up graph for spectrometer data in tab 1
-        self.graphicsView = PlotWidget(self.tab_3)
-        self.graphicsView.setGeometry(QtCore.QRect(10, 30, 900, 400))
+        self.graphicsView = PlotWidget(self.tab_2)
+        self.graphicsView.setGeometry(QtCore.QRect(10, 30, 1260, 630))
         self.graphicsView.setObjectName("graphicsView")
         self.graphicsView.setBackground('w')
         pen = pg.mkPen(color=(255, 0, 0))
         self.spectrometer_data_line =  self.graphicsView.plot(self.spectrometer_x, self.spectrometer_y, pen=pen)
 
-        self.lcdNumber = QtWidgets.QLCDNumber(self.tab_3)
-        self.lcdNumber.setGeometry(QtCore.QRect(10, 490, 131, 51))
+        self.lcdNumber = QtWidgets.QLCDNumber(self.tab_2)
+        self.lcdNumber.setGeometry(QtCore.QRect(10, 669, 131, 51))
         self.lcdNumber.setObjectName("lcdNumber")
-        self.lcdNumber_2 = QtWidgets.QLCDNumber(self.tab_3)
-        self.lcdNumber_2.setGeometry(QtCore.QRect(180, 490, 131, 51))
+        self.lcdNumber_2 = QtWidgets.QLCDNumber(self.tab_2)
+        self.lcdNumber_2.setGeometry(QtCore.QRect(180, 669, 131, 51))
         self.lcdNumber_2.setObjectName("lcdNumber_2")
-        self.lcdNumber_3 = QtWidgets.QLCDNumber(self.tab_3)
-        self.lcdNumber_3.setGeometry(QtCore.QRect(350, 490, 131, 51))
+        self.lcdNumber_3 = QtWidgets.QLCDNumber(self.tab_2)
+        self.lcdNumber_3.setGeometry(QtCore.QRect(350, 669, 131, 51))
         self.lcdNumber_3.setObjectName("lcdNumber_3")
 
         #setting up graphs for tab 2
@@ -1353,14 +1328,12 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Pitch"))
         self.imu_pitch_lcd_number_2.setText(_translate("MainWindow", "Roll"))
         self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.camstab), _translate("MainWindow", "Tab 1"))
-        self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.graphstab), _translate("MainWindow", "Tab 2"))
+        
+        #code
+        self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.tab_2), _translate("MainWindow", "Tab 2"))
         self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.tab_3), _translate("MainWindow", "Tab 3"))
         self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.tab_4), _translate("MainWindow", "Tab 4"))
-        self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.tab_5), _translate("MainWindow", "Tab 5"))
 
-        #code
-        #self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Spectrometer/Soil Probes"))
-        #self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Other"))
 
     def update_data(self):
         self.spectrometer_data_line.setData(self.spectrometer_x, self.spectrometer_y)  # Update the data.

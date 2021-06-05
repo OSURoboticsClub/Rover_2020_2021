@@ -28,7 +28,7 @@ import Framework.MiscSystems.BashConsoleCore as BashConsoleCore
 import Framework.MiscSystems.MiscArmCore as MiscArmCore
 import Framework.MiscSystems.RDFCore as RDFCore
 
-import Resources.Ui.test_right_screen as test2
+import Resources.Ui.test_right_screen as pyRightScreen
 
 #####################################
 # Global Variables
@@ -73,7 +73,7 @@ class RightApplicationWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(RightApplicationWindow, self).__init__(parent)
 
-        ui = test2.Ui_MainWindow()
+        ui = pyRightScreen.Ui_MainWindow()
         ui.setupUi(self)  # Make a window in this application
 
         QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Q"), self, self.exit_requested_signal.emit)

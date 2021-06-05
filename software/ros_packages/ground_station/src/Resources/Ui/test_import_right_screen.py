@@ -8,13 +8,13 @@ import qdarkstyle
 import test_right_screen as test2
 
 
-class ApplicationWindow(QtWidgets.QMainWindow):
+class RightApplicationWindow(QtWidgets.QMainWindow):
     exit_requested_signal = QtCore.pyqtSignal()
 
     kill_threads_signal = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
-        super(ApplicationWindow, self).__init__(parent)
+        super(RightApplicationWindow, self).__init__(parent)
 
         ui = test2.Ui_MainWindow()
         ui.setupUi(self)  # Make a window in this application
@@ -38,18 +38,18 @@ class GroundStation(QtCore.QObject):
         }
 
         self.shared_objects["screens"]["right_screen"] = \
-                self.create_application_window("Rover Ground Station Right Screen",
+                self.create_application_window_right("Rover Ground Station Right Screen",
                                             self.RIGHT_SCREEN_ID)  # type: ApplicationWindow
         
         
 
     @staticmethod
-    def create_application_window(title, display_screen):
+    def create_application_window_right(title, display_screen):
         system_desktop = QtWidgets.QDesktopWidget()  # This gets us access to the desktop geometry
 
         
 
-        app_window = ApplicationWindow(parent=None)
+        app_window = RightApplicationWindow(parent=None)
         
         app_window.setWindowTitle(title)  # Sets the window title
         #QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Q"), app_window, app_window.exit_requested_signal.emit)

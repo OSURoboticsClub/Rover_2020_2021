@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'right_screen.ui'
+# Form implementation generated from reading ui file 'right_screen_tabbed.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -20,16 +20,7 @@ from geometry_msgs.msg import Point
 
 
 class Ui_MainWindow(object):
-    #code
-    exit_requested_signal = QtCore.pyqtSignal()
-
-    kill_threads_signal = QtCore.pyqtSignal()
-
     def setupUi(self, MainWindow):
-        #code
-        
-
-        #imported
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1920, 1080)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -42,16 +33,18 @@ class Ui_MainWindow(object):
         MainWindow.setWindowOpacity(1.0)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setObjectName("widget")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.widget)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setSpacing(0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setSpacing(0)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.arm_visualization_widget = QtWidgets.QWidget(self.widget)
+        self.arm_visualization_widget = QtWidgets.QWidget(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -784,7 +777,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
         self.horizontalLayout_4.setSpacing(0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.heading_widget = QtWidgets.QWidget(self.widget)
+        self.heading_widget = QtWidgets.QWidget(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -876,7 +869,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addItem(spacerItem9)
         self.gridLayout.addLayout(self.verticalLayout_5, 0, 0, 1, 1)
         self.horizontalLayout_4.addWidget(self.heading_widget)
-        self.speed_limit_widget = QtWidgets.QWidget(self.widget)
+        self.speed_limit_widget = QtWidgets.QWidget(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -1103,59 +1096,47 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.addWidget(self.speed_limit_widget)
         self.verticalLayout_4.addLayout(self.horizontalLayout_4)
         self.verticalLayout_2.addLayout(self.verticalLayout_4)
-        self.widget1 = QtWidgets.QWidget(self.centralwidget)
-        self.widget1.setObjectName("widget1")
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.widget1)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.addLayout(self.verticalLayout_2)
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_3.setSpacing(0)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.camgraphtab = QtWidgets.QTabWidget(self.widget1)
-        self.camgraphtab.setObjectName("camgraphtab")
-        self.camstab = QtWidgets.QWidget()
-        self.camstab.setEnabled(True)
-        self.camstab.setObjectName("camstab")
-        self.gridLayout_4 = QtWidgets.QGridLayout(self.camstab)
-        self.gridLayout_4.setObjectName("gridLayout_4")
-        self.primary_video_label = QtWidgets.QLabel(self.camstab)
+        self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget.setObjectName("tabWidget")
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.primary_video_label = QtWidgets.QLabel(self.tab)
+        self.primary_video_label.setGeometry(QtCore.QRect(0, 0, 1280, 720))
         self.primary_video_label.setMinimumSize(QtCore.QSize(1280, 720))
         self.primary_video_label.setMaximumSize(QtCore.QSize(1280, 720))
         self.primary_video_label.setStyleSheet("background-color:black;")
         self.primary_video_label.setText("")
         self.primary_video_label.setObjectName("primary_video_label")
-        self.gridLayout_4.addWidget(self.primary_video_label, 0, 0, 1, 3)
-        self.secondary_video_label = QtWidgets.QLabel(self.camstab)
+        self.secondary_video_label = QtWidgets.QLabel(self.tab)
+        self.secondary_video_label.setGeometry(QtCore.QRect(0, 680, 640, 360))
         self.secondary_video_label.setMinimumSize(QtCore.QSize(640, 360))
         self.secondary_video_label.setMaximumSize(QtCore.QSize(640, 360))
         self.secondary_video_label.setStyleSheet("background-color:black;")
         self.secondary_video_label.setText("")
         self.secondary_video_label.setObjectName("secondary_video_label")
-        self.gridLayout_4.addWidget(self.secondary_video_label, 1, 0, 1, 1)
-        self.tertiary_video_label = QtWidgets.QLabel(self.camstab)
+        self.tertiary_video_label = QtWidgets.QLabel(self.tab)
+        self.tertiary_video_label.setGeometry(QtCore.QRect(630, 690, 640, 360))
         self.tertiary_video_label.setMinimumSize(QtCore.QSize(640, 360))
         self.tertiary_video_label.setMaximumSize(QtCore.QSize(640, 360))
         self.tertiary_video_label.setStyleSheet("background-color:black;")
         self.tertiary_video_label.setText("")
         self.tertiary_video_label.setObjectName("tertiary_video_label")
-        self.gridLayout_4.addWidget(self.tertiary_video_label, 1, 1, 1, 1)
-        self.camgraphtab.addTab(self.camstab, "")
-        
-        self.horizontalLayout_3.addWidget(self.camgraphtab)
+        self.tabWidget.addTab(self.tab, "")
+        self.tab_2 = QtWidgets.QWidget()
+        self.tab_2.setObjectName("tab_2")
+        #this needs to be commented out
+        #self.tabWidget.addTab(self.tab_2, "")
+        self.verticalLayout_3.addWidget(self.tabWidget)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setSpacing(0)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout.addLayout(self.verticalLayout_3)
         MainWindow.setCentralWidget(self.centralwidget)
-
-        #self.retranslateUi(MainWindow) #this was originally here, instead of at the end
-        self.camgraphtab.setCurrentIndex(1)
-        
-        
-        #QtCore.QMetaObject.connectSlotsByName(MainWindow) #this was originally here, instead of at the end
-
-
-
-
-
 
 
         #code that was inserted manually
@@ -1177,19 +1158,15 @@ class Ui_MainWindow(object):
         self.tab_2.setObjectName("tab_2")
         self.gridLayout_7 = QtWidgets.QGridLayout(self.tab_2)
         self.gridLayout_7.setObjectName("gridLayout_7")
-        self.camgraphtab.addTab(self.tab_2, "")
+        self.tabWidget.addTab(self.tab_2, "")
 
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
         self.gridLayout_8 = QtWidgets.QGridLayout(self.tab_3)
         self.gridLayout_8.setObjectName("gridLayout_8")
-        self.camgraphtab.addTab(self.tab_3, "")
+        self.tabWidget.addTab(self.tab_3, "")
 
-        self.tab_4 = QtWidgets.QWidget()
-        self.tab_4.setObjectName("tab_4")
-        self.gridLayout_9 = QtWidgets.QGridLayout(self.tab_4)
-        self.gridLayout_9.setObjectName("gridLayout_9")
-        self.camgraphtab.addTab(self.tab_4, "")
+        
         
         
 
@@ -1242,7 +1219,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         #self.retranslateUi(MainWindow)
-        self.camgraphtab.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(0)
         #QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         rospy.init_node('listener', anonymous=True)
@@ -1261,7 +1238,11 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         global ui_global
         ui_global = self
-        
+
+
+        #self.retranslateUi(MainWindow)
+        #self.tabWidget.setCurrentIndex(0)
+        #QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -1327,12 +1308,13 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "IMU Data"))
         self.label.setText(_translate("MainWindow", "Pitch"))
         self.imu_pitch_lcd_number_2.setText(_translate("MainWindow", "Roll"))
-        self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.camstab), _translate("MainWindow", "Tab 1"))
-        
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Tab 1"))
+        #self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2"))
+
         #code
-        self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.tab_2), _translate("MainWindow", "Tab 2"))
-        self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.tab_3), _translate("MainWindow", "Tab 3"))
-        self.camgraphtab.setTabText(self.camgraphtab.indexOf(self.tab_4), _translate("MainWindow", "Tab 4"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Tab 3"))
+
 
 
     def update_data(self):
@@ -1347,35 +1329,35 @@ class Ui_MainWindow(object):
         self.lcdNumber_3.display(self.spectrometer_y[-1])
 
 def spectrometer_callback(data):
-        #rospy.loginfo(rospy.get_caller_id() + ',' + str(data.y))
-        #ui.x = ui.x[1:]  # Remove the first x element.
-        ui_global.spectrometer_x.append(ui_global.spectrometer_x[-1] + 1)  # Add a new value 1 higher than the last.
+    #rospy.loginfo(rospy.get_caller_id() + ',' + str(data.y))
+    #ui.x = ui.x[1:]  # Remove the first x element.
+    ui_global.spectrometer_x.append(ui_global.spectrometer_x[-1] + 1)  # Add a new value 1 higher than the last.
 
-        #ui.y = ui.y[1:]  # Remove the first  y element.
-        ui_global.spectrometer_y.append(data.y)  # Add a new value.
+    #ui.y = ui.y[1:]  # Remove the first  y element.
+    ui_global.spectrometer_y.append(data.y)  # Add a new value.
 
-        #ui.data_line.setData(ui.x, ui.y)
+    #ui.data_line.setData(ui.x, ui.y)
 
 def temp_callback(data):
-        #ui.x = ui.x[1:]  # Remove the first x element.
-        ui_global.temp_x.append(ui_global.temp_x[-1] + 1)  # Add a new value 1 higher than the last.
+    #ui.x = ui.x[1:]  # Remove the first x element.
+    ui_global.temp_x.append(ui_global.temp_x[-1] + 1)  # Add a new value 1 higher than the last.
 
-        #ui.y = ui.y[1:]  # Remove the first  y element.
-        ui_global.temp_y.append(data.y)  # Add a new value.
+    #ui.y = ui.y[1:]  # Remove the first  y element.
+    ui_global.temp_y.append(data.y)  # Add a new value.
 
 def co2_callback(data):
-        #ui.x = ui.x[1:]  # Remove the first x element.
-        ui_global.co2_x.append(ui_global.co2_x[-1] + 1)  # Add a new value 1 higher than the last.
+    #ui.x = ui.x[1:]  # Remove the first x element.
+    ui_global.co2_x.append(ui_global.co2_x[-1] + 1)  # Add a new value 1 higher than the last.
 
-        #ui.y = ui.y[1:]  # Remove the first  y element.
-        ui_global.co2_y.append(data.y)  # Add a new value.
+    #ui.y = ui.y[1:]  # Remove the first  y element.
+    ui_global.co2_y.append(data.y)  # Add a new value.
 
 def voc_callback(data):
-        #ui.x = ui.x[1:]  # Remove the first x element.
-        ui_global.voc_x.append(ui_global.voc_x[-1] + 1)  # Add a new value 1 higher than the last.
+    #ui.x = ui.x[1:]  # Remove the first x element.
+    ui_global.voc_x.append(ui_global.voc_x[-1] + 1)  # Add a new value 1 higher than the last.
 
-        #ui.y = ui.y[1:]  # Remove the first  y element.
-        ui_global.voc_y.append(data.y)  # Add a new value.
+    #ui.y = ui.y[1:]  # Remove the first  y element.
+    ui_global.voc_y.append(data.y)  # Add a new value.
 
 
 if __name__ == "__main__":
@@ -1385,3 +1367,4 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+

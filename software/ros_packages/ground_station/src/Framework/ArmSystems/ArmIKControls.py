@@ -13,4 +13,5 @@ import rospy
 # Global Variables
 #####################################
 ARM_CONTROLLER_STATUS = "/rover_arm_control/IKControl/control_status"
+ARM_TOGGLE_STATUS =  "/rover_arm_control/IKControl/button_status"
 

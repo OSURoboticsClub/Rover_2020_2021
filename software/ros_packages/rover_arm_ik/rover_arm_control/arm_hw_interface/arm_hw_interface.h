@@ -26,7 +26,7 @@ public:
     ArmHWInterface(ros::NodeHandle& nh, urdf::Model* urdf_model = NULL); //constructor for hw interface - sets up basic params
     ~ArmHWInterface(); //destructor for hw interface
 
-    void init(); //main function for setting up + registering controllers
+    void init(std::string control_status, std::string button_status); //main function for setting up + registering controllers
     void write(ros::Time &Time, ros::Duration &elapsed_time);
     void read(ros::Time &Time, ros::Duration &elapsed_time);
     void run(bool started, bool start_status); //function that runs the main loop
@@ -34,6 +34,7 @@ public:
     void update(); //function responsible for calling read/write
     void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, int jn); //function that ensures joints are limited
     void enforceLimits(ros::Duration &period); //function to enforce all joint limits before writing out
+    void ik_control_callback(const rover_arm_control::IKControlMessage::ConstPtr &ik_msg);
 
 protected:
     //Node handle
@@ -55,6 +56,7 @@ protected:
     unsigned int start_joint_ = 1;
     double BILLION = 1000000000.0; //convert seconds elapsed to nanoseconds
     bool has_joint_limits;
+    bool start_button_pushed, start_status;
     
     //vectors for storing joint information
     std::vector<std::string> joint_names_;
@@ -82,6 +84,11 @@ protected:
     ros::Duration elapsed_time;
     struct timespec last_time_;
     struct timespec current_time_;
+
+    //messaging variables
+    ros::Publisher ik_status_publisher;
+    ros::Subscriber button_status_subscriber;
+    rover_arm_control::IKControlMessage ik_status_message;
 };
 
 }

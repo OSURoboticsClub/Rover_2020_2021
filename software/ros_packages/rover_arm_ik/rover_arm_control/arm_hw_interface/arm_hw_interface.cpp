@@ -29,7 +29,7 @@ ArmHWInterface::~ArmHWInterface() {
     //destructor 
 }
 
-void ArmHWInterface::init() {
+void ArmHWInterface::init(std::string control_status, std::string button_status) {
     n_joints_ = joint_names_.size(); //sets number of joints in list to variable
 
     /* resize vectors to be the size of how many joints are on the robot */
@@ -69,6 +69,10 @@ void ArmHWInterface::init() {
     
     //set update frequency for control loop
     update_freq = ros::Duration(1/loop_hz);
+
+    button_status_subscriber = nh_.subscribe(button_status, 1, &ArmHWInterface::ik_control_callback, this);
+    ik_status_publisher = nh_.advertise<rover_arm_control::IKControlMessage>(control_status, 1);
+
 
     ROS_INFO_STREAM_NAMED("Hardware Interface", "Arm HW interface ready");
 }
@@ -205,14 +209,22 @@ void ArmHWInterface::update() {
     write(now, elapsed_time); /* write out new joint states */
 }
 
-void ArmHWInterface::run(bool start, bool start_status)
+void ArmHWInterface::ik_control_callback(const rover_arm_control::IKControlMessage::ConstPtr &ik_msg){
+    start_button_pushed = ik_msg->start_button;
+}
+
+void ArmHWInterface::run(bool start_button_pushed, bool start_status)
 {
   ros::Rate rate(loop_hz);
-  while (ros::ok())
-  {
-    start_status = true;
-    update();
-    rate.sleep();
+  if(start_button_pushed){
+    while (ros::ok())
+    {
+        start_status = true;
+        ik_status_message.controllers_started = start_status;
+        update();
+        ik_status_publisher.publish(ik_status_message);
+        rate.sleep();
+    }
   }
 }
 

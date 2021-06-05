@@ -216,11 +216,4 @@ void ArmHWInterface::run(bool start, bool start_status)
   }
 }
 
-void ArmHWInterface::stop(bool stop, bool stop_status, const ros::Time& time){
-    if(stop == true){
-        controller_manager_->stopControllers(const ros::Time& time);
-        stop_status = true;
-    }
-}
-
 }

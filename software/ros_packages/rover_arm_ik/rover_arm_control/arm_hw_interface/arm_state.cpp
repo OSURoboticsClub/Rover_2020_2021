@@ -3,6 +3,8 @@
 /* global vars taken from rover_arm.cpp */
 #define SMP_SERIAL_ENC_OFFSET 575 //This was missing from simplemotion_defs.h
 
+const std::string default_port = "/dev/rover/ttyARM";
+
 // Base
 const smuint8 base_address = 1;
 const smint32 base_counts_per_rev = 5725807;
@@ -53,6 +55,9 @@ const smuint8 wrist_roll_address = 6;
 const smint32 wrist_roll_counts_per_rev = 1638400;
 
 ArmState::ArmState() {
+    node_handle = new ros::NodeHandle("~");
+
+    node_handle->param("port", arm_port, default_port);
     arm_bus_handle = smOpenBus(arm_port.c_str());
 
     // if (arm_bus_handle < 0) {

@@ -42,6 +42,7 @@ class ArmState {
     
     private:
     /* sm variables */
+    ros::NodeHandle *node_handle;
     smbus arm_bus_handle;
     std::string arm_port;
     bool arm_successfully_connected = false;

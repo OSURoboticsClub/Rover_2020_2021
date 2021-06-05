@@ -20,10 +20,9 @@ int main(int argc, char** argv) {
     spinner.start();
 
     arm_hw_interface::ArmHWInterface arm_hw_interface(nh); //create hw interface object
-    arm_hw_interface.init(default_ik_controls_topic, default_ik_status_topic);
+    arm_hw_interface.init();
     ROS_INFO_STREAM_NAMED("hardware_interface", "Starting hardware interface...");
     arm_hw_interface.run(start_button_pushed, controllers_started); /* run hw interface */
-    arm_hw_interface.stop(stop_button_pushed, controllers_stopped, ros::Time& time); /* stops controllers on button push */
     
     return 0;
 }

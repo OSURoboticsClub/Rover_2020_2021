@@ -30,7 +30,7 @@ public:
     void write(ros::Time &Time, ros::Duration &elapsed_time);
     void read(ros::Time &Time, ros::Duration &elapsed_time);
     void run(bool started, bool start_status); //function that runs the main loop
-    void stop(bool stopped, bool stop_status, const ros::Time& time); //function that stops the hw interface + shuts down controllers
+    //void stop(bool stopped, bool stop_status, const ros::Time& time); //function that stops the hw interface + shuts down controllers
     void update(); //function responsible for calling read/write
     void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, int jn); //function that ensures joints are limited
     void enforceLimits(ros::Duration &period); //function to enforce all joint limits before writing out

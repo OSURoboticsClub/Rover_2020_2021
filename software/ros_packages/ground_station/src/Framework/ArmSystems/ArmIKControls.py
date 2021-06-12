@@ -18,14 +18,25 @@ ARM_TOGGLE_STATUS =  "/rover_arm_control/IKControl/button_status"
 
 class ArmIKControls(QtCore.QObject):
     def __init__(self, shared_objects):
+        controller_start__signal = QtCore.pyqtSignal(bool)
+        controller_status__signal = QtCore.pyqtSignal(bool)
+
         super(ArmIKControls, self).__init__()
+
+        # ########## Get the settings instance ##########
+        self.settings = QtCore.QSettings()
 
         # ########## Class Variables ##########
         self.button_status_subscriber = rospy.Subscriber(ARM_TOGGLE_STATUS, IKControlMessage, self.new_arm_ik_status__callback)
         self.ik_status_publisher = rospy.Publisher(ARM_CONTROLLER_STATUS, IKControlMessage, queue_size =1)
 
-        self.controllers_started = False
-        self.start_button = False
+        self.controllers_status = False
+        self.button_status = False
+        
+
+    def new_arm_ik_status__callback(self,data):
+        self.controllers_status = data.controllers_started
+        self.button_status = data.start_button
 
 
 

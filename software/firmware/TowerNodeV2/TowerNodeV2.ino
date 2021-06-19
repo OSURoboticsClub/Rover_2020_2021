@@ -18,11 +18,15 @@ enum HARDWARE {
   GPS_IMU_RS485_TX = 1,
   
   //RGB LED pins (logic low)
-  // RGB_R = 1,                      
-  // RGB_G = 32,
-  // RGB_B = 6,
-
-  ENABLE = 2,
+  RGB_R = 32,                      
+  RGB_G = 25,
+  RGB_B = 6,
+  
+  
+  // This may be incorrect. It's either 2 or 15 (A1)
+  //If things aren't working, try both
+  ENABLE = 2, 
+  
   COMMS_RS485_RX = 7,
   COMMS_RS485_TX = 8,
 
@@ -86,7 +90,7 @@ int pixel_timer = 15;
 
 
 ////////// Class Instantiations //////////
-pothos comms(node_id, HARDWARE::ENABLE, pothos_timeout);
+pothos comms(node_id, HARDWARE::ENABLE, pothos_timeout, HARDWARE::RGB_R, HARDWARE::RGB_G, HARDWARE::RGB_B);
 
 const char baud115200[] = "PUBX,41,1,3,3,115200,0";
 

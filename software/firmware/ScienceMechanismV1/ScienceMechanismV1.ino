@@ -2,8 +2,8 @@
 //#define POTHOS_DEBUG          //Comment this out for extra efficiency. Leave as is for verbose debug statements over USB.
 #include <pothos.h> //Include pothos library
 
-enum PIN  // Enum of pinouts
-{                
+enum PIN // Enum of pinouts
+{
   EN485 = 32,    // RS485 Enable Pin (O)
   BLUE_LED = 13, // Blue LED source (O)
 
@@ -60,10 +60,10 @@ enum REGISTER
   //CURRENT = 1,                //example register 0 for reading current data
 };
 
-int pothosTimeout = 50; //The recomended pothos timeout is 50 ms
-uint8_t slaveID = 11;   //The slave ID for the node (1-255)
+int pothosTimeout = 50; // The recommended pothos timeout is 50 ms
+uint8_t slaveID = 11;   // The slave ID for the node (1-255)
 
-pothos comms(slaveID, PIN::EN485, pothosTimeout); //init the pothos library
+pothos comms(slaveID, PIN::EN485, pothosTimeout); // Init the pothos library w/o RGB LED
 
 void setup()
 {
@@ -73,24 +73,71 @@ void setup()
   Serial.begin(115200);
 #endif
 
-  setPinModes();  //Sets all pinmodes
-  setDataTypes(); //Sets all pothos data types
+  setPinModes();  // Sets all pinmodes
+  setDataTypes(); // Sets all pothos data types
 }
 
 void loop()
 {
-  comms.update(); //maintains communication over pothos
+  comms.update(); // Maintains communication over pothos
 }
 
+// This function will set the pinmode of all non-pothos pins (exclude 485-enable, Rx, Tx, and RGBLED pins)
 void setPinModes()
-{ //This function will set the pinmode of all non-pothos pins (exclude 485-enable, Rx, Tx, and RGBLED pins)
-  //pinMode(PIN::BLUE_LED, OUTPUT);             //Sets the blue LED on pin 13 to an output
+{
+  pinMode(PIN::BLUE_LED, OUTPUT); // Sets the blue LED on pin 13 to an output
+
+  // First motor controller to LARY (VNH7100AS)
+  pinMode(PIN::INA_1, OUTPUT); // Clockwise input (O)
+  pinMode(PIN::INB_1, OUTPUT); // Counter clockwise input (O)
+  pinMode(PIN::PWM_1, OUTPUT); // Speed control (O)
+  pinMode(PIN::CS_1, INPUT);   // Current sense (I)
+  pinMode(PIN::SEL0_1, INPUT); // Addresses current sense (I)
+  pinMode(PIN::TEMP_1, INPUT); // 1.27M -- TEMP -- 100K Thermistor (I)
+
+  // Second motor controller to LARY (VNH7100AS)
+  pinMode(PIN::INA_2, OUTPUT); // Clockwise input (O)
+  pinMode(PIN::INB_2, OUTPUT); // Counter clockwise input (O)
+  pinMode(PIN::PWM_2, OUTPUT); // Speed control (O)
+  pinMode(PIN::CS_2, INPUT);   // Current sense (I)
+  pinMode(PIN::SEL0_2, INPUT); // Addresses current sense (I)
+  pinMode(PIN::TEMP_2, INPUT); // 1.27M -- TEMP -- 100K Thermistor (I)
+
+  // Limit switches (directly to connector, externally pulled low)
+  pinMode(PIN::LIM_1, INPUT); // Limit switch 1 (I)
+  pinMode(PIN::LIM_2, INPUT); // Limit switch 2 (I)
+  pinMode(PIN::LIM_3, INPUT); // Limit switch 3 (I)
+  pinMode(PIN::LIM_4, INPUT); // Limit switch 4 (I)
+
+  // Video mux (CD74HC4052M96, externally pulled low)
+  pinMode(PIN::VID_SELECT_1, OUTPUT); // Select bit 0 (O)
+  pinMode(PIN::VID_SELECT_2, OUTPUT); // Select bit 1 (O)
+
+  // Stepper motor driver (A4988)
+  pinMode(PIN::DIR, OUTPUT);  // Direction of rotation (O)
+  pinMode(PIN::STEP, OUTPUT); // Increment one step (LOW -> HIGH) (O)
+
+  //Lazer MOS (lowside NMOS gate)
+  pinMode(PIN::LAZ_EN, OUTPUT); // Lazer enable (O)
+
+  // Servos (directly to connector)
+  pinMode(PIN::SERVO_1, OUTPUT); // Servo 1 (O)
+  pinMode(PIN::SERVO_2, OUTPUT); // Servo 2 (O)
+
+  // LED Enable (lowside NMOS gate)
+  pinMode(PIN::LED_EN, OUTPUT); // Enables lowside gate (O)
+
+  // Pump control (SN74AHCT138 Decoder fed into 74HC9114D Inverter)
+  pinMode(PIN::PUMP_EN, OUTPUT);       // Enable (O)
+  pinMode(PIN::PUMP_SELECT_1, OUTPUT); // Select bit A (LSB) (O)
+  pinMode(PIN::PUMP_SELECT_2, OUTPUT); // Select bit B (O)
+  pinMode(PIN::PUMP_SELECT_3, OUTPUT); // Select bit C (O)
 }
 
 void setDataTypes()
-{ //This function is for setting the data type of each register
-  //comms.data.set_type(REGISTER::LED, "char");           //chars are actually unsigned 8bit integers in disquise and are the closest thing to a bool that's supported by pothos
-  //comms.data.set_type(REGISTER::TMP, "int");            //the temperature data is an int
-  //comms.data.set_type(REGISTER::TIME_DATA, "long");     //longs are also supported. time is often a long.
-  //comms.data.set_type(REGISTER::TMP_DATA, "float");     //floats are also supported
+{ // This function is for setting the data type of each register
+  // comms.data.set_type(REGISTER::LED, "char");           // Chars are actually unsigned 8bit integers in disquise and are the closest thing to a bool that's supported by pothos
+  // comms.data.set_type(REGISTER::TMP, "int");            // The temperature data is an int
+  // comms.data.set_type(REGISTER::TIME_DATA, "long");     // Longs are also supported. time is often a long.
+  // comms.data.set_type(REGISTER::TMP_DATA, "float");     // Floats are also supported
 }

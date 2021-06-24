@@ -27,8 +27,8 @@ class ArmIKControls(QtCore.QObject):
         self.settings = QtCore.QSettings()
 
         # ########## Class Variables ##########
-        self.button_status_subscriber = rospy.Subscriber(ARM_TOGGLE_STATUS, IKControlMessage, self.arm_ik_status__callback)
-        self.ik_status_publisher = rospy.Publisher(ARM_CONTROLLER_STATUS, IKControlMessage, queue_size =1)
+        self.ik_status_subscriber = rospy.Subscriber(ARM_CONTROLLER_STATUS, IKControlMessage, self.arm_ik_status__callback)
+        self.ik_status_publisher = rospy.Publisher(ARM_TOGGLE_STATUS, IKControlMessage, queue_size =1)
 
         self.controllers_status = False
         self.button_status = False
@@ -38,15 +38,21 @@ class ArmIKControls(QtCore.QObject):
         self.button_status = data.start_button
         
         if self.controllers_started is True:
-            ##Indicate that arm IK is started on groundstation
+            ##Indicate that arm IK is started on groundstation controller_start__signal.emit()
         else:
-            ##Indicate that are IK is off on groundstation
+            ##Indicate that are IK is off on groundstation controller_start_signal.emit()
 
         if self.button_status is True:
-            ##Send true value across so HW interface can be launched
+            self.ik_status_publisher.publish(message)
         else:
-            ##Send false value across to stop HW interface
+            message.start_button = False
+            self.ik_status_publisher.publish(message)
 
     def connect_signals_and_slots(self):
+
+    def on_arm_button_pressed_slot(self):
+        message = IKControlMessage()
+        message.start_button = True
+        self.button_status = True
 
 

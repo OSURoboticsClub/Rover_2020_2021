@@ -85,6 +85,7 @@ class GroundStation(QtCore.QObject):
 
         # ########## Get the Pick And Plate instance of the logger ##########
         self.logger = logging.getLogger("groundstation")
+  File "ground_station_single_screen.py", line 183, in create_application_window
 
         self.shared_objects = {
             "screens": {},

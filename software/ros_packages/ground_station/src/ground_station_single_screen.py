@@ -8,6 +8,7 @@ import signal
 import rospy
 import logging
 import qdarkstyle
+import rviz
 
 # Custom Imports
 import Framework.StartupSystems.ROSMasterChecker as ROSMasterChecker
@@ -19,6 +20,7 @@ import Framework.ControlSystems.EffectorsAndArmControlSender as ControllerContro
 import Framework.NavigationSystems.SpeedAndHeadingIndication as SpeedAndHeading
 import Framework.NavigationSystems.WaypointsCoordinator as WaypointsCoordinator
 import Framework.ArmSystems.ArmIndication as ArmIndication
+#import Framework.ArmSystems.MoveItInterface as MoveItInterface
 import Framework.StatusSystems.StatusCore as StatusCore
 import Framework.StatusSystems.UbiquitiStatusCore as UbiquitiStatusCore
 import Framework.SettingsSystems.UbiquitiRadioSettings as UbiquitiRadioSettings
@@ -31,13 +33,6 @@ import roslib
 import rospkg
 import sys
 import rospy
-
-##"python_qt_binding" package which hides differences between PyQt and PySide
-from python_qt_binding.QtGui import *
-from python_qt_binding.QtCore import *
-from PyQt5.QtWidgets import QApplication, QWidget, \
-    QVBoxLayout, QSlider, QHBoxLayout, QPushButton
-import rviz
 
 #####################################
 # Global Variables
@@ -68,7 +63,6 @@ else:
 #   "static methods"
 #   "run (if there)" - personal pref
 
-
 #####################################
 # ApplicationWindow Class Definition
 #####################################
@@ -84,46 +78,12 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Q"), self, self.exit_requested_signal.emit)
 
-class moveit_rviz(QWidget):
-    def __init__(self):
-        QWidget.__init__(self)
-
-        self.frame = rviz.VisualizationFrame()
-
-
-        self.frame.setSplashPath( "" )
-
-
-        self.frame.initialize()
-
-        reader = rviz.YamlConfigReader()
-        config = rviz.Config()
-        reader.readFile( config, "" ) #moveit ui
-        self.frame.load( config )
-
-        self.setWindowTitle( config.mapGetChild( "Title" ).getValue() )
-
-        self.frame.setMenuBar( None )
-        self.frame.setStatusBar( None )
-        self.frame.setHideButtonVisibility( False )
-
-        self.manager = self.frame.getManager()
-
-        self.grid_display = self.manager.getRootDisplayGroup().getDisplayAt( 0 )
-
-        layout = QVBoxLayout()
-        layout.addWidget( self.frame )
-
-        h_layout = QHBoxLayout()
-        layout.addLayout( h_layout )
-        self.setLayout( layout )
-
 #####################################
 # GroundStation Class Definition
 #####################################
 class GroundStation(QtCore.QObject):
     LEFT_SCREEN_ID = 1
-    RIGHT_SCREEN_ID = 0
+    RIGHT_SCREEN_initID = 0
 
     exit_requested_signal = QtCore.pyqtSignal()
 
@@ -149,7 +109,7 @@ class GroundStation(QtCore.QObject):
 
         # ###### Instantiate Left And Right Screens ######
         if param == True:
-            self.shared_objects["screens"]["onescreen"] = self.create_application_window(UI_FILE_LEFT,     "Rover Ground Station Left Screen", self.LEFT_SCREEN_ID)  # type: ApplicationWindow
+            self.shared_objects["screens"]["onescreen"] = self.create_application_window(UI_FILE_LEFT, "Rover Ground Station Left Screen", self.LEFT_SCREEN_ID)  # type: ApplicationWindow
         else:
             self.shared_objects["screens"]["left_screen"] = \
                    self.create_application_window(UI_FILE_LEFT, "Rover Ground Station Left Screen",
@@ -166,6 +126,7 @@ class GroundStation(QtCore.QObject):
         self.__add_non_thread("Arm Indication", ArmIndication.ArmIndication(self.shared_objects))
 
         # ##### Instantiate Threaded Classes ######
+        #self.__add_non_thread("MoveIt Interface", MoveItInterface.MoveItInterface(self.shared_objects))
         self.__add_thread("Video Coordinator", RoverVideoCoordinator.RoverVideoCoordinator(self.shared_objects))
         #self.__add_thread("Map Coordinator", RoverMapCoordinator.RoverMapCoordinator(self.shared_objects))
         self.__add_thread("Joystick Sender", JoystickControlSender.DriveAndCameraControlSender(self.shared_objects))
@@ -227,14 +188,13 @@ class GroundStation(QtCore.QObject):
                                   QtCore.Qt.FramelessWindowHint |  # remove the border and frame on the application,
                                   QtCore.Qt.WindowStaysOnTopHint |  # and makes the window stay on top of all others
                                   QtCore.Qt.X11BypassWindowManagerHint)  # This is needed to show fullscreen in gnome
-
         app_window.setGeometry(
             system_desktop.screenGeometry(display_screen))  # Sets the window to be on the first screen
 
         app_window.showFullScreen()  # Shows the window in full screen mode
-        rviz = moveit_rviz()
-        return app_window
+        app_window.show()
 
+        return app_window
 
 #####################################
 # Main Definition
@@ -251,7 +211,7 @@ if __name__ == "__main__":
     QtCore.QCoreApplication.setOrganizationDomain("http://osurobotics.club/")
     QtCore.QCoreApplication.setApplicationName("groundstation")
 
-    # ########## Check ROS Master Status ##########
+    # ########## Check ROS myvizMaster Status ##########
     master_checker = ROSMasterChecker.ROSMasterChecker()
 
     if not master_checker.master_present(5):
@@ -261,9 +221,6 @@ if __name__ == "__main__":
                             "Ensure ROS master is running or check for network issues.")
         message_box.exec_()
         exit()
-
-    app = QApplication( sys.argv )
-
 
     # ########## Start Ground Station If Ready ##########
     ground_station = GroundStation()

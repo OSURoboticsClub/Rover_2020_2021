@@ -3751,7 +3751,7 @@ Connected</string>
               </size>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>4</number>
              </property>
              <widget class="QWidget" name="tab_25">
               <attribute name="title">
@@ -5784,7 +5784,7 @@ Dielectric Permittivity</string>
            </rect>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="mapping_tab">
            <attribute name="title">
@@ -6859,31 +6859,25 @@ GPS</string>
              <string/>
             </property>
            </widget>
-           <zorder>landmark_waypoints_delete_button</zorder>
-           <zorder>landmark_waypoints_add_gps_button</zorder>
-           <zorder>landmark_waypoints_add_manual_button</zorder>
-           <zorder>landmark_waypoints_table_widget</zorder>
-           <zorder>landmark_waypoints_set_button</zorder>
-           <zorder>label_353</zorder>
-           <zorder>layoutWidget_8</zorder>
-           <zorder>layoutWidget_9</zorder>
-           <zorder>layoutWidget_7</zorder>
-           <zorder>landmark_waypoints_table_widget</zorder>
-           <zorder>mapping_label</zorder>
           </widget>
-          <widget class="QWidget" name="moveit_tab">
+          <widget class="QWidget" name="moveit">
            <attribute name="title">
             <string>MoveIt</string>
            </attribute>
-           <widget class="QWidget" name="moveit_rviz" native="true">
+           <widget class="QWidget" name="verticalLayoutWidget">
             <property name="geometry">
              <rect>
-              <x>0</x>
-              <y>10</y>
+              <x>-1</x>
+              <y>-1</y>
               <width>1261</width>
-              <height>1001</height>
+              <height>1011</height>
              </rect>
             </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="MoveItInterface" name="widget" native="true"/>
+             </item>
+            </layout>
            </widget>
           </widget>
          </widget>
@@ -6895,6 +6889,14 @@ GPS</string>
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MoveItInterface</class>
+   <extends>QWidget</extends>
+   <header location="global">mumu</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

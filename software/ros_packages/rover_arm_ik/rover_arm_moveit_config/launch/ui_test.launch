@@ -27,7 +27,7 @@
     <arg name="debug" value="$(arg debug)"/>
   </include>
 
-  <node name="ui" pkg="rover_arm_moveit_config" type="rover_ik_rviz.sh" output="screen">
+  <!--<node name="ui" pkg="rover_arm_moveit_config" type="rover_ik_rviz.sh" output="screen">
     <rosparam command="load" file="$(find rover_arm_moveit_config)/config/kinematics.yaml"/>
-  </node>
+  </node>-->
 </launch>

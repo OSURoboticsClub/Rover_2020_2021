@@ -12,8 +12,8 @@ from PyQt5.QtWidgets import QApplication, QWidget, \
     QVBoxLayout, QSlider, QHBoxLayout, QPushButton
 import rviz
 
-class MoveItUI(QWidget):
-    def __init__(self):
+class MoveItInterface(QWidget):
+    def __init__(self, parent=None):
         QWidget.__init__(self)
         self.frame = rviz.VisualizationFrame()
         self.frame.setSplashPath("oreo.png")
@@ -36,8 +36,7 @@ class MoveItUI(QWidget):
 '''
 if __name__ == '__main__':
     app = QApplication( sys.argv )
-    myviz = MoveItUI(  )
-    myviz.resize( 960, 960 )
-    myviz.show(  )
-    app.exec_(  )
+    myviz = MoveItInterface(  )
+    myviz.show( )
+    app.exec_( )
 '''

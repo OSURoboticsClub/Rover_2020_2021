@@ -17,7 +17,6 @@ from rover_arm_control.msg import IKControlMessage
 ARM_CONTROLLER_STATUS = "/rover_arm_control/IKControl/control_status"
 ARM_TOGGLE_STATUS =  "/rover_arm_control/IKControl/button_status"
 
-
 class ArmIKControls(QtCore.QObject):
     def __init__(self, shared_objects):
         controller_start__signal = QtCore.pyqtSignal(str)
@@ -43,23 +42,25 @@ class ArmIKControls(QtCore.QObject):
         self.button_status = data.start_button
         
         if self.controllers_started is True:
-            ##Indicate that arm IK is started on groundstation controller_start__signal.emit(COLOR_GREEN)
+            ##Indicate that arm IK is started on groundstation 
+            controller_start__signal.emit(COLOR_GREEN)
         else:
-            ##Indicate that are IK is off on groundstation controller_start__signal.emit(COLOR_RED)
+            ##Indicate that are IK is off on groundstation 
+            controller_start__signal.emit(COLOR_RED)
 
-        if self.button_status is True:
-            self.ik_status_publisher.publish(message)
-        else:
+        if self.button_status is False:
             message.start_button = False
             self.ik_status_publisher.publish(message)
-
+            
     def connect_signals_and_slots(self):
         self.ik_control_start_button.clicked.connect(self.on_ik_start_button_pressed__slot)
+        self.controller_status__signal.connect(self.ik_status_publisher.setStyleSheet)
 
     def on_ik_start_button_pressed__slot(self):
         message = IKControlMessage()
         message.start_button = True
         self.button_status = True
+        self.ik_status_publisher.publish(message)
 
 
 

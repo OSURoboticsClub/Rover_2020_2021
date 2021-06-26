@@ -10,6 +10,7 @@ from time import time
 
 from rover_arm.msg import ArmControlMessage, ArmStatusMessage
 from rover_control.msg import GripperControlMessage
+from rover_arm_control.msg import IKControlMessage
 
 #####################################
 # Global Variables
@@ -19,6 +20,9 @@ ARM_ABSOLUTE_CONTROL_TOPIC = "/rover_arm/control/absolute"
 ARM_STATUS_TOPIC = "/rover_arm/status"
 
 GRIPPER_CONTROL_TOPIC = "/rover_control/gripper/control"
+
+ARM_CONTROLLER_STATUS = "/rover_arm_control/IKControl/control_status"
+ARM_TOGGLE_STATUS =  "/rover_arm_control/IKControl/button_status"
 
 THREAD_HERTZ = 5
 

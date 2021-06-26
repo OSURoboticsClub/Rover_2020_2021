@@ -79,6 +79,9 @@ class MiscArm(QtCore.QThread):
 
         self.gripper_toggle_laser_button = self.left_screen.gripper_toggle_laser_button  # type:QtWidgets.QPushButton
 
+        self.ik_control_start_button = self.main_screen.ik_control_start_button #type: QtWidgets.QButton
+        self.ik_control_status_label = self.main_screen.ik_control_status_label #type : QtWidgets.QLabel
+
         # ########## Get the settings instance ##########
         self.settings = QtCore.QSettings()
 
@@ -94,12 +97,16 @@ class MiscArm(QtCore.QThread):
         self.arm_status_subscriber = rospy.Subscriber(ARM_STATUS_TOPIC, ArmStatusMessage,
                                                       self.new_arm_status_message_received__callback)
 
+        self.ik_status_subscriber = rospy.Subscriber(ARM_CONTROLLER_STATUS, IKControlMessage, self.arm_ik_status__callback)
+
         self.arm_relative_control_publisher = rospy.Publisher(ARM_RELATIVE_CONTROL_TOPIC, ArmControlMessage,
                                                               queue_size=1)
         self.arm_absolute_control_publisher = rospy.Publisher(ARM_ABSOLUTE_CONTROL_TOPIC, ArmControlMessage,
                                                               queue_size=1)
 
         self.gripper_control_publisher = rospy.Publisher(GRIPPER_CONTROL_TOPIC, GripperControlMessage, queue_size=1)
+
+        self.ik_status_publisher = rospy.Publisher(ARM_TOGGLE_STATUS, IKControlMessage, queue_size =1)
 
         self.base_position = 0
         self.shoulder_position = 0
@@ -113,6 +120,9 @@ class MiscArm(QtCore.QThread):
         self.should_cobra_arm = False
 
         self.should_package_drop = False
+
+        self.controllers_status = False
+        self.button_status = False
 
     def run(self):
         self.logger.debug("Starting MiscArm Thread")
@@ -222,6 +232,9 @@ class MiscArm(QtCore.QThread):
         self.gripper_toggle_light_button.clicked.connect(self.on_gripper_toggle_light_pressed)
         self.gripper_toggle_laser_button.clicked.connect(self.on_gripper_toggle_laser_pressed)
 
+        self.ik_control_start_button.clicked.connect(self.on_ik_start_button_pressed__slot)
+        self.controller_status__signal.connect(self.ik_status_publisher.setStyleSheet)
+
     def on_upright_zeroed_button_pressed__slot(self):
         self.process_absolute_move_command([0 for _ in range(6)])
 
@@ -252,6 +265,12 @@ class MiscArm(QtCore.QThread):
     def on_package_drop_button_pressed__slot(self):
         self.should_package_drop = True
 
+    def on_ik_start_button_pressed__slot(self):
+        message = IKControlMessage()
+        message.start_button = True
+        self.button_status = True
+        self.ik_status_publisher.publish(message)
+
     def on_gripper_home_pressed(self):
         message = GripperControlMessage()
         message.should_home = True
@@ -277,6 +296,21 @@ class MiscArm(QtCore.QThread):
         self.roll_position = data.roll
         self.wrist_pitch_position = data.wrist_pitch
         self.wrist_roll_position = data.wrist_roll
+
+    def arm_ik_status__callback(self,data):
+        self.controllers_status = data.controllers_started
+        self.button_status = data.start_button
+        
+        if self.controllers_started is True:
+            ##Indicate that arm IK is started on groundstation 
+            controller_start__signal.emit(COLOR_GREEN)
+        else:
+            ##Indicate that are IK is off on groundstation 
+            controller_start__signal.emit(COLOR_RED)
+
+        if self.button_status is False:
+            message.start_button = False
+            self.ik_status_publisher.publish(message)
 
     def setup_signals(self, start_signal, signals_and_slots_signal, kill_signal):
         start_signal.connect(self.start)

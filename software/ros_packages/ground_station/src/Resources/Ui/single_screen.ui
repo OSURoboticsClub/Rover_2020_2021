@@ -6893,7 +6893,7 @@ GPS</string>
   <customwidget>
    <class>MoveItInterface</class>
    <extends>QWidget</extends>
-   <header location="global">mumu</header>
+   <header>MoveItInterface</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -20,7 +20,7 @@ import Framework.ControlSystems.EffectorsAndArmControlSender as ControllerContro
 import Framework.NavigationSystems.SpeedAndHeadingIndication as SpeedAndHeading
 import Framework.NavigationSystems.WaypointsCoordinator as WaypointsCoordinator
 import Framework.ArmSystems.ArmIndication as ArmIndication
-#import Framework.ArmSystems.MoveItInterface as MoveItInterface
+import Framework.ArmSystems.MoveItInterface as MoveItInterface
 import Framework.StatusSystems.StatusCore as StatusCore
 import Framework.StatusSystems.UbiquitiStatusCore as UbiquitiStatusCore
 import Framework.SettingsSystems.UbiquitiRadioSettings as UbiquitiRadioSettings

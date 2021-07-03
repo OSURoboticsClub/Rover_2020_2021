@@ -2201,6 +2201,19 @@ N/A</string>
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="ik_control_stop_button">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Stop IK</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="ik_control_status_label">
                   <property name="font">
                    <font>
@@ -2210,7 +2223,7 @@ N/A</string>
                    </font>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color:darkgreen; border: 0.5px solid black;</string>
+                   <string notr="true">background-color:darkred; border: 0.5px solid black;</string>
                   </property>
                   <property name="text">
                    <string>IK Toggled ON</string>

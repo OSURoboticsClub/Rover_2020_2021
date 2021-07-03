@@ -213,7 +213,7 @@ void ArmHWInterface::ik_control_callback(const rover_arm_control::IKControlMessa
     start_button_pushed = ik_msg->start_button;
 }
 
-void ArmHWInterface::run(bool start_button_pushed, bool start_status)
+void ArmHWInterface::run(bool start_button_pushed, bool stop_button_pushed, bool start_status)
 {
   ros::Rate rate(loop_hz);
   while(start_button_pushed){
@@ -225,9 +225,15 @@ void ArmHWInterface::run(bool start_button_pushed, bool start_status)
         ik_status_publisher.publish(ik_status_message);
         ROS_INFO_STREAM_NAMED("hardware_interface", "IK Toggled on Groundstation, Hardware interface started!");
         rate.sleep();
+        if(stop_button_pushed){
+            start_status = false;
+            ik_status_message.controllers_started = start_status;
+            ik_status_publisher.publish(ik_status_message);
+            break;
+        }
     }
   }
-  if(!start_button_pushed){
+  if(!start_button_pushed || stop_button_pushed){
       ROS_INFO_STREAM_NAMED("hardware_interface", "IK Not Toggled on Groundstation or Shutdown Signal Recieved. Hardware interface shutting down...");
   }
 }

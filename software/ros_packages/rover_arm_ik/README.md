@@ -44,6 +44,17 @@ The below instructions have information on simulating the arm using a fake ros c
 1. Start RViz using the command `roslaunch rover_arm_moveit_config sim_control.launch`. This starts RViz with parameters for using ros control as well as actually starts Moveit! and the FollowJointTrajectory action server. Basically this launch file connects Moveit! to the fake ros control node.
 
 ## Running the Arm With ROS Control
+ROS Control provides the functionality to link motion planning done in Moveit! to actual execution on the physical rover. This is done using what is called a hardware interface, which basically takes the commands published by Moveit! and translates them to signals used by the hardware to actuate the joints of the arm. This section discusses how to use the actual version of ros control/IK on the rover.
+
+1. Start the groundstation and launch the rover main files
+
+1. Under the `Arm Controls` tab on the groundstation, press the `start ik` button. This sends a signal to the hardware interface node toggling a boolean to true so the controllers can start. Wait for the node to spin up. If the node has launched correctly, you should see the IK indicator change color to green.
+
+1. Tab to the Moveit! tab on the groundstation. An instance of RViz should be running, which you can use to plan motions from. Make sure STOMP is selected as the motion planner. 
+
+1. **IMPORTANT!** When planning motions on the actual arm, do not just hit plan and execute!!! Make sure you plan first and verify that there are no weird motions in the path. The weird motions *should* be caught and not executed all the way, but it's not a 100% guarantee that the arm won't try to execute a path out of its range of motion. Please, please verify that the paths are correct before executing as the current state of the arm is not refined enough yet to catch errors like that.
+
+1. To shut down ros control, simply press the stop IK button and the controllers will stop running. If the interface succesfully shuts down, the IK status indicator should return to red.
 
 ## Generating IK Solutions and Plugins
 

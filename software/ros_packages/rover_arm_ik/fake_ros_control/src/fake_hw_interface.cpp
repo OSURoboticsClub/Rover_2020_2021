@@ -77,21 +77,6 @@ void FakeHWInterface::init() {
 }
 /* simulation + write function */
 void FakeHWInterface::fakePosControl(ros::Duration &elapsed_time, int jn) {
-    // const double max_delta_pos = joint_vel_[jn] * elapsed_time.toSec(); //sets max time for pos
-
-    // p_error = joint_pos_comm_[jn] - joint_pos_[jn]; // difference between current + planned to get movement
-
-    // const double delta_pos = std::max(std::min(p_error, max_delta_pos), -max_delta_pos);
-    // joint_pos_[jn] += delta_pos;
-
-    // // Calculate velocity based on change in positions
-    // if (elapsed_time.toSec() > 0)
-    // { 
-    //     joint_vel_[jn] = (joint_pos_[jn] - joint_pos_prev_[jn]) / elapsed_time.toSec();
-    // }
-    // else
-    //     joint_vel_[jn] = 0;
-
     joint_pos_[jn] = joint_pos_comm_[jn]; //bypass velocity limits
 
     // Save last position

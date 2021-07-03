@@ -29,7 +29,7 @@ public:
     void init(std::string control_status, std::string button_status); //main function for setting up + registering controllers
     void write(ros::Time &Time, ros::Duration &elapsed_time);
     void read(ros::Time &Time, ros::Duration &elapsed_time);
-    void run(bool started, bool start_status); //function that runs the main loop
+    void run(bool started, bool stopped, bool status); //function that runs the main loop
     //void stop(bool stopped, bool stop_status, const ros::Time& time); //function that stops the hw interface + shuts down controllers
     void update(); //function responsible for calling read/write
     void registerJointLim(const hardware_interface::JointHandle &joint_handle_position, int jn); //function that ensures joints are limited

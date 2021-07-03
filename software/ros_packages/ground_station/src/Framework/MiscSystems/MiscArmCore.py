@@ -79,8 +79,9 @@ class MiscArm(QtCore.QThread):
 
         self.gripper_toggle_laser_button = self.left_screen.gripper_toggle_laser_button  # type:QtWidgets.QPushButton
 
-        self.ik_control_start_button = self.main_screen.ik_control_start_button #type: QtWidgets.QButton
-        self.ik_control_status_label = self.main_screen.ik_control_status_label #type : QtWidgets.QLabel
+        self.ik_control_start_button = self.left_screen.ik_control_start_button #type: QtWidgets.QPushButton
+        self.ik_control_stop_button = self.left_screen.ik_control_stop_button #type: QtWidgets.QPushButton
+        self.ik_control_status_label = self.left_screen.ik_control_status_label #type : QtWidgets.QLabel
 
         # ########## Get the settings instance ##########
         self.settings = QtCore.QSettings()
@@ -122,7 +123,7 @@ class MiscArm(QtCore.QThread):
         self.should_package_drop = False
 
         self.controllers_status = False
-        self.button_status = False
+        self.toggled_status = False
 
     def run(self):
         self.logger.debug("Starting MiscArm Thread")
@@ -233,6 +234,7 @@ class MiscArm(QtCore.QThread):
         self.gripper_toggle_laser_button.clicked.connect(self.on_gripper_toggle_laser_pressed)
 
         self.ik_control_start_button.clicked.connect(self.on_ik_start_button_pressed__slot)
+        self.ik_control_stop_button.clicked.connect(self.on_ik_stop_button_pressed__slot)
         self.controller_status__signal.connect(self.ik_status_publisher.setStyleSheet)
 
     def on_upright_zeroed_button_pressed__slot(self):
@@ -268,7 +270,13 @@ class MiscArm(QtCore.QThread):
     def on_ik_start_button_pressed__slot(self):
         message = IKControlMessage()
         message.start_button = True
-        self.button_status = True
+        self.toggle_status = True
+        self.ik_status_publisher.publish(message)
+
+    def on_ik_stop_button_pressed__slot(self):
+        message = IKControlMessage()
+        message.stop_button = True
+        self.toggle_status = False
         self.ik_status_publisher.publish(message)
 
     def on_gripper_home_pressed(self):
@@ -307,10 +315,6 @@ class MiscArm(QtCore.QThread):
         else:
             ##Indicate that are IK is off on groundstation 
             controller_start__signal.emit(COLOR_RED)
-
-        if self.button_status is False:
-            message.start_button = False
-            self.ik_status_publisher.publish(message)
 
     def setup_signals(self, start_signal, signals_and_slots_signal, kill_signal):
         start_signal.connect(self.start)

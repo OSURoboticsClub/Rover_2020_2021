@@ -6,8 +6,8 @@ const std::string default_ik_controls_topic = "IKControl/control_status";
 const std::string default_ik_status_topic = "IKControl/button_status";
 
 //booleans for start and stop
-bool controllers_started, start_button_pushed;
-//bool controller_stopped, stop_button_pushed; /* for later use once we have the stop function in melodic maybe? */
+bool controllers_started, start_button_pushed, stop_button_pushed;
+//bool controller_stopped /* for later use once we have the stop function in melodic maybe? */
 
 
 int main(int argc, char** argv) {
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     arm_hw_interface::ArmHWInterface arm_hw_interface(nh); //create hw interface object
     arm_hw_interface.init(default_ik_controls_topic, default_ik_status_topic);
     ROS_INFO_STREAM_NAMED("hardware_interface", "Starting hardware interface...");
-    arm_hw_interface.run(start_button_pushed, controllers_started); /* run hw interface */
+    arm_hw_interface.run(start_button_pushed, stop_button_pushed, controllers_started); /* run hw interface */
     
     return 0;
 }

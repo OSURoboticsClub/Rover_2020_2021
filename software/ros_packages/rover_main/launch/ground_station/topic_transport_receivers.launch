@@ -84,4 +84,10 @@
         </node>
 
     </group>
+
+    <group ns="rover_arm_control">
+	    <node name="ik_status_udp" pkg="nimbro_topic_transport" type="udp_receiver" output="screen">
+            <param name="port" value="17021" />
+        </node>
+    </group>   
 </launch>

@@ -223,12 +223,12 @@ void ArmHWInterface::run(bool start_button_pushed, bool start_status)
         ik_status_message.controllers_started = start_status;
         update();
         ik_status_publisher.publish(ik_status_message);
+        ROS_INFO_STREAM_NAMED("hardware_interface", "IK Toggled on Groundstation, Hardware interface started!");
         rate.sleep();
     }
   }
   if(!start_button_pushed){
       ROS_INFO_STREAM_NAMED("hardware_interface", "IK Not Toggled on Groundstation or Shutdown Signal Recieved. Hardware interface shutting down...");
-    return;
   }
 }
 

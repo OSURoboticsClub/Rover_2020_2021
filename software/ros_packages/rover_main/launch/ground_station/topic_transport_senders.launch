@@ -13,7 +13,6 @@
                 {name: "/rover_control/mining/drill/control", compress: true, rate: 30.0},
                 {name: "/rover_arm/control/relative", compress: true, rate: 30.0},
                 {name: "/rover_control/gripper/control", compress: true, rate: 30.0},
-                {name: "/rover_arm_control/IKControl/control_status", compress: true, rate: 30.0},
                 {name: "/rover_arm_control/IKControl/button_status", compress: true, rate: 30.0}]
             </rosparam>
         </node>

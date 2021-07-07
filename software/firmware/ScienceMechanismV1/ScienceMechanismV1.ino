@@ -1,5 +1,5 @@
 #define RS485 Serial1 //Select RS-485 Serial Port.                //This needs to be changed based on the design
-//#define POTHOS_DEBUG          //Comment this out for extra efficiency. Leave as is for verbose debug statements over USB.
+//#define POTHOS_DEBUG  //Comment this out for extra efficiency. Leave as is for verbose debug statements over USB.
 #include <pothos.h> //Include pothos library
 
 enum PIN // Enum of pinouts
@@ -12,7 +12,7 @@ enum PIN // Enum of pinouts
   INB_1 = 22,  // Counter clockwise input (O)
   PWM_1 = 9,   // Speed control (O)
   CS_1 = 15,   // Current sense (I)
-  SEL0_1 = 25, // Addresses current sense (I)
+  SEL_1 = 25, // Addresses current sense (I)
   TEMP_1 = 14, // 1.27M -- TEMP -- 100K Thermistor (I)
 
   // Second motor controller to LARY (VNH7100AS)
@@ -20,7 +20,7 @@ enum PIN // Enum of pinouts
   INB_2 = 16, // Counter clockwise input (O)
   PWM_2 = 3,  // Speed control (O)
   CS_2 = 17,  // Current sense (I)
-  SEL0_2 = 1, // Addresses current sense (I)
+  SEL_2 = 1, // Addresses current sense (I)
   TEMP_2 = 1, // 1.27M -- TEMP -- 100K Thermistor (I)
 
   // Limit switches (directly to connector, externally pulled low)
@@ -54,11 +54,23 @@ enum PIN // Enum of pinouts
   PUMP_SELECT_3 = 20  // Select bit C (O)
 };
 
-enum REGISTER
-{ //Enum of register addresses
-  //TEMP = 0,                   //example register 0 for reading temperature data
-  //CURRENT = 1,                //example register 0 for reading current data
+enum REGISTER // Enum of register addresses
+{
+  // First motor controller registers
+  SPEED_1 = 0,
+  DIR_1 = 1,
+  TMP_1 = 2,
+  CURRENT_1 = 3,
+
+  // Second motor controller registers
+  SPEED_2 = 4,
+  DIR_2 = 5,
+  TMP_2 = 6,
+  CURRENT_2 = 7
 };
+
+uint32_t updateTimer = 0;
+int updateTime = 50;
 
 int pothosTimeout = 50; // The recommended pothos timeout is 50 ms
 uint8_t slaveID = 11;   // The slave ID for the node (1-255)
@@ -92,7 +104,7 @@ void setPinModes()
   pinMode(PIN::INB_1, OUTPUT); // Counter clockwise input (O)
   pinMode(PIN::PWM_1, OUTPUT); // Speed control (O)
   pinMode(PIN::CS_1, INPUT);   // Current sense (I)
-  pinMode(PIN::SEL0_1, INPUT); // Addresses current sense (I)
+  pinMode(PIN::SEL_1, INPUT); // Addresses current sense (I)
   pinMode(PIN::TEMP_1, INPUT); // 1.27M -- TEMP -- 100K Thermistor (I)
 
   // Second motor controller to LARY (VNH7100AS)
@@ -100,7 +112,7 @@ void setPinModes()
   pinMode(PIN::INB_2, OUTPUT); // Counter clockwise input (O)
   pinMode(PIN::PWM_2, OUTPUT); // Speed control (O)
   pinMode(PIN::CS_2, INPUT);   // Current sense (I)
-  pinMode(PIN::SEL0_2, INPUT); // Addresses current sense (I)
+  pinMode(PIN::SEL_2, INPUT); // Addresses current sense (I)
   pinMode(PIN::TEMP_2, INPUT); // 1.27M -- TEMP -- 100K Thermistor (I)
 
   // Limit switches (directly to connector, externally pulled low)
@@ -117,7 +129,7 @@ void setPinModes()
   pinMode(PIN::DIR, OUTPUT);  // Direction of rotation (O)
   pinMode(PIN::STEP, OUTPUT); // Increment one step (LOW -> HIGH) (O)
 
-  //Lazer MOS (lowside NMOS gate)
+  //Lazer MOS (lowside NMOS gate) NOT USED
   pinMode(PIN::LAZ_EN, OUTPUT); // Lazer enable (O)
 
   // Servos (directly to connector)
@@ -127,7 +139,7 @@ void setPinModes()
   // LED Enable (lowside NMOS gate)
   pinMode(PIN::LED_EN, OUTPUT); // Enables lowside gate (O)
 
-  // Pump control (SN74AHCT138 Decoder fed into 74HC9114D Inverter)
+  // Pump control (SN74AHCT138 Decoder fed into 74HC9114D Inverter) NOT USED
   pinMode(PIN::PUMP_EN, OUTPUT);       // Enable (O)
   pinMode(PIN::PUMP_SELECT_1, OUTPUT); // Select bit A (LSB) (O)
   pinMode(PIN::PUMP_SELECT_2, OUTPUT); // Select bit B (O)
@@ -140,4 +152,32 @@ void setDataTypes()
   // comms.data.set_type(REGISTER::TMP, "int");            // The temperature data is an int
   // comms.data.set_type(REGISTER::TIME_DATA, "long");     // Longs are also supported. time is often a long.
   // comms.data.set_type(REGISTER::TMP_DATA, "float");     // Floats are also supported
+}
+
+void driveVertical(){
+    bool direct = (comms.data.get_char_data(REGISTER::DIR_1) != '\0');
+    uint8_t motorSpeed = int(comms.data.get_char_data(REGISTER::SPEED_1));
+
+    // Check limit switches
+    if(digitalRead(PIN::LIM_1) && direct){
+      motorSpeed = 0;
+      
+    }else if(digitalRead(PIN::LIM_2) && !direct){
+      motorSpeed = 0;
+      
+    }
+    
+    digitalWrite(PIN::INA_1, direct);
+    digitalWrite(PIN::SEL_1, direct);
+    digitalWrite(PIN::INB_1, !direct);
+    analogWrite(PIN::PWM_1, motorSpeed);
+}
+
+void driveDrill(){
+    bool direct = (comms.data.get_char_data(REGISTER::DIR_2) != '\0');
+    uint8_t motorSpeed = int(comms.data.get_char_data(REGISTER::SPEED_2));
+    digitalWrite(PIN::INA_2, direct);
+    digitalWrite(PIN::SEL_2, direct);
+    digitalWrite(PIN::INB_2, !direct);
+    analogWrite(PIN::PWM_2, motorSpeed);
 }

@@ -55,7 +55,7 @@ else:
 # Class Organization
 #####################################
 # Class Name:
-#   "init"
+#   "init"_single_screen
 #   "run (if there)" - personal pref
 #   "private methods"
 #   "public methods, minus slots"
@@ -83,7 +83,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 #####################################
 class GroundStation(QtCore.QObject):
     LEFT_SCREEN_ID = 1
-    RIGHT_SCREEN_initID = 0
+    RIGHT_SCREEN_ID = 0
 
     exit_requested_signal = QtCore.pyqtSignal()
 

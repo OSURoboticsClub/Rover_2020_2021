@@ -56,7 +56,7 @@ protected:
     unsigned int start_joint_ = 1;
     double BILLION = 1000000000.0; //convert seconds elapsed to nanoseconds
     bool has_joint_limits;
-    bool start_button_pushed, start_status;
+    bool stop_button_pushed, start_button_pushed, start_status;
     
     //vectors for storing joint information
     std::vector<std::string> joint_names_;

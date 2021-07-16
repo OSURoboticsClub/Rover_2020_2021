@@ -123,7 +123,7 @@ class MiscArm(QtCore.QThread):
         self.should_package_drop = False
 
         self.controllers_status = False
-        self.toggled_status = False
+        self.toggle_status = False
 
     def run(self):
         self.logger.debug("Starting MiscArm Thread")

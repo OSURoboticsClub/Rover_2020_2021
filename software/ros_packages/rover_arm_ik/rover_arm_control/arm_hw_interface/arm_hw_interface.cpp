@@ -211,6 +211,7 @@ void ArmHWInterface::update() {
 
 void ArmHWInterface::ik_control_callback(const rover_arm_control::IKControlMessage::ConstPtr &ik_msg){
     start_button_pushed = ik_msg->start_button;
+    stop_button_pushed = ik_msg->stop_button;
 }
 
 void ArmHWInterface::run(bool start_button_pushed, bool stop_button_pushed, bool start_status)

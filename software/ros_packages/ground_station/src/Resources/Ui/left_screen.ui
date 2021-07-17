@@ -3360,7 +3360,7 @@ Dielectric Permittivity</string>
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="Mapping" native="true">
+      <widget class="QWidget" name="Mapping">
        <attribute name="title">
         <string>Maps</string>
        </attribute>
@@ -4555,7 +4555,7 @@ GPS</string>
   <customwidget>
    <class>MoveItInterface</class>
    <extends>QWidget</extends>
-   <header>MoveItInterface</header>
+   <header>Framework/ArmSystems/MoveItInterface</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

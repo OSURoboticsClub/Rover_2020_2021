@@ -173,5 +173,14 @@
                 ]
             </rosparam>
         </node>
+
+        <node name="ik_status_udp_sender" pkg="nimbro_topic_transport" type="udp_sender">
+            <param name="destination_addr" value="$(arg target)" />
+            <param name="destination_port" value="17020" /> 
+                <rosparam param="topics">
+                [
+                {name: "/rover_arm_control/IKControl/control_status, compress: false, rate: 5.0}
+                ]
+            </rosparam>           
     </group>
 </launch>

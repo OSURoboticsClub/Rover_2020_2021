@@ -92,6 +92,15 @@ void setup()
 void loop()
 {
   comms.update(); // Maintains communication over pothos
+   if(millis()-updateTimer >= updateTime){       //update timer to trigger at 20Hz, This saves a vast majority of processing power for watching communicatrions
+    updateTimer = millis();
+    driveVertical();
+    driveDrill();
+    comms.data.set_data(REGISTER::TMP_1, readTempOne());
+    comms.data.set_data(REGISTER::TMP_2, readTempTwo());
+    comms.data.set_data(REGISTER::CURRENT_1, readCurrentOne());
+    comms.data.set_data(REGISTER::CURRENT_2, readCurrentTwo());
+  }
 }
 
 // This function will set the pinmode of all non-pothos pins (exclude 485-enable, Rx, Tx, and RGBLED pins)
@@ -180,4 +189,28 @@ void driveDrill(){
     digitalWrite(PIN::SEL_2, direct);
     digitalWrite(PIN::INB_2, !direct);
     analogWrite(PIN::PWM_2, motorSpeed);
+}
+
+float readTempOne(){
+  int raw = analogRead(PIN::TEMP_1);
+  float tempC = (((raw/1023.0)*3.3)-0.4)/.0195;
+  return(tempC);
+}
+
+float readTempTwo(){
+  int raw = analogRead(PIN::TEMP_2);
+  float tempC = (((raw/1023.0)*3.3)-0.4)/.0195;
+  return(tempC);
+}
+
+float readCurrentOne(){                                    //current reading is only accurate at > 200mA
+  int raw = analogRead(PIN::CS_1);
+  float current = ((raw/1023.0)*3.3)*(112.0/43.0);
+  return(current);
+}
+
+float readCurrentTwo(){                                    //current reading is only accurate at > 200mA
+  int raw = analogRead(PIN::CS_2);
+  float current = ((raw/1023.0)*3.3)*(112.0/43.0);
+  return(current);
 }

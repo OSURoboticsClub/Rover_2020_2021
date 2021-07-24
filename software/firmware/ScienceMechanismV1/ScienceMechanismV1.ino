@@ -66,7 +66,10 @@ enum REGISTER // Enum of register addresses
   SPEED_2 = 4,
   DIR_2 = 5,
   TMP_2 = 6,
-  CURRENT_2 = 7
+  CURRENT_2 = 7,
+
+  // Video selection register (0 - 3)
+  VID_SELECT = 8
 };
 
 uint32_t updateTimer = 0;
@@ -96,6 +99,7 @@ void loop()
     updateTimer = millis();
     driveVertical();
     driveDrill();
+    setVideoSelect();
     comms.data.set_data(REGISTER::TMP_1, readTempOne());
     comms.data.set_data(REGISTER::TMP_2, readTempTwo());
     comms.data.set_data(REGISTER::CURRENT_1, readCurrentOne());
@@ -189,6 +193,12 @@ void driveDrill(){
     digitalWrite(PIN::SEL_2, direct);
     digitalWrite(PIN::INB_2, !direct);
     analogWrite(PIN::PWM_2, motorSpeed);
+}
+
+void setVideoSelect(){
+  uint8_t selected = int(comms.data.get_char_data(REGISTER::VID_SELECT));
+  digitalWrite(PIN::VID_SELECT_1, (selected | 0x1)); // Get first bit of selected
+  digitalWrite(PIN::VID_SELECT_2, (selected | 0x2)); // Get second bit of selected
 }
 
 float readTempOne(){

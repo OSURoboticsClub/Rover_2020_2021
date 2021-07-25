@@ -50,7 +50,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES arm_hw_interface
-  CATKIN_DEPENDS hardware_interface joint_limits_interface urdf controller_manager actionlib control_msgs roscpp sensor_msgs std_msgs trajectory_msgs tf transmission_interface
+  CATKIN_DEPENDS hardware_interface joint_limits_interface urdf controller_manager actionlib control_msgs roscpp sensor_msgs std_msgs trajectory_msgs tf transmission_interface message_runtime
 #  DEPENDS arm_hw_interface
 )
 

@@ -23,6 +23,7 @@ catkin_package(CATKIN_DEPENDS
    roscpp 
    std_msgs 
    message_generation
+   message_runtime
 )
 
 include_directories(${catkin_INCLUDE_DIRS})

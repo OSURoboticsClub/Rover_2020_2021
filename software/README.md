@@ -22,6 +22,22 @@ roslaunch rover_main ground_station.launch
 
 If the rover is connected and running its appropriate software, the ground station should start up in full screen across both monitors. Live video should be seen in the right hand monitor. Pressing the thumb button on the joystick and then moving the y-axis should cause the wheels on the Rover to turn. If this is working, you’ve set everything up correctly. Ctrl-q will quit the application once desired.
 
+It is also possible to run the groundstation on a computer with only one display by emulating two displays with Xephyr.
+
+Make sure you have Xephyr installed:
+
+```
+sudo apt install xserver-xephyr
+```
+
+From there, run the following command:
+
+```
+roslaunch rover_main ground_station_single_screen.launch  
+```
+
+This will launch the groundstation within the emulated displays. The emulated displays will appears as windows.
+
 
 ## Making Changes
 

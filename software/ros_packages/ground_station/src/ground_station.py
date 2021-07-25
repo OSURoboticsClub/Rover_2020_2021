@@ -14,7 +14,7 @@ import qdarkstyle
 import Framework.StartupSystems.ROSMasterChecker as ROSMasterChecker
 import Framework.LoggingSystems.Logger as Logger
 import Framework.VideoSystems.RoverVideoCoordinator as RoverVideoCoordinator
-import Framework.MapSystems.RoverMapCoordinator as RoverMapCoordinator
+#import Framework.MapSystems.RoverMapCoordinator as RoverMapCoordinator
 import Framework.ControlSystems.DriveAndCameraControlSender as JoystickControlSender
 import Framework.ControlSystems.EffectorsAndArmControlSender as ControllerControlSender
 import Framework.NavigationSystems.SpeedAndHeadingIndication as SpeedAndHeading
@@ -25,7 +25,7 @@ import Framework.StatusSystems.UbiquitiStatusCore as UbiquitiStatusCore
 import Framework.SettingsSystems.UbiquitiRadioSettings as UbiquitiRadioSettings
 import Framework.MiscSystems.MiningCore as MiningCore
 import Framework.MiscSystems.BashConsoleCore as BashConsoleCore
-import Framework.MiscSystems.MiscArmCore as MiscArmCore
+#import Framework.MiscSystems.MiscArmCore as MiscArmCore
 import Framework.MiscSystems.RDFCore as RDFCore
 
 #####################################
@@ -110,7 +110,7 @@ class GroundStation(QtCore.QObject):
 
         # ##### Instantiate Threaded Classes ######
         self.__add_thread("Video Coordinator", RoverVideoCoordinator.RoverVideoCoordinator(self.shared_objects))
-        self.__add_thread("Map Coordinator", RoverMapCoordinator.RoverMapCoordinator(self.shared_objects))
+        #self.__add_thread("Map Coordinator", RoverMapCoordinator.RoverMapCoordinator(self.shared_objects))
         self.__add_thread("Joystick Sender", JoystickControlSender.DriveAndCameraControlSender(self.shared_objects))
         self.__add_thread("Controller Sender", ControllerControlSender.EffectorsAndArmControlSender(self.shared_objects))
         self.__add_thread("Speed and Heading", SpeedAndHeading.SpeedAndHeadingIndication(self.shared_objects))
@@ -119,7 +119,7 @@ class GroundStation(QtCore.QObject):
         self.__add_thread("Ubiquiti Radio Settings", UbiquitiRadioSettings.UbiquitiRadioSettings(self.shared_objects))
         self.__add_thread("Waypoints Coordinator", WaypointsCoordinator.WaypointsCoordinator(self.shared_objects))
         self.__add_thread("Bash Console", BashConsoleCore.BashConsole(self.shared_objects))
-        self.__add_thread("Misc Arm", MiscArmCore.MiscArm(self.shared_objects))
+        #self.__add_thread("Misc Arm", MiscArmCore.MiscArm(self.shared_objects))
         self.__add_thread("RDF", RDFCore.RDF(self.shared_objects))
 
         self.connect_signals_and_slots_signal.emit()

@@ -64,12 +64,12 @@ include_directories(include
 )
 
 ## Declare a C++ library
+add_subdirectory(arm_hw_interface/src/simplemotion)
 
 # Hardware Interface
 add_library(arm_hw_interface arm_hw_interface/arm_hw_interface.cpp)
 target_link_libraries(arm_hw_interface
   ${catkin_LIBRARIES}
-  simplemotion2
 )
 
 ## Specifying sources
@@ -88,6 +88,7 @@ add_dependencies(arm_hw_interface_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${cat
 ## Specify libraries to link a library or executable target against
 target_link_libraries(arm_hw_interface_node
   arm_hw_interface
+  simplemotion2
   ${catkin_LIBRARIES}
 )
 

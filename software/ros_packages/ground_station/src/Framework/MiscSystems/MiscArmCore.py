@@ -21,8 +21,8 @@ ARM_STATUS_TOPIC = "/rover_arm/status"
 
 GRIPPER_CONTROL_TOPIC = "/rover_control/gripper/control"
 
-ARM_CONTROLLER_STATUS = "/rover_arm_control/IKControl/control_status"
-ARM_TOGGLE_STATUS =  "/rover_arm_control/IKControl/button_status"
+ARM_CONTROLLER_STATUS = "/rover_arm_ik/rover_arm_control/IKControl/control_status"
+ARM_TOGGLE_STATUS =  "/rover_arm_ik/rover_arm_control/IKControl/button_status"
 
 THREAD_HERTZ = 5
 

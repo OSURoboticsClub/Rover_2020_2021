@@ -58,6 +58,9 @@ ARM_PACKAGE_DROP = [
 # UbiquitiRadioSettings Class Definition
 #####################################
 class MiscArm(QtCore.QThread):
+    # ########### define signals for slots ############
+    controller_status__signal = QtCore.pyqtSignal(str)
+
     def __init__(self, shared_objects):
         super(MiscArm, self).__init__()
 
@@ -235,7 +238,7 @@ class MiscArm(QtCore.QThread):
 
         self.ik_control_start_button.clicked.connect(self.on_ik_start_button_pressed__slot)
         self.ik_control_stop_button.clicked.connect(self.on_ik_stop_button_pressed__slot)
-        self.controller_status__signal.connect(self.ik_status_publisher.setStyleSheet)
+        self.controller_status__signal.connect(self.ik_control_status_label.setStyleSheet)
 
     def on_upright_zeroed_button_pressed__slot(self):
         self.process_absolute_move_command([0 for _ in range(6)])

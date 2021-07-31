@@ -170,7 +170,7 @@ void get_humidity() {
 }
 
 void get_temperature() {
-  comms.data.set_data(REGISTER::TEMP, tempAndHumidity.readHumidity());  // send temp reading data to Pothos register
+  comms.data.set_data(REGISTER::TEMP, tempAndHumidity.readTemperature());  // send temp reading data to Pothos register
 }
 
 void get_UV(){

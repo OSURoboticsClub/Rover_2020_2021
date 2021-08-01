@@ -26,7 +26,7 @@ uint32_t updateTimer = 0;
 int updateTime = 50;
 
 int pothosTimeout = 200;        //The recomended pothos timeout is 50 ms
-uint8_t slaveID = 1;            //The slave ID for the node
+uint8_t slaveID = 6;            //The slave ID for the node
 
 pothos comms(slaveID, PIN::EN485, pothosTimeout, PIN::RGB_R, PIN::RGB_G, PIN::RGB_B);         //init the pothos library
 
@@ -70,7 +70,7 @@ void setDataTypes(){                          //This function is for setting the
 	//comms.data.set_type(REGISTER::TIME_DATA, "long");     //longs are also supported. time is often a long.
 	//comms.data.set_type(REGISTER::TMP_DATA, "float");     //floats are also supported
 
-  comms.data.set_type(REGISTER::SPEED, "char");
+  comms.data.set_type(REGISTER::SPEED, "int");
   comms.data.set_type(REGISTER::DIR, "char");
   comms.data.set_type(REGISTER::TMP, "float");
   comms.data.set_type(REGISTER::CURRENT, "float");
@@ -84,7 +84,7 @@ float readTemp(){
 
 void driveMotors(){
     bool direct = (comms.data.get_char_data(REGISTER::DIR) != '\0');
-    uint8_t motorSpeed = int(comms.data.get_char_data(REGISTER::SPEED));
+    uint8_t motorSpeed = comms.data.get_int_data(REGISTER::SPEED);
     digitalWrite(PIN::INA, direct);
     digitalWrite(PIN::SEL, direct);
     digitalWrite(PIN::INB, !direct);

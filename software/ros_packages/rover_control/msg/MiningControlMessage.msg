@@ -8,6 +8,15 @@ int32 linear_set_position_positive
 int32 linear_set_position_negative
 int32 linear_set_position_absolute
 bool linear_stop
+bool linear_lower
+
+int32 rack_set_position_positive
+int32 rack_set_position_negative
+bool rack_stop 
+bool rack_at_end
+bool rack_move_one
+
+
 
 uint16 servo1_target
 uint16 servo2_target

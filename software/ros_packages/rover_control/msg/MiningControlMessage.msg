@@ -15,6 +15,7 @@ int32 rack_set_position_negative
 int32 rack_set_position_absolute
 bool rack_stop 
 bool rack_at_end
+bool rack_at_start
 bool rack_move_one
 
 uint16 servo1_target

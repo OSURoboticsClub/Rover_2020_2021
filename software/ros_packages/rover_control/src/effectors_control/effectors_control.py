@@ -134,6 +134,9 @@ MINING_MODBUS_REGISTERS_PART_2 = {
 
     "OVERTRAVEL": 15,
     "HOMING_NEEDED": 16
+
+    "RACK_CURRENT": 17,
+    "RACK_CURRENT_POSITION": 18
 }
 
 
@@ -362,13 +365,18 @@ class EffectorsControl(object):
 
             #### auto control of sample rack (move one space forward) ###
             if self.mining_control_message.rack_move_one is True:
-                if self.rack_curr_position >= 0 && self.mining_control_message.rack_at_end is False:
-                    #set position positive
-                    ##new_rack_absolute_target = self.rack_curr_position + target number of steps
+                if self.rack curr_position == 0:
+                    self.mining_control_message.rack_at_start = True
+                    #set pos postiive 
+                    #new_rack_absolute target = self.rack_curr_position + target number of steps to move to first space
                     #stop rack?
-                elif self.rack_curr_position >= 0 && self.mining_control_message.rack_at_end is True:
+                elif self.rack_curr_position > 0 && self.mining_control_message.rack_at_end is False:
+                    #set position positive
+                    ##new_rack_absolute_target = self.rack_curr_position + target number of steps to move 1 space
+                    #stop rack?
+                elif self.rack_curr_position > 0 && self.mining_control_message.rack_at_end is True:
                     #set position negative
-                    ##new_rack_absolute_target = self.rack_curr_position + target steps to get back to 0
+                    ##new_rack_absolute_target = self.rack_curr_position + target steps to get back to 0 (5 full rotations)
                     #stop rack?
                 else:
                     new_rack_absolute_target = 0
@@ -417,6 +425,16 @@ class EffectorsControl(object):
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_POSITIVE"]] = 0
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_NEGATIVE"]] = 0
 
+            if rack_set_position_positive > 0:
+                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_POSITIVE"]] = rack_set_position_positive
+                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_NEGATIVE"]] = 0
+````````````elif rack_set_position_negative > 0:
+                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_NEGATIVE"]] = rack_set_position_negative
+                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_POSITIVE"]] = 0
+            elif rack_stop:
+                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_NEGATIVE"]] = 0
+                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_POSITIVE"]] = 0
+            
             if self.mining_control_message.overtravel:
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["OVERTRAVEL"]] = 0 if self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["OVERTRAVEL"]] else 1
                 self.mining_control_message.overtravel = False

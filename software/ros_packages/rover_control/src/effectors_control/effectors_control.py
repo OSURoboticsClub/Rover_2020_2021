@@ -251,6 +251,7 @@ class EffectorsControl(object):
 
         self.linear_curr_position = 0
         self.motor_curr_position = 0
+        self.rack_curr_position = 0
 
         self.run()
 
@@ -336,6 +337,8 @@ class EffectorsControl(object):
             linear_set_position_positive = self.mining_control_message.linear_set_position_positive
             linear_set_position_negative = self.mining_control_message.linear_set_position_negative
             linear_set_position_absolute = self.mining_control_message.linear_set_position_absolute
+
+            #### manual control of linear actuator ####
             if self.linear_curr_position + linear_set_position_absolute >= 0:
                 new_linear_absolute_target = self.linear_curr_position + linear_set_position_absolute
             else:
@@ -344,6 +347,32 @@ class EffectorsControl(object):
             linear_stop = self.mining_control_message.linear_stop
             
             print(new_linear_absolute_target, linear_set_position_absolute, self.linear_curr_position)
+
+            rack_set_position_positive = self.mining_control_message.rack_set_position_positive
+            rack_set_position_negative = self.mining_control_message.rack_set_position_negative
+            rack_set_position_absolute = self.mining_control_message.rack_set_position_absolute
+            
+            #### manual control of sample rack ####
+            if self.rack_curr_position + rack_set_position_absolute >= 0:
+                new_rack_absolute_target = self.rack_curr_position + rack_set_position_absolute
+            else:
+                new_rack_absolute_target = 0
+
+            rack_stop = self.mining_control_message.rack_stop
+
+            #### auto control of sample rack (move one space forward) ###
+            if self.mining_control_message.rack_move_one is True:
+                if self.rack_curr_position >= 0 && self.mining_control_message.rack_at_end is False:
+                    #set position positive
+                    ##new_rack_absolute_target = self.rack_curr_position + target number of steps
+                    #stop rack?
+                elif self.rack_curr_position >= 0 && self.mining_control_message.rack_at_end is True:
+                    #set position negative
+                    ##new_rack_absolute_target = self.rack_curr_position + target steps to get back to 0
+                    #stop rack?
+                else:
+                    new_rack_absolute_target = 0
+
 
             servo1_target = self.mining_control_message.servo1_target
             servo2_target = self.mining_control_message.servo2_target

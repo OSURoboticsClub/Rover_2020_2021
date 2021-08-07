@@ -197,8 +197,8 @@ void driveDrill(){
 
 void setVideoSelect(){
   uint8_t selected = int(comms.data.get_char_data(REGISTER::VID_SELECT));
-  digitalWrite(PIN::VID_SELECT_1, (selected | 0x1)); // Get first bit of selected
-  digitalWrite(PIN::VID_SELECT_2, (selected | 0x2)); // Get second bit of selected
+  digitalWrite(PIN::VID_SELECT_1, (selected & 0x1)); // Get first bit of selected
+  digitalWrite(PIN::VID_SELECT_2, (selected & 0x2)); // Get second bit of selected
 }
 
 float readTempOne(){

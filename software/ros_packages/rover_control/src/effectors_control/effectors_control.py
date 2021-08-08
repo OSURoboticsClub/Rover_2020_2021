@@ -97,14 +97,6 @@ MINING_MODBUS_REGISTERS = {
     "CAM_SHOOT": 4,
     "CAM_CHANGE_VIEW": 5,
 
-    "PROBE_TAKE_READING": 6,
-    "PROBE_TEMP_C": 7,
-    "PROBE_MOISTURE": 8,
-    "PROBE_LOSS_TANGENT": 9,
-    "PROBE_SOIL_ELEC_COND": 10,
-    "PROBE_REAL_DIELEC_PERM": 11,
-    "PROBE_IMAG_DIELEC_PERM": 12,
-
     "MOTOR_SET_POSITION_POSITIVE": 13,
     "MOTOR_SET_POSITION_NEGATIVE": 14
 }
@@ -405,7 +397,7 @@ class EffectorsControl(object):
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_ABSOLUTE"]] = new_linear_absolute_target
             if rack_set_position_absolute != 0:
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_ABSOLUTE"]] = new_rack_absolute_target
-                
+
             if servo1_target >= 0:
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["SERVO1_TARGET"]] = servo1_target
             if servo2_target >= 0:
@@ -449,9 +441,6 @@ class EffectorsControl(object):
                 self.mining_registers[MINING_MODBUS_REGISTERS_PART_2["MOTOR_GO_HOME"]] = 0 if self.mining_registers[MINING_MODBUS_REGISTERS_PART_2["MOTOR_GO_HOME"]] else 1
                 self.mining_control_message.motor_go_home = False
 
-            if self.mining_control_message.probe_take_reading:
-                self.mining_registers[MINING_MODBUS_REGISTERS["PROBE_TAKE_READING"]] = 1
-
             print(self.mining_registers)
             print(self.mining_registers_part_2)
             self.mining_node.write_registers(0, self.mining_registers)
@@ -464,7 +453,6 @@ class EffectorsControl(object):
     def process_camera_control_message(self):
         if self.new_camera_control_message:
             self.mining_registers[MINING_MODBUS_REGISTERS_PART_2["MOTOR_GO_HOME"]] = 0
-            self.mining_registers[MINING_MODBUS_REGISTERS["PROBE_TAKE_READING"]] = 0
             self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["OVERTRAVEL"]] = 0
 
             self.mining_registers[MINING_MODBUS_REGISTERS["CAM_CHANGE_VIEW"]] = self.camera_control_message.cam_change_view
@@ -493,13 +481,6 @@ class EffectorsControl(object):
 
             self.linear_curr_position = message.linear_current_position
             self.motor_curr_position = message.motor_current_position
-            
-            message.probe_temp_c = self.mining_registers[MINING_MODBUS_REGISTERS["PROBE_TEMP_C"]]
-            message.probe_moisture = self.mining_registers[MINING_MODBUS_REGISTERS["PROBE_MOISTURE"]]
-            message.probe_loss_tangent = self.mining_registers[MINING_MODBUS_REGISTERS["PROBE_LOSS_TANGENT"]]
-            message.probe_soil_elec_cond = self.mining_registers[MINING_MODBUS_REGISTERS["PROBE_SOIL_ELEC_COND"]]
-            message.probe_real_dielec_perm = self.mining_registers[MINING_MODBUS_REGISTERS["PROBE_REAL_DIELEC_PERM"]]
-            message.probe_imag_dielec_perm = self.mining_registers[MINING_MODBUS_REGISTERS["PROBE_IMAG_DIELEC_PERM"]]
 
             message.linear_current_position = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_CURRENT_POSITION"]]
 

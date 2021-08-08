@@ -1,10 +1,3 @@
-float32 probe_temp_c
-float32 probe_moisture
-float32 probe_loss_tangent
-float32 probe_soil_elec_cond
-float32 probe_real_dielec_perm
-float32 probe_imag_dielec_perm
-
 int32 motor_current_position
 int32 linear_current_position
 int32 rack_current_position

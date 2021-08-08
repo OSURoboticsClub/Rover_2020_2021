@@ -23,7 +23,6 @@ MINING_COLLECTION_CUP_OPEN = 0
 MINING_COLLECTION_CUP_CLOSED = 130
 
 # servo 1
-PROBE_DROP_POSITION = 43
 SCOOP_DROP_POSITION = 132
 
 # servo 2
@@ -70,11 +69,9 @@ class Mining(QtCore.QObject):
         self.drill_turn_clockwise_button = self.left_screen.drill_turn_clockwise_button  # type:QtWidgets.QPushButton
         self.drill_turn_counter_clockwise_button = self.left_screen.drill_turn_counter_clockwise_button  # type:QtWidgets.QPushButton
         self.drill_stop_button = self.left_screen.drill_stop_button  # type:QtWidgets.QPushButton
-        self.science_probe_down_button = self.left_screen.science_probe_down_button  # type:QtWidgets.QPushButton
         self.science_scoop_down_button = self.left_screen.science_scoop_down_button  # type:QtWidgets.QPushButton
         self.science_container_open_button = self.left_screen.science_container_open_button  # type:QtWidgets.QPushButton
         self.science_container_close_button = self.left_screen.science_container_close_button  # type:QtWidgets.QPushButton
-        self.science_probe_button = self.left_screen.science_probe_button  # type:QtWidgets.QPushButton
 
         # self.fourbar_position_slider = self.left_screen.fourbar_position_slider  # type:QtWidgets.QProgressBar
         # self.linear_position_slider = self.left_screen.linear_position_slider  # type:QtWidgets.QProgressBar
@@ -129,11 +126,9 @@ class Mining(QtCore.QObject):
         self.drill_turn_clockwise_button.clicked.connect(self.on_drill_clockwise_clocked__slot)
         self.drill_turn_counter_clockwise_button.clicked.connect(self.on_drill_counter_clockwise_clicked__slot)
         self.drill_stop_button.clicked.connect(self.on_drill_stop_clicked__slot)
-        self.science_probe_down_button.clicked.connect(self.on_science_probe_down_clicked__slot)
         self.science_scoop_down_button.clicked.connect(self.on_science_scoop_down_clicked__slot)
         self.science_container_open_button.clicked.connect(self.on_science_container_open_clicked__slot)
         self.science_container_close_button.clicked.connect(self.on_science_container_close_clicked__slot)
-        self.science_probe_button.clicked.connect(self.on_science_probe_clicked__slot)
 
         #self.fourbar_position_slider.valueChanged.connect(self.fourbar_position_slider__slot)
         #self.linear_position_slider.valueChanged.connect(self.linear_position_slider__slot)
@@ -211,10 +206,6 @@ class Mining(QtCore.QObject):
         message.speed = 0
         self.drill_control_publisher.publish(message)
 
-    def on_science_probe_down_clicked__slot(self):
-        message = MiningControlMessage()
-        message.servo1_target = PROBE_DROP_POSITION
-        self.mining_control_publisher.publish(message)
 
     def on_science_scoop_down_clicked__slot(self):
         message = MiningControlMessage()
@@ -231,11 +222,6 @@ class Mining(QtCore.QObject):
         message = MiningControlMessage()
         message.servo2_target = CONTAINER_CLOSED
         message.servo1_target = SCOOP_DROP_POSITION
-        self.mining_control_publisher.publish(message)
-
-    def on_science_probe_clicked__slot(self):
-        message = MiningControlMessage()
-        message.probe_take_reading = True
         self.mining_control_publisher.publish(message)
 
     def on_cam_lcd_button_clicked__slot(self):
@@ -281,11 +267,4 @@ class Mining(QtCore.QObject):
 
         self.mining_4bar_current_update_ready__signal.emit(status.linear_current)
         self.mining_linear_current_update_ready__signal.emit(status.motor_current)
-
-        self.temp_update_ready__signal.emit(status.probe_temp_c)
-        self.moisture_update_ready__signal.emit(status.probe_moisture)
-        self.loss_tangent_update_ready__signal.emit(status.probe_loss_tangent)
-        self.electrical_conductivity_update_ready__signal.emit(status.probe_soil_elec_cond)
-        self.real_dielectric_update_ready__signal.emit(status.probe_real_dielec_perm)
-        self.imaginary_dielectric_update_ready__signal.emit(status.probe_imag_dielec_perm)
 

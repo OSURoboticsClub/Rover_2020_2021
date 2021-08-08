@@ -2261,14 +2261,277 @@ Connected</string>
           <string>Mining</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_8">
-          <item row="5" column="0">
-           <widget class="Line" name="line_9">
+          <item row="0" column="0">
+           <widget class="Line" name="line_6">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_34">
+              <item>
+               <widget class="QLabel" name="label_35">
+                <property name="font">
+                 <font>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Mining</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mining_open_button">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Open</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mining_close_button">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Close</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mining_toggle_overtravel_button">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Toggle Overtravel</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_3">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Move Rack 1 Space</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mining_home_linear_button">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Home Linear</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_35">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_45">
+                <item>
+                 <widget class="QLabel" name="label_39">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Reported Motor Telemetry</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_21">
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_41">
+                  <item>
+                   <widget class="QLabel" name="label_5">
+                    <property name="font">
+                     <font>
+                      <pointsize>10</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>4 bar Temp</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLCDNumber" name="mining_4bar_temp_lcd_number"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_13">
+                    <property name="font">
+                     <font>
+                      <pointsize>10</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Linear Temp</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLCDNumber" name="mining_linear_temp_lcd_number"/>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_42">
+                  <item>
+                   <widget class="QLabel" name="label_37">
+                    <property name="font">
+                     <font>
+                      <pointsize>10</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>4 bar Current</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLCDNumber" name="mining_4bar_current_lcd_number"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_38">
+                    <property name="font">
+                     <font>
+                      <pointsize>10</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Linear Current</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLCDNumber" name="mining_linear_current_lcd_number"/>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QLabel" name="label_14">
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Drill</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="drill_turn_clockwise_button">
+              <property name="text">
+               <string>Turn clockwise</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="drill_turn_counter_clockwise_button">
+              <property name="text">
+               <string>Turn counter clockwise</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="drill_stop_button">
+              <property name="text">
+               <string>Stop</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_16">
+            <item>
+             <widget class="QLabel" name="label_20">
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Control Mode</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton">
+              <property name="text">
+               <string>Toggle Linear Control</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_2">
+              <property name="text">
+               <string>Toggle Rack Control</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="0">
            <layout class="QVBoxLayout" name="verticalLayout_26">
             <item>
              <widget class="QLabel" name="label_34">
@@ -2487,190 +2750,7 @@ Connected</string>
             </item>
            </layout>
           </item>
-          <item row="0" column="0">
-           <widget class="Line" name="line_6">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_13">
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_34">
-              <item>
-               <widget class="QLabel" name="label_35">
-                <property name="font">
-                 <font>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Mining</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="mining_open_button">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Open</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="mining_close_button">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Close</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="mining_toggle_overtravel_button">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Toggle Overtravel</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="mining_home_linear_button">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Home Linear</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_35">
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_45">
-                <item>
-                 <widget class="QLabel" name="label_39">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Reported Motor Telemetry</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_21">
-                <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_41">
-                  <item>
-                   <widget class="QLabel" name="label_5">
-                    <property name="font">
-                     <font>
-                      <pointsize>10</pointsize>
-                      <weight>75</weight>
-                      <bold>true</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>4 bar Temp</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLCDNumber" name="mining_4bar_temp_lcd_number"/>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_13">
-                    <property name="font">
-                     <font>
-                      <pointsize>10</pointsize>
-                      <weight>75</weight>
-                      <bold>true</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Linear Temp</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLCDNumber" name="mining_linear_temp_lcd_number"/>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_42">
-                  <item>
-                   <widget class="QLabel" name="label_37">
-                    <property name="font">
-                     <font>
-                      <pointsize>10</pointsize>
-                      <weight>75</weight>
-                      <bold>true</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>4 bar Current</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLCDNumber" name="mining_4bar_current_lcd_number"/>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_38">
-                    <property name="font">
-                     <font>
-                      <pointsize>10</pointsize>
-                      <weight>75</weight>
-                      <bold>true</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Linear Current</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLCDNumber" name="mining_linear_current_lcd_number"/>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item row="8" column="0">
+          <item row="6" column="0">
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2682,54 +2762,6 @@ Connected</string>
              </size>
             </property>
            </spacer>
-          </item>
-          <item row="3" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_12">
-            <item>
-             <widget class="QLabel" name="label_14">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Drill</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="drill_turn_clockwise_button">
-              <property name="text">
-               <string>Turn clockwise</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="drill_turn_counter_clockwise_button">
-              <property name="text">
-               <string>Turn counter clockwise</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="drill_stop_button">
-              <property name="text">
-               <string>Stop</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="4" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_16">
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_10"/>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
@@ -2798,6 +2830,13 @@ Connected</string>
             </item>
             <item>
              <layout class="QGridLayout" name="gridLayout_28">
+              <item row="4" column="0">
+               <widget class="Line" name="line_13">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
               <item row="2" column="0">
                <widget class="QLabel" name="label_47">
                 <property name="font">
@@ -3050,20 +3089,11 @@ Dielectric Permittivity</string>
                 </property>
                </spacer>
               </item>
-              <item row="4" column="0">
-               <widget class="Line" name="line_13">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
              </layout>
             </item>
            </layout>
           </item>
          </layout>
-         <zorder>label_36</zorder>
-         <zorder>verticalLayoutWidget</zorder>
         </widget>
         <widget class="QWidget" name="tab">
          <attribute name="title">

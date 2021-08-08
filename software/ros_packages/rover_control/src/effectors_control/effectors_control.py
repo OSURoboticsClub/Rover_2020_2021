@@ -7,12 +7,13 @@ import rospy
 from time import time, sleep
 
 import serial.rs485
-import minimalmodbus
+# import minimalmodbus
 
 # from std_msgs.msg import UInt8, UInt16
 
 # Custom Imports
 from rover_control.msg import MiningControlMessage, MiningStatusMessage, GripperControlMessage, GripperStatusMessage, CameraControlMessage, DrillControlMessage
+from rover20_comms import rover20_comms as pothos
 
 #####################################
 # Global Variables
@@ -33,12 +34,12 @@ GRIPPER_TIMEOUT = 0.5
 MINING_TIMEOUT = 0.3
 DRILL_TIMEOUT = 0.3
 
-MINING_HALF_REG_LIMIT = 15
-MINING_REMAINING_REGS = 17
+# MINING_HALF_REG_LIMIT = 15
+# MINING_REMAINING_REGS = 17
 
-FAILED_GRIPPER_MODBUS_LIMIT = 20
-FAILED_MINING_MODBUS_LIMIMT = 20
-FAILED_DRILL_MODBUS_LIMIMT = 20
+# FAILED_GRIPPER_MODBUS_LIMIT = 20
+# FAILED_MINING_MODBUS_LIMIMT = 20
+# FAILED_DRILL_MODBUS_LIMIMT = 20
 
 RX_DELAY = 0.01
 TX_DELAY = 0.01
@@ -56,91 +57,91 @@ DRILL_CONTROL_SUBSCRIBER_TOPIC = "mining/drill/control"
 CAMERA_CONTROL_SUBSCRIBER_TOPIC = "camera/control"
 
 # ##### Gripper Defines #####
-GRIPPER_MODBUS_REGISTERS = {
-    "POSITION": 0,
-    "HOME": 1,
-    "TARGET": 2,
-    "SPEED": 3,
-    "DIRECTION": 4,
-    "LASER": 5,
-    "LED": 6,
-    "TEMP": 7,
-    "DISTANCE": 8,
-    "CURRENT": 9,
-    "IS_HOMED": 10
-}
+#GRIPPER_MODBUS_REGISTERS = {
+    #"POSITION": 0,
+    #"HOME": 1,
+    #"TARGET": 2,
+    #"SPEED": 3,
+    #"DIRECTION": 4,
+    #"LASER": 5,
+    #"LED": 6,
+    #"TEMP": 7,
+    #"DISTANCE": 8,
+    #"CURRENT": 9,
+    #"IS_HOMED": 10
+#}
 
 
-DEFAULT_GRIPPER_REGISTERS = [
-    0,  # No positional update
-    0,  # Do not home
-    0,  # No target
-    0,  # 0 speed
-    0,  # No direction
-    0,  # No laser
-    0,  # Light off
-    0,  # 0 temp
-    0,  # 0 distance
-    0,  # 0 current
-    0,  # Not homed
-]
+#DEFAULT_GRIPPER_REGISTERS = [
+    #0,  # No positional update
+    #0,  # Do not home
+    #0,  # No target
+    #0,  # 0 speed
+    #0,  # No direction
+    #0,  # No laser
+    #0,  # Light off
+    #0,  # 0 temp
+    #0,  # 0 distance
+    #0,  # 0 current
+    #0,  # Not homed
+#]
 
 GRIPPER_UNIVERSAL_POSITION_MAX = 10000
 
 # ##### Mining Defines #####
 # ##### These are divided into two parts to avoid CRC errors over modbus. #####
-MINING_MODBUS_REGISTERS = {
-    "CAM_ZOOM_IN_FULL": 0,
-    "CAM_ZOOM_OUT_FULL": 1,
-    "CAM_ZOOM_IN": 2,
-    "CAM_ZOOM_OUT": 3,
-    "CAM_SHOOT": 4,
-    "CAM_CHANGE_VIEW": 5,
+#MINING_MODBUS_REGISTERS = {
+    #"CAM_ZOOM_IN_FULL": 0,
+    #"CAM_ZOOM_OUT_FULL": 1,
+    #"CAM_ZOOM_IN": 2,
+    #"CAM_ZOOM_OUT": 3,
+    #"CAM_SHOOT": 4,
+    #"CAM_CHANGE_VIEW": 5,
 
-    "MOTOR_SET_POSITION_POSITIVE": 13,
-    "MOTOR_SET_POSITION_NEGATIVE": 14
-}
+    #"MOTOR_SET_POSITION_POSITIVE": 13,
+    #"MOTOR_SET_POSITION_NEGATIVE": 14
+#}
 
-MINING_MODBUS_REGISTERS_PART_2 = {
-    "MOTOR_SET_POSITION_ABSOLUTE": 0,
-    "MOTOR_GO_HOME": 1,
+#MINING_MODBUS_REGISTERS_PART_2 = {
+    #"MOTOR_SET_POSITION_ABSOLUTE": 0,
+    #"MOTOR_GO_HOME": 1,
 
-    "LINEAR_SET_POSITION_POSITIVE": 2,
-    "LINEAR_SET_POSITION_NEGATIVE": 3,
-    "LINEAR_SET_POSITION_ABSOLUTE": 4,
+    #"LINEAR_SET_POSITION_POSITIVE": 2,
+    #"LINEAR_SET_POSITION_NEGATIVE": 3,
+    #"LINEAR_SET_POSITION_ABSOLUTE": 4,
 
-    "LINEAR_CURRENT_POSITION": 5,
-    "MOTOR_CURRENT_POSITION": 6,
+    #"LINEAR_CURRENT_POSITION": 5,
+    #"MOTOR_CURRENT_POSITION": 6,
 
-    "TEMP1": 7,
-    "TEMP2": 8,
+    #"TEMP1": 7,
+    #"TEMP2": 8,
 
-    "MOTOR_CURRENT": 9,
-    "LINEAR_CURRENT": 10,
+    #"MOTOR_CURRENT": 9,
+    #"LINEAR_CURRENT": 10,
 
-    "SERVO1_TARGET": 11,
-    "SERVO2_TARGET": 12,
+    #"SERVO1_TARGET": 11,
+    #"SERVO2_TARGET": 12,
 
-    "SWITCH1_OUT": 13,
-    "SWITCH2_OUT": 14,
+    #"SWITCH1_OUT": 13,
+    #"SWITCH2_OUT": 14,
 
-    "OVERTRAVEL": 15,
-    "HOMING_NEEDED": 16
+    #"OVERTRAVEL": 15,
+    #"HOMING_NEEDED": 16
 
-    "RACK_CURRENT": 17,
-    "RACK_CURRENT_POSITION": 18,
-    "RACK_SET_POSITION_NEGATIVE": 19,
-    "RACK_SET_POSITION_POSITIVE": 20,
-    "RACK_SET_POSITION_ABSOLUTE": 21
-}
+    #"RACK_CURRENT": 17,
+    #"RACK_CURRENT_POSITION": 18,
+    #"RACK_SET_POSITION_NEGATIVE": 19,
+    #"RACK_SET_POSITION_POSITIVE": 20,
+    #"RACK_SET_POSITION_ABSOLUTE": 21
+#}
 
 
 MINING_POSITIONAL_THRESHOLD = 20
 
-DRILL_MODBUS_REGISTERS = {
-    "DIRECTION": 0,
-    "SPEED": 1
-}
+#DRILL_MODBUS_REGISTERS = {
+    #"DIRECTION": 0,
+    #"SPEED": 1
+#}
 
 # ##### Science Defines #####
 
@@ -192,9 +193,9 @@ class EffectorsControl(object):
 
         self.wait_time = 1.0 / rospy.get_param("~hertz", DEFAULT_HERTZ)
 
-        self.gripper_node = None  # type:minimalmodbus.Instrument
-        self.mining_node = None  # type:minimalmodbus.Instrument
-        self.drill_node = None  # type:minimalmodbus.Instrument
+        #self.gripper_node = None  # type:minimalmodbus.Instrument
+        #self.mining_node = None  # type:minimalmodbus.Instrument
+        #self.drill_node = None  # type:minimalmodbus.Instrument
 
         self.gripper_node_present = False
         self.mining_node_present = True
@@ -218,14 +219,14 @@ class EffectorsControl(object):
         self.mining_status_publisher = rospy.Publisher(self.mining_status_publisher_topic, MiningStatusMessage, queue_size=1)
 
         # ##### Misc #####
-        self.modbus_nodes_seen_time = time()
+        #self.modbus_nodes_seen_time = time()
 
         # ##### Mining Variables #####
-        self.mining_registers = [0] * MINING_HALF_REG_LIMIT  # Weird stuff to read twice to resolve CRC errors
-        self.mining_registers_part_2 = [0] * MINING_REMAINING_REGS  # For reading the last 17 registers
-        self.gripper_registers = None
+        #self.mining_registers = [0] * MINING_HALF_REG_LIMIT  # Weird stuff to read twice to resolve CRC errors
+        #self.mining_registers_part_2 = [0] * MINING_REMAINING_REGS  # For reading the last 17 registers
+        #self.gripper_registers = None
         
-        self.drill_registers = None
+        #self.drill_registers = None
 
         self.mining_control_message = None  # type:MiningControlMessage
         self.new_mining_control_message = False
@@ -239,9 +240,9 @@ class EffectorsControl(object):
         self.camera_control_message = None  # type: CameraControlMessage
         self.new_camera_control_message = False
 
-        self.failed_gripper_modbus_count = 0
-        self.failed_mining_modbus_count = 0
-        self.failed_dril_modbus_count = 0
+        #self.failed_gripper_modbus_count = 0
+        #elf.failed_mining_modbus_count = 0
+        #self.failed_dril_modbus_count = 0
 
         self.which_effector = self.EFFECTORS.index("GRIPPER")
 
@@ -253,15 +254,15 @@ class EffectorsControl(object):
 
         self.run()
 
-    def __setup_minimalmodbus_for_485(self):
-        self.gripper_node.serial = serial.rs485.RS485(self.gripper_port, baudrate=self.baud, timeout=GRIPPER_TIMEOUT)
-        self.gripper_node.serial.rs485_mode = serial.rs485.RS485Settings(rts_level_for_rx=1, rts_level_for_tx=0, delay_before_rx=RX_DELAY, delay_before_tx=TX_DELAY)
+    #def __setup_minimalmodbus_for_485(self):
+       # self.gripper_node.serial = serial.rs485.RS485(self.gripper_port, baudrate=self.baud, timeout=GRIPPER_TIMEOUT)
+       # self.gripper_node.serial.rs485_mode = serial.rs485.RS485Settings(rts_level_for_rx=1, rts_level_for_tx=0, delay_before_rx=RX_DELAY, delay_before_tx=TX_DELAY)
 
-        self.mining_node.serial = serial.rs485.RS485(self.mining_port, baudrate=self.baud, timeout=MINING_TIMEOUT)
-        self.mining_node.serial.rs485_mode = serial.rs485.RS485Settings(rts_level_for_rx=1, rts_level_for_tx=0, delay_before_rx=RX_DELAY, delay_before_tx=TX_DELAY)
+       # self.mining_node.serial = serial.rs485.RS485(self.mining_port, baudrate=self.baud, timeout=MINING_TIMEOUT)
+       # self.mining_node.serial.rs485_mode = serial.rs485.RS485Settings(rts_level_for_rx=1, rts_level_for_tx=0, delay_before_rx=RX_DELAY, delay_before_tx=TX_DELAY)
 
-        self.drill_node.serial = serial.rs485.RS485(self.drill_port, baudrate=self.baud, timeout=DRILL_TIMEOUT)
-        self.drill_node.serial.rs485_mode = serial.rs485.RS485Settings(rts_level_for_rx=1, rts_level_for_tx=0, delay_before_rx=RX_DELAY, delay_before_tx=TX_DELAY)
+       # self.drill_node.serial = serial.rs485.RS485(self.drill_port, baudrate=self.baud, timeout=DRILL_TIMEOUT)
+       # self.drill_node.serial.rs485_mode = serial.rs485.RS485Settings(rts_level_for_rx=1, rts_level_for_tx=0, delay_before_rx=RX_DELAY, delay_before_tx=TX_DELAY)
 
 
     def run(self):
@@ -301,11 +302,11 @@ class EffectorsControl(object):
         self.process_camera_control_message()
 
     def connect_to_nodes(self):
-        self.gripper_node = minimalmodbus.Instrument(self.gripper_port, int(self.gripper_node_id))
-        self.mining_node = minimalmodbus.Instrument(self.mining_port, int(self.mining_node_id))
-        self.drill_node = minimalmodbus.Instrument(self.drill_port, int(self.drill_node_id))
+        #self.gripper_node = minimalmodbus.Instrument(self.gripper_port, int(self.gripper_node_id))
+        #self.mining_node = minimalmodbus.Instrument(self.mining_port, int(self.mining_node_id))
+        #self.drill_node = minimalmodbus.Instrument(self.drill_port, int(self.drill_node_id))
 
-        self.__setup_minimalmodbus_for_485()
+        #self.__setup_minimalmodbus_for_485()
 
     def process_mining_control_message(self):
         print("process mining control entered")

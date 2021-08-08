@@ -2793,13 +2793,6 @@ Connected</string>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_10">
                 <item>
-                 <widget class="QPushButton" name="science_probe_down_button">
-                  <property name="text">
-                   <string>Drop Probe</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <widget class="QPushButton" name="science_container_open_button">
                   <property name="text">
                    <string>Container Open</string>
@@ -2819,25 +2812,18 @@ Connected</string>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QPushButton" name="science_scoop_down_button">
-                <property name="text">
-                 <string>Drop Scoop</string>
-                </property>
-               </widget>
-              </item>
              </layout>
             </item>
             <item>
              <layout class="QGridLayout" name="gridLayout_28">
-              <item row="4" column="0">
+              <item row="3" column="0">
                <widget class="Line" name="line_13">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
+              <item row="1" column="0">
                <widget class="QLabel" name="label_47">
                 <property name="font">
                  <font>
@@ -2851,7 +2837,7 @@ Connected</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="2" column="0">
                <layout class="QGridLayout" name="gridLayout_29">
                 <item row="0" column="0">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3062,21 +3048,14 @@ Dielectric Permittivity</string>
                 </item>
                </layout>
               </item>
-              <item row="1" column="0">
+              <item row="0" column="0">
                <widget class="Line" name="line_14">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="science_probe_button">
-                <property name="text">
-                 <string>Probe</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
+              <item row="4" column="0">
                <spacer name="verticalSpacer_8">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>

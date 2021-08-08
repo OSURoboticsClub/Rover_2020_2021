@@ -20,8 +20,6 @@ bool rack_move_one
 uint16 servo1_target
 uint16 servo2_target
 
-bool probe_take_reading
-
 bool overtravel
 
 bool using_linear

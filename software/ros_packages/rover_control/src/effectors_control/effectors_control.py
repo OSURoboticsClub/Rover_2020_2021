@@ -6,7 +6,7 @@
 import rospy
 from time import time, sleep
 
-import serial.rs485
+import serial
 # import minimalmodbus
 
 # from std_msgs.msg import UInt8, UInt16
@@ -26,9 +26,9 @@ DEFAULT_MINING_PORT = "/dev/rover/ttyMining"
 # DEFAULT_PORT = "/dev/ttyUSB0"
 DEFAULT_BAUD = 115200
 
-GRIPPER_NODE_ID = 1
-DRILL_NODE_ID = 2
-MINING_NODE_ID = 3
+# GRIPPER_NODE_ID = 1
+# DRILL_NODE_ID = 2
+# MINING_NODE_ID = 3
 
 GRIPPER_TIMEOUT = 0.5
 MINING_TIMEOUT = 0.3
@@ -55,6 +55,36 @@ MINING_STATUS_PUBLISHER_TOPIC = "mining/status"
 DRILL_CONTROL_SUBSCRIBER_TOPIC = "mining/drill/control"
 
 CAMERA_CONTROL_SUBSCRIBER_TOPIC = "camera/control"
+
+GRIPPER_UNIVERSAL_POSITION_MAX = 10000
+MINING_POSITIONAL_THRESHOLD = 20
+
+# ##### Mining Node Defines ##### #
+mining_nodes = {
+    "ScienceMech": 1
+}
+
+# ##### Mining Register Defines ##### #
+mining_pothos_registers = {
+    # For Motor 1 #
+    "SPEED_1": 0,
+    "DIR_1": 1,
+    "TMP_1": 2,
+    "CURRENT_1": 3,
+
+    # For Motor 2 #
+    "SPEED_2": 4,
+    "DIR_2": 5,
+    "TMP_2": 6,
+    "CURRENT_2": 7,
+
+    # For Video MUX #
+    "VID_SELECT": 8
+}
+
+# ##### Gripper Node Defines ##### #
+
+# #### Gripper Register Defines ##### #
 
 # ##### Gripper Defines #####
 #GRIPPER_MODBUS_REGISTERS = {
@@ -85,8 +115,6 @@ CAMERA_CONTROL_SUBSCRIBER_TOPIC = "camera/control"
     #0,  # 0 current
     #0,  # Not homed
 #]
-
-GRIPPER_UNIVERSAL_POSITION_MAX = 10000
 
 # ##### Mining Defines #####
 # ##### These are divided into two parts to avoid CRC errors over modbus. #####
@@ -136,8 +164,6 @@ GRIPPER_UNIVERSAL_POSITION_MAX = 10000
 #}
 
 
-MINING_POSITIONAL_THRESHOLD = 20
-
 #DRILL_MODBUS_REGISTERS = {
     #"DIRECTION": 0,
     #"SPEED": 1
@@ -170,9 +196,9 @@ class EffectorsControl(object):
         self.drill_port = rospy.get_param("~port", DEFAULT_MINING_PORT)
         self.baud = rospy.get_param("~baud", DEFAULT_BAUD)
 
-        self.gripper_node_id = rospy.get_param("~gripper_node_id", GRIPPER_NODE_ID)
-        self.mining_node_id = rospy.get_param("~mining_node_id", MINING_NODE_ID)
-        self.drill_node_id = rospy.get_param("~drill_node_id", DRILL_NODE_ID)
+        #self.gripper_node_id = rospy.get_param("~gripper_node_id", GRIPPER_NODE_ID)
+        #self.mining_node_id = rospy.get_param("~mining_node_id", MINING_NODE_ID)
+        #self.drill_node_id = rospy.get_param("~drill_node_id", DRILL_NODE_ID)
 
         self.gripper_control_subscriber_topic = rospy.get_param("~gripper_control_subscriber_topic",
                                                                 GRIPPER_CONTROL_SUBSCRIBER_TOPIC)

@@ -124,6 +124,8 @@ class Mining(QtCore.QObject):
         self.mining_close_button.clicked.connect(self.on_mining_close_clicked__slot)
         self.mining_home_linear_button.clicked.connect(self.on_mining_home_linear_clicked__slot)
         self.mining_toggle_overtravel_button.clicked.connect(self.on_mining_toggle_overtravel_clicked__slot)
+        self.mining_toggle_linear_button.clicked.connect(self.on_mining_toggle_linear_clicked__slot)
+        self.mining_toggle_rack_button.clicked.connect(self.on_mining_toggle_rack_clicked__slot)
         self.drill_turn_clockwise_button.clicked.connect(self.on_drill_clockwise_clocked__slot)
         self.drill_turn_counter_clockwise_button.clicked.connect(self.on_drill_counter_clockwise_clicked__slot)
         self.drill_stop_button.clicked.connect(self.on_drill_stop_clicked__slot)
@@ -180,6 +182,16 @@ class Mining(QtCore.QObject):
     def on_mining_toggle_overtravel_clicked__slot(self):
         message = MiningControlMessage()
         message.overtravel = True
+        self.mining_control_publisher.publish(message)
+
+    def on_mining_toggle_linear_clicked__slot(self):
+        message = MiningControlMessage()
+        message.using_linear = True
+        self.mining_control_publisher.publish(message)
+
+    def on_mining_toggle_rack_clicked__slot(self):
+        message = MiningControlMessage()
+        message.using_rack = True
         self.mining_control_publisher.publish(message)
 
     def on_drill_clockwise_clocked__slot(self):

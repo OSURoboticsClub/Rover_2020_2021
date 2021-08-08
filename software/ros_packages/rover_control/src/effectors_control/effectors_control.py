@@ -136,7 +136,10 @@ MINING_MODBUS_REGISTERS_PART_2 = {
     "HOMING_NEEDED": 16
 
     "RACK_CURRENT": 17,
-    "RACK_CURRENT_POSITION": 18
+    "RACK_CURRENT_POSITION": 18,
+    "RACK_SET_POSITION_NEGATIVE": 19,
+    "RACK_SET_POSITION_POSITIVE": 20,
+    "RACK_SET_POSITION_ABSOLUTE": 21
 }
 
 
@@ -400,6 +403,9 @@ class EffectorsControl(object):
                 print(MINING_MODBUS_REGISTERS_PART_2["MOTOR_SET_POSITION_ABSOLUTE"])
             if linear_set_position_absolute != 0:
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_ABSOLUTE"]] = new_linear_absolute_target
+            if rack_set_position_absolute != 0:
+                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_ABSOLUTE"]] = new_rack_absolute_target
+                
             if servo1_target >= 0:
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["SERVO1_TARGET"]] = servo1_target
             if servo2_target >= 0:

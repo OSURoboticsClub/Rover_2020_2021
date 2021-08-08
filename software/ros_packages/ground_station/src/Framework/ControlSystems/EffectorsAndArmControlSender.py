@@ -42,6 +42,7 @@ THUMB_STICK_MAX = 32768.0
 
 MINING_MOTOR_SCALAR = 500
 MINING_LINEAR_SCALAR = 40
+MINING_RACK_SCALAR = 40 #starting with the same as the linear actuator, but this will likely need to be tweaked
 
 COLOR_GREEN = "background-color:darkgreen; border: 1px solid black;"
 COLOR_NONE = "border: 1px solid black;"
@@ -203,6 +204,7 @@ class EffectorsAndArmControlSender(QtCore.QThread):
         self.relative_arm_control_publisher = rospy.Publisher(RELATIVE_ARM_CONTROL_TOPIC, ArmControlMessage, queue_size=1)
         self.tower_pan_tilt_command_publisher = rospy.Publisher(DEFAULT_TOWER_PAN_TILT_COMMAND_TOPIC, TowerPanTiltControlMessage, queue_size=1)
         self.mining_control_publisher = rospy.Publisher(MINING_CONTROL_TOPIC, MiningControlMessage, queue_size=1)
+        
         self.xbox_current_control_state = self.XBOX_CONTROL_STATES.index("ARM")
         self.xbox_control_state_just_changed = False
 

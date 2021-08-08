@@ -64,6 +64,9 @@ class Mining(QtCore.QObject):
         self.mining_close_button = self.left_screen.mining_close_button  # type:QtWidgets.QPushButton
         self.mining_home_linear_button = self.left_screen.mining_home_linear_button  # type:QtWidgets.QPushButton
         self.mining_toggle_overtravel_button = self.left_screen.mining_toggle_overtravel_button  # type:QtWidgets.QPushButton
+        self.mining_rack_move_space_button = self.left_screen.mining_rack_move_space_button # type:QtWidgets.QPushButton
+        self.mining_toggle_linear_button = self.left_screen.mining_toggle_linear_button # type:QtWidgets.QPushButton
+        self.mining_toggle_rack_button = self.left_screen.mining_toggle_rack_button # type:QtWidgets.QPushButton
         self.drill_turn_clockwise_button = self.left_screen.drill_turn_clockwise_button  # type:QtWidgets.QPushButton
         self.drill_turn_counter_clockwise_button = self.left_screen.drill_turn_counter_clockwise_button  # type:QtWidgets.QPushButton
         self.drill_stop_button = self.left_screen.drill_stop_button  # type:QtWidgets.QPushButton

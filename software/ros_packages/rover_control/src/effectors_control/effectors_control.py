@@ -6,7 +6,7 @@
 import rospy
 from time import time, sleep
 
-import serial
+import serial.rs485
 # import minimalmodbus
 
 # from std_msgs.msg import UInt8, UInt16
@@ -25,10 +25,6 @@ DEFAULT_GRIPPER_PORT = "/dev/rover/ttyEffectors"
 DEFAULT_MINING_PORT = "/dev/rover/ttyMining"
 # DEFAULT_PORT = "/dev/ttyUSB0"
 DEFAULT_BAUD = 115200
-
-# GRIPPER_NODE_ID = 1
-# DRILL_NODE_ID = 2
-# MINING_NODE_ID = 3
 
 GRIPPER_TIMEOUT = 0.5
 MINING_TIMEOUT = 0.3
@@ -84,7 +80,19 @@ mining_pothos_registers = {
 
 # ##### Gripper Node Defines ##### #
 
-# #### Gripper Register Defines ##### #
+# ##### Gripper Register Defines ##### #
+
+
+# ##### Node IDS ##### #
+
+# GRIPPER_NODE_ID = 1
+# DRILL_NODE_ID = 2
+# MINING_NODE_ID = 3
+SCIENCE_MECH_NODE_ID = mining_nodes.get("ScienceMech")
+
+# ##### Setup for pothos comms ##### #
+dataTypes = [['chr', 'chr', 'float', 'float'], ['chr', 'int', 'int', 'float']] # data types for pothos
+comms = pothos(len(dataTypes), dataTypes, 'COM25', 0.030, 500000)
 
 # ##### Gripper Defines #####
 #GRIPPER_MODBUS_REGISTERS = {
@@ -199,6 +207,7 @@ class EffectorsControl(object):
         #self.gripper_node_id = rospy.get_param("~gripper_node_id", GRIPPER_NODE_ID)
         #self.mining_node_id = rospy.get_param("~mining_node_id", MINING_NODE_ID)
         #self.drill_node_id = rospy.get_param("~drill_node_id", DRILL_NODE_ID)
+        self.science_mech_node_id = rospy.get_param("~science_mech_node_id", SCIENCE_MECH_NODE_ID)
 
         self.gripper_control_subscriber_topic = rospy.get_param("~gripper_control_subscriber_topic",
                                                                 GRIPPER_CONTROL_SUBSCRIBER_TOPIC)
@@ -224,8 +233,9 @@ class EffectorsControl(object):
         #self.drill_node = None  # type:minimalmodbus.Instrument
 
         self.gripper_node_present = False
-        self.mining_node_present = True
-        self.drill_node_present = True
+        #self.mining_node_present = True
+        #self.drill_node_present = True
+        self.science_mech_node_present = True
 
         self.connect_to_nodes()
         # self.check_which_nodes_present()
@@ -336,11 +346,20 @@ class EffectorsControl(object):
 
     def process_mining_control_message(self):
         print("process mining control entered")
-        if not self.mining_registers or not self.mining_registers_part_2:
+        #if not self.mining_registers or not self.mining_registers_part_2:
             # Read around half of registers first to avoid reading 32 registers at a time. 
             # This seems to prevent CRC errors.
-            self.mining_registers = self.mining_node.read_registers(0, MINING_HALF_REG_LIMIT)   
-            self.mining_registers_part_2 = self.mining_node.read_registers(MINING_HALF_REG_LIMIT, MINING_REMAINING_REGS)
+            #self.mining_registers = self.mining_node.read_registers(0, MINING_HALF_REG_LIMIT)   
+            #self.mining_registers_part_2 = self.mining_node.read_registers(MINING_HALF_REG_LIMIT, MINING_REMAINING_REGS)
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["SPEED_1"])
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["DIR_1"])
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["TMP_1"])
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["CURRENT_1"])
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["SPEED_2"])
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["DIR_2"])
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["TMP_2"])
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["CURRENT_2"])
+        
 
         print("mining registers read")
         if self.new_mining_control_message and self.mining_node_present:

@@ -2309,119 +2309,74 @@ Position</string>
        <number>0</number>
       </property>
       <item>
+       <widget class="QLabel" name="primary_video_label">
+        <property name="minimumSize">
+         <size>
+          <width>1280</width>
+          <height>720</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>1280</width>
+          <height>720</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:black;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <property name="spacing">
          <number>0</number>
         </property>
         <item>
-         <widget class="QTabWidget" name="camgraphtab">
-          <property name="currentIndex">
-           <number>1</number>
+         <widget class="QLabel" name="secondary_video_label">
+          <property name="minimumSize">
+           <size>
+            <width>640</width>
+            <height>360</height>
+           </size>
           </property>
-          <widget class="QWidget" name="camstab">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <attribute name="title">
-            <string>Tab 1</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="0" colspan="3">
-             <widget class="QLabel" name="primary_video_label">
-              <property name="minimumSize">
-               <size>
-                <width>1280</width>
-                <height>720</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>1280</width>
-                <height>720</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color:black;</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="secondary_video_label">
-              <property name="minimumSize">
-               <size>
-                <width>640</width>
-                <height>360</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>640</width>
-                <height>360</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color:black;</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="tertiary_video_label">
-              <property name="minimumSize">
-               <size>
-                <width>640</width>
-                <height>360</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>640</width>
-                <height>360</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color:black;</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="graphstab">
-           <attribute name="title">
-            <string>Tab 2</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="0" colspan="3">
-             <widget class="QwtPlot" name="voc"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLCDNumber" name="soil1"/>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLCDNumber" name="soil2"/>
-            </item>
-            <item row="1" column="2">
-             <widget class="QLCDNumber" name="soil3"/>
-            </item>
-            <item row="2" column="0" colspan="3">
-             <widget class="QwtPlot" name="spectrometer"/>
-            </item>
-            <item row="3" column="0" colspan="3">
-             <widget class="QwtPlot" name="temp"/>
-            </item>
-            <item row="4" column="0" colspan="3">
-             <widget class="QwtPlot" name="co2"/>
-            </item>
-           </layout>
-          </widget>
+          <property name="maximumSize">
+           <size>
+            <width>640</width>
+            <height>360</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:black;</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="tertiary_video_label">
+          <property name="minimumSize">
+           <size>
+            <width>640</width>
+            <height>360</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>640</width>
+            <height>360</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:black;</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
          </widget>
         </item>
        </layout>
@@ -2431,13 +2386,7 @@ Position</string>
    </layout>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
+

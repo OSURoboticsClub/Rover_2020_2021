@@ -180,7 +180,7 @@
             <rosparam param="topics">
                 [{name: "/cameras/zed_left/image_1280x720/compressed", compress: false, rate: 0.0}]
             </rosparam>
-        <node>
+        </node>
 
         <node name="point_cloud_1280x720" pkg="nimbro_topic_transport" type="udp_sender">
             <param name="destination_addr" value="$(arg target)" />
@@ -188,6 +188,6 @@
             <rosparam param="topics">
                 [{name: "/cameras/point_cloud/image_1280x720/compressed", compress: false, rate: 0.0}]
             </rosparam>
-        <node>
+        </node>
     </group>
 </launch>

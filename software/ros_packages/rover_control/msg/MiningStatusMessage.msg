@@ -1,5 +1,7 @@
-int32 motor_current_position
-int32 linear_current_position
+int32 motor_current_speed
+int32 motor_current_direction
+int32 linear_current_speed
+int32 linear_current_direction
 
 uint16 temp1
 uint16 temp2

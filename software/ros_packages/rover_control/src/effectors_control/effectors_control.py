@@ -357,15 +357,19 @@ class EffectorsControl(object):
         comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["DIR_2"])
         comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["TMP_2"])
         comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["CURRENT_2"])
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["DIR_3"])
+        comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["STEP"])
         
 
         print("mining registers read")
-        if self.new_mining_control_message and self.mining_node_present:
+        if self.new_mining_control_message: # and self.mining_node_present :
             print(self.mining_control_message)
-            motor_go_home = self.mining_control_message.motor_go_home
-            motor_set_position_positive = self.mining_control_message.motor_set_position_positive
-            motor_set_position_negative = self.mining_control_message.motor_set_position_negative
-            motor_set_position_absolute = self.mining_control_message.motor_set_position_absolute
+            # motor_go_home = self.mining_control_message.motor_go_home
+            # motor_set_position_positive = self.mining_control_message.motor_set_position_positive
+            # motor_set_position_negative = self.mining_control_message.motor_set_position_negative
+            # motor_set_position_absolute = self.mining_control_message.motor_set_position_absolute
+            motor_set_direction = self.motor_set_direction
+            linear_set_direction = self.linear_set_direction
 
             # Prevent input value from being too small when writing register
             if self.motor_curr_position + motor_set_position_absolute >= 0:
@@ -435,17 +439,7 @@ class EffectorsControl(object):
             elif linear_stop:
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_POSITIVE"]] = 0
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_NEGATIVE"]] = 0
-
-            if rack_set_position_positive > 0:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_POSITIVE"]] = rack_set_position_positive
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_NEGATIVE"]] = 0
-            elif rack_set_position_negative > 0:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_NEGATIVE"]] = rack_set_position_negative
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_POSITIVE"]] = 0
-            elif rack_stop:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_NEGATIVE"]] = 0
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_POSITIVE"]] = 0
-            
+                
             if self.mining_control_message.overtravel:
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["OVERTRAVEL"]] = 0 if self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["OVERTRAVEL"]] else 1
                 self.mining_control_message.overtravel = False

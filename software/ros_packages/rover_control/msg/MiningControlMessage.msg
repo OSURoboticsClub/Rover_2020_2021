@@ -9,10 +9,7 @@ int32 linear_set_position_negative
 int32 linear_set_position_absolute
 bool linear_stop
 
-int32 rack_set_position_positive
-int32 rack_set_position_negative
-int32 rack_set_position_absolute
-bool rack_stop 
+int32 rack_set_step_number 
 bool rack_at_end
 bool rack_at_start
 bool rack_move_one

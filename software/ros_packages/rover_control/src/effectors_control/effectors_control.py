@@ -75,7 +75,11 @@ mining_pothos_registers = {
     "CURRENT_2": 7,
 
     # For Video MUX #
-    "VID_SELECT": 8
+    "VID_SELECT": 8,
+
+    # For Stepper Motor #
+    "DIR_3": 9,
+    "STEP": 10
 }
 
 # ##### Gripper Node Defines ##### #
@@ -163,12 +167,6 @@ comms = pothos(len(dataTypes), dataTypes, 'COM25', 0.030, 500000)
 
     #"OVERTRAVEL": 15,
     #"HOMING_NEEDED": 16
-
-    #"RACK_CURRENT": 17,
-    #"RACK_CURRENT_POSITION": 18,
-    #"RACK_SET_POSITION_NEGATIVE": 19,
-    #"RACK_SET_POSITION_POSITIVE": 20,
-    #"RACK_SET_POSITION_ABSOLUTE": 21
 #}
 
 
@@ -392,37 +390,6 @@ class EffectorsControl(object):
             
             print(new_linear_absolute_target, linear_set_position_absolute, self.linear_curr_position)
 
-            rack_set_position_positive = self.mining_control_message.rack_set_position_positive
-            rack_set_position_negative = self.mining_control_message.rack_set_position_negative
-            rack_set_position_absolute = self.mining_control_message.rack_set_position_absolute
-            
-            #### manual control of sample rack ####
-            if self.rack_curr_position + rack_set_position_absolute >= 0:
-                new_rack_absolute_target = self.rack_curr_position + rack_set_position_absolute
-            else:
-                new_rack_absolute_target = 0
-
-            rack_stop = self.mining_control_message.rack_stop
-
-            #### auto control of sample rack (move one space forward) ###
-            if self.mining_control_message.rack_move_one is True:
-                if self.rack curr_position == 0:
-                    self.mining_control_message.rack_at_start = True
-                    #set pos postiive 
-                    #new_rack_absolute target = self.rack_curr_position + target number of steps to move to first space
-                    #stop rack?
-                elif self.rack_curr_position > 0 && self.mining_control_message.rack_at_end is False:
-                    #set position positive
-                    ##new_rack_absolute_target = self.rack_curr_position + target number of steps to move 1 space
-                    #stop rack?
-                elif self.rack_curr_position > 0 && self.mining_control_message.rack_at_end is True:
-                    #set position negative
-                    ##new_rack_absolute_target = self.rack_curr_position + target steps to get back to 0 (5 full rotations)
-                    #stop rack?
-                else:
-                    new_rack_absolute_target = 0
-
-
             servo1_target = self.mining_control_message.servo1_target
             servo2_target = self.mining_control_message.servo2_target
 
@@ -472,7 +439,7 @@ class EffectorsControl(object):
             if rack_set_position_positive > 0:
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_POSITIVE"]] = rack_set_position_positive
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_NEGATIVE"]] = 0
-````````````elif rack_set_position_negative > 0:
+            elif rack_set_position_negative > 0:
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_NEGATIVE"]] = rack_set_position_negative
                 self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_POSITIVE"]] = 0
             elif rack_stop:

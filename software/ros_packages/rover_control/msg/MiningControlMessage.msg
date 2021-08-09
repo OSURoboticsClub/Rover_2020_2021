@@ -1,8 +1,4 @@
-int32 motor_set_direction
-int32 motor_set_speed
-bool motor_go_home
-bool motor_stop
-
+bool linear_go_home
 int32 linear_set_direction
 int32 linear_set_speed
 bool linear_stop

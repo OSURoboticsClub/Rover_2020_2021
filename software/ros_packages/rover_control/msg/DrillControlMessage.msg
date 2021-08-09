@@ -1,2 +1,4 @@
+int32 drill_current_direction
+int32 drill_current_speed
+
 bool direction
-uint16 speed

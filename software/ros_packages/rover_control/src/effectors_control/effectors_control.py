@@ -7,7 +7,7 @@ import rospy
 from time import time, sleep
 
 import serial.rs485
-# import minimalmodbus
+import minimalmodbus
 
 # from std_msgs.msg import UInt8, UInt16
 
@@ -163,8 +163,21 @@ MINING_MODBUS_REGISTERS = {
     "TMP_2": 6,
     "CURRENT_2": 7,
 
-    ### Register for Camera MUX "
-    "CAM_MUX": 8
+    ### Register for Camera MUX ###
+    "CAM_MUX": 8,
+
+    ### Registers for Stepper Motor ###
+    "INCREMENT_STEP": 9,
+    "SET_DIRECTION": 10,
+
+    ### Registers for Limit Switches ###
+    "LINEAR_LIM_TOP": 11,
+    "LINEAR_LIM_BASE": 12,
+
+    ### Additional Registers for Linear Motor ###
+    "LINEAR_SET_POSITION_TARGET": 13
+    "LINEAR_CURRENT_POSITION": 14
+
 }
 
 """
@@ -227,8 +240,8 @@ class EffectorsControl(object):
         self.baud = rospy.get_param("~baud", DEFAULT_BAUD)
 
         self.gripper_node_id = rospy.get_param("~gripper_node_id", GRIPPER_NODE_ID)
-        self.mining_node_id = rospy.get_param("~mining_node_id", MINING_NODE_ID)
-        self.drill_node_id = rospy.get_param("~drill_node_id", DRILL_NODE_ID)
+        #self.mining_node_id = rospy.get_param("~mining_node_id", MINING_NODE_ID)
+        #self.drill_node_id = rospy.get_param("~drill_node_id", DRILL_NODE_ID)
         self.science_mech_node_id = rospy.get_param("~science_mech_node_id", SCIENCE_MECH_NODE_ID)
 
         self.gripper_control_subscriber_topic = rospy.get_param("~gripper_control_subscriber_topic",
@@ -251,13 +264,13 @@ class EffectorsControl(object):
         self.wait_time = 1.0 / rospy.get_param("~hertz", DEFAULT_HERTZ)
 
         self.gripper_node = None  # type:minimalmodbus.Instrument
-        self.mining_node = None  # type:minimalmodbus.Instrument
-        self.drill_node = None  # type:minimalmodbus.Instrument
+        #self.mining_node = None  # type:minimalmodbus.Instrument
+        #self.drill_node = None  # type:minimalmodbus.Instrument
         self.science_node = None #type:minimalmodbus.Instrument
 
         self.gripper_node_present = False
-        self.mining_node_present = True
-        self.drill_node_present = True
+        #self.mining_node_present = True
+        #self.drill_node_present = True
         self.science_mech_node_present = True
 
         self.connect_to_nodes()
@@ -300,8 +313,9 @@ class EffectorsControl(object):
         self.new_camera_control_message = False
 
         self.failed_gripper_modbus_count = 0
-        self.failed_mining_modbus_count = 0
-        self.failed_dril_modbus_count = 0
+        #self.failed_mining_modbus_count = 0
+        #self.failed_dril_modbus_count = 0
+        self.failed_science_mech_modbus_count = 0
 
         self.which_effector = self.EFFECTORS.index("GRIPPER")
 
@@ -309,7 +323,7 @@ class EffectorsControl(object):
 
         self.linear_curr_position = 0
         self.motor_curr_position = 0
-        self.rack_curr_steps = 0
+        self.rack_number_steps = 0
 
         self.run()
 
@@ -362,8 +376,9 @@ class EffectorsControl(object):
 
     def connect_to_nodes(self):
         self.gripper_node = minimalmodbus.Instrument(self.gripper_port, int(self.gripper_node_id))
-        self.mining_node = minimalmodbus.Instrument(self.mining_port, int(self.mining_node_id))
-        self.drill_node = minimalmodbus.Instrument(self.drill_port, int(self.drill_node_id))
+        #self.mining_node = minimalmodbus.Instrument(self.mining_port, int(self.mining_node_id))
+        #self.drill_node = minimalmodbus.Instrument(self.drill_port, int(self.drill_node_id))
+        self.science_mech_node = minimalmodbus.Instrument(self.mining_port, int(self.science_mech_node_id))
 
         self.__setup_minimalmodbus_for_485()
 
@@ -373,7 +388,7 @@ class EffectorsControl(object):
             # Read around half of registers first to avoid reading 32 registers at a time. 
             # This seems to prevent CRC errors.
             self.mining_registers = self.mining_node.read_registers(0, MINING_HALF_REG_LIMIT)   
-            self.mining_registers_part_2 = self.mining_node.read_registers(MINING_HALF_REG_LIMIT, MINING_REMAINING_REGS)
+            #self.mining_registers_part_2 = self.mining_node.read_registers(MINING_HALF_REG_LIMIT, MINING_REMAINING_REGS)
         """
         #not using pothos for comp
         comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["SPEED_1"])
@@ -391,95 +406,41 @@ class EffectorsControl(object):
         print("mining registers read")
         if self.new_mining_control_message: # and self.mining_node_present :
             print(self.mining_control_message)
-            motor_go_home = self.mining_control_message.motor_go_home
-            motor_set_position_positive = self.mining_control_message.motor_set_position_positive
-            motor_set_position_negative = self.mining_control_message.motor_set_position_negative
-            motor_set_position_absolute = self.mining_control_message.motor_set_position_absolute
-            motor_set_direction = self.mining_control_message.motor_set_direction
+            motor_go_home = self.mining_control_message.linear_go_home
             linear_set_direction = self.mining_control_message.linear_set_direction
-            motor_set_speed = self.mining_control_message.motor_set_speed
+            rack_set_direction = self.mining_control_message.rack_set_direction
+            using_linear = self.mining_control_message.using_linear
+            using_rack = self.mining_control_message.using_rack
+            linear_pos_target = self.mining_control_message.linear_target
+            linear_current_pos = self.mining_control_message.linear_current_pos
+            linear_at_base = self.mining_control_message.linear_at_base
+            linear_homed = self.mining_control_message.linear_homed
 
-            # Prevent input value from being too small when writing register
-            if self.motor_curr_position + motor_set_position_absolute >= 0:
-                new_motor_absolute_target = self.motor_curr_position + motor_set_position_absolute
-            else:
-                new_motor_absolute_target = 0
-
-            motor_stop = self.mining_control_message.motor_stop
-            print(new_motor_absolute_target, motor_set_position_absolute, self.motor_curr_position)
-
-            linear_set_position_positive = self.mining_control_message.linear_set_position_positive
-            linear_set_position_negative = self.mining_control_message.linear_set_position_negative
-            linear_set_position_absolute = self.mining_control_message.linear_set_position_absolute
-
-            #### manual control of linear actuator ####
-            if self.linear_curr_position + linear_set_position_absolute >= 0:
-                new_linear_absolute_target = self.linear_curr_position + linear_set_position_absolute
-            else:
-                new_linear_absolute_target = 0
-
-            linear_stop = self.mining_control_message.linear_stop
-            
-            print(new_linear_absolute_target, linear_set_position_absolute, self.linear_curr_position)
-
-            servo1_target = self.mining_control_message.servo1_target
-            servo2_target = self.mining_control_message.servo2_target
-
-            switch1_on = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["SWITCH1_OUT"]]
-            switch2_on = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["SWITCH2_OUT"]]
-            overtravel_on = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["OVERTRAVEL"]]
-
-            if motor_go_home:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["MOTOR_GO_HOME"]] = 1
-                print("MINING MOTOR_GO_HOME TRUE")
-                self.mining_node.write_registers(MINING_HALF_REG_LIMIT, self.mining_registers_part_2)
+            ### Linear actuator controls ###
+            if using_linear is True:
                 
-            if motor_set_position_absolute != 0:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["MOTOR_SET_POSITION_ABSOLUTE"]] = new_motor_absolute_target
-                print(self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["MOTOR_SET_POSITION_ABSOLUTE"]])
-                print(MINING_MODBUS_REGISTERS_PART_2["MOTOR_SET_POSITION_ABSOLUTE"])
-            if linear_set_position_absolute != 0:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_ABSOLUTE"]] = new_linear_absolute_target
-            if rack_set_position_absolute != 0:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["RACK_SET_POSITION_ABSOLUTE"]] = new_rack_absolute_target
+                ### Manual control of linear actuator ###
+                if linear_pos_target >= 0 && linear_at_base == False && linear_set_direction = 0:
+                    new_linear_target = linear_current_pos + linear_pos_target
+                elif linear_pos_target >= 0 && linear_at_base == True && linear_set_direction = 0:
+                    print("motor needs to go home, it is at the base")
+                    motor_go_home = True
+                else 
+                    new_linear_target = 0
 
-            if servo1_target >= 0:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["SERVO1_TARGET"]] = servo1_target
-            if servo2_target >= 0:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["SERVO2_TARGET"]] = servo2_target
+                if linear_pos_target >= 0 && linear_homed == False && linear_set_direction = 1:
+                    new_linear_target = linear_current_pos + linear_pos_target
+                elif linear_pos_target >= 0 && linear_homed == True && linear_set_direction = 1
+                    print("Motor is already at the top of the actuator!")
+                    new_linear_target = 0
+                else 
+                    new_linear_target = 0
 
-            if motor_set_position_positive > 0 and (not switch1_on or overtravel_on):
-                self.mining_registers[MINING_MODBUS_REGISTERS["MOTOR_SET_POSITION_POSITIVE"]] = motor_set_position_positive
-                self.mining_registers[MINING_MODBUS_REGISTERS["MOTOR_SET_POSITION_NEGATIVE"]] = 0
-            elif motor_set_position_negative > 0 and not switch2_on: 
-                self.mining_registers[MINING_MODBUS_REGISTERS["MOTOR_SET_POSITION_NEGATIVE"]] = motor_set_position_negative
-                self.mining_registers[MINING_MODBUS_REGISTERS["MOTOR_SET_POSITION_POSITIVE"]] = 0
-            elif motor_stop:
-               self.mining_registers[MINING_MODBUS_REGISTERS["MOTOR_SET_POSITION_POSITIVE"]] = 0
-               self.mining_registers[MINING_MODBUS_REGISTERS["MOTOR_SET_POSITION_NEGATIVE"]] = 0
+                linear_stop = self.mining_control_message.linear_stop
 
-            if linear_set_position_positive > 0:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_POSITIVE"]] = linear_set_position_positive
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_NEGATIVE"]] = 0
-            elif linear_set_position_negative > 0:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_NEGATIVE"]] = linear_set_position_negative
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_POSITIVE"]] = 0
-            elif linear_stop:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_POSITIVE"]] = 0
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_SET_POSITION_NEGATIVE"]] = 0
-                
-            if self.mining_control_message.overtravel:
-                self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["OVERTRAVEL"]] = 0 if self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["OVERTRAVEL"]] else 1
-                self.mining_control_message.overtravel = False
-
-            if self.mining_control_message.motor_go_home:
-                self.mining_registers[MINING_MODBUS_REGISTERS_PART_2["MOTOR_GO_HOME"]] = 0 if self.mining_registers[MINING_MODBUS_REGISTERS_PART_2["MOTOR_GO_HOME"]] else 1
-                self.mining_control_message.motor_go_home = False
-
-            print(self.mining_registers)
-            print(self.mining_registers_part_2)
+            #print(self.mining_registers_part_2)
             self.mining_node.write_registers(0, self.mining_registers)
-            self.mining_node.write_registers(MINING_HALF_REG_LIMIT, self.mining_registers_part_2)
+            #self.mining_node.write_registers(MINING_HALF_REG_LIMIT, self.mining_registers_part_2)
             print("wrote registers...")
 
             self.modbus_nodes_seen_time = time()

@@ -34,8 +34,9 @@ MINING_HALF_REG_LIMIT = 15
 MINING_REMAINING_REGS = 17
 
 FAILED_GRIPPER_MODBUS_LIMIT = 20
-FAILED_MINING_MODBUS_LIMIMT = 20
-FAILED_DRILL_MODBUS_LIMIMT = 20
+#FAILED_MINING_MODBUS_LIMIMT = 20
+FAILED_SCIENCE_MECH_MODBUS_LIMIT = 20
+#FAILED_DRILL_MODBUS_LIMIMT = 20
 
 RX_DELAY = 0.01
 TX_DELAY = 0.01
@@ -94,9 +95,9 @@ mining_pothos_registers = {
 # ##### Node IDS ##### #
 
 GRIPPER_NODE_ID = 1
-DRILL_NODE_ID = 2
-MINING_NODE_ID = 3
-SCIENCE_MECH_NODE_ID = 4 #mining_nodes.get("ScienceMech")
+#DRILL_NODE_ID = 2
+#MINING_NODE_ID = 3
+SCIENCE_MECH_NODE_ID = 2 #mining_nodes.get("ScienceMech")
 
 # ##### Setup for pothos comms ##### #
 dataTypes = [['chr', 'chr', 'float', 'float'], ['chr', 'int', 'int', 'float']] # data types for pothos
@@ -135,20 +136,38 @@ DEFAULT_GRIPPER_REGISTERS = [
 # ##### Mining Defines #####
 # ##### These are divided into two parts to avoid CRC errors over modbus. #####
 MINING_MODBUS_REGISTERS = {
+    """
     "CAM_ZOOM_IN_FULL": 0,
-    "CAM_ZOOM_OUT_FULL": 1,
-    "CAM_ZOOM_IN": 2,
-    "CAM_ZOOM_OUT": 3,
-    "CAM_SHOOT": 4,
-    "CAM_CHANGE_VIEW": 5,
+    #"CAM_ZOOM_OUT_FULL": 1,
+    #"CAM_ZOOM_IN": 2,
+    #"CAM_ZOOM_OUT": 3,
+    #"CAM_SHOOT": 4,
+    #"CAM_CHANGE_VIEW": 5,
 
     "MOTOR_SET_POSITION_POSITIVE": 6,
     "MOTOR_SET_POSITION_NEGATIVE": 7,
 
     "MOTOR_SET_POSITION_ABSOLUTE": 8,
     "MOTOR_GO_HOME": 9,
+    """
+
+    ### Registers for Motor Controller 1 ###
+    "SPEED_1": 0,
+    "DIR_1": 1,
+    "TMP_1": 2,
+    "CURRENT_1": 3,
+
+    ### Registers for Motor Controller 2 ###
+    "SPEED_2": 4,
+    "DIR_2": 5,
+    "TMP_2": 6,
+    "CURRENT_2": 7,
+
+    ### Register for Camera MUX "
+    "CAM_MUX": 8
 }
 
+"""
 MINING_MODBUS_REGISTERS_PART_2 = {
     "LINEAR_SET_POSITION_POSITIVE": 0,
     "LINEAR_SET_POSITION_NEGATIVE": 1,
@@ -171,12 +190,14 @@ MINING_MODBUS_REGISTERS_PART_2 = {
 
     "HOMING_NEEDED": 13,
 #}
+"""
 
-
+"""
 DRILL_MODBUS_REGISTERS = {
     "DIRECTION": 0,
     "SPEED": 1
 }
+"""
 
 # ##### Science Defines #####
 

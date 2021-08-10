@@ -1,6 +1,8 @@
 #define RS485 Serial1 //Select RS-485 Serial Port.                //This needs to be changed based on the design
 //#define POTHOS_DEBUG  //Comment this out for extra efficiency. Leave as is for verbose debug statements over USB.
-#include <pothos.h> //Include pothos library
+//#include <pothos.h> //Include pothos library
+#include "HX711.h"
+#include <ModbusRtu.h>
 
 enum PIN // Enum of pinouts
 {
@@ -54,15 +56,15 @@ enum PIN // Enum of pinouts
   PUMP_SELECT_3 = 20  // Select bit C (O)
 };
 
-enum REGISTER // Enum of register addresses
+enum MODBUS_REGISTERS // Enum of register addresses
 {
-  // First motor controller registers
+  // First motor controller registers (for drill)
   SPEED_1 = 0,
   DIR_1 = 1,
   TMP_1 = 2,
   CURRENT_1 = 3,
 
-  // Second motor controller registers
+  // Second motor controller registers (for linear actuator)
   SPEED_2 = 4,
   DIR_2 = 5,
   TMP_2 = 6,
@@ -70,8 +72,21 @@ enum REGISTER // Enum of register addresses
 
   // Video selection register (0 - 3)
   VID_SELECT = 8
+
+  //Registers for Stepper Motor Driver
+  SET_STEP_NUMBER = 9
+  SET_DIRECTION = 10
+
+  //Limit Switch Registers
+  LINEAR_LIM_1 = 11 //top
+  LINEAR_LIM_2 = 12 //base
+
+  //Additional Registers for Linear Control
+  LINEAR_SET_POSITION = 13
+  LINEAR_CURR_POS = 14
 };
 
+/* Commenting out Pothos stuff *
 uint32_t updateTimer = 0;
 int updateTime = 50;
 
@@ -79,37 +94,61 @@ int pothosTimeout = 50; // The recommended pothos timeout is 50 ms
 uint8_t slaveID = 11;   // The slave ID for the node (1-255)
 
 pothos comms(slaveID, PIN::EN485, pothosTimeout); // Init the pothos library w/o RGB LED
+*/
+
+// ***** Global Variables ***** /
+int linear_current_pos = 0;
+int rack_current_step = 0;
+int tolerance = 20;
+
+// modbus stuff
+const uint8_t node_id = 2;
+const uint8_t mobus_serial_port_number = 2;
+uint16_t modbus_data[] = {0, 0, 0, 0, 9999, 9999, 0, 0, 895, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t num_modbus_registers = 0;
+int8_t poll_state = 0;
+bool communication_good = false;
+uint8_t message_count = 0;
+
+// Class instantiation
+HX711 scale(HARDWARE::SCALE_DOUT, HARDWARE::SCALE_CLK);
+Modbus slave(node_id, mobus_serial_port_number, HARDWARE::RS485_EN);
 
 void setup()
 {
+/*
   comms.setup(500000); //Pothos will communicate at a baudrate of 500Kbps      //This is high enough to ensure that data speeds will never be the bottleneck.
 
 #ifdef POTHOS_DEBUG
   Serial.begin(115200);
 #endif
+*/
+  Serial.begin(9600)
 
   setPinModes();  // Sets all pinmodes
-  setDataTypes(); // Sets all pothos data types
+  num_modbus_registers = sizeof(modbus_data) / sizeof(modbus_data[0]);
+  slave.begin(115200); // baud-rate at 19200
+  slave.setTimeOut(200);
+  //setDataTypes(); // Sets all pothos data types
 }
 
 void loop()
 {
-  comms.update(); // Maintains communication over pothos
-   if(millis()-updateTimer >= updateTime){       //update timer to trigger at 20Hz, This saves a vast majority of processing power for watching communicatrions
-    updateTimer = millis();
-    driveVertical();
-    driveDrill();
-    setVideoSelect();
-    comms.data.set_data(REGISTER::TMP_1, readTempOne());
-    comms.data.set_data(REGISTER::TMP_2, readTempTwo());
-    comms.data.set_data(REGISTER::CURRENT_1, readCurrentOne());
-    comms.data.set_data(REGISTER::CURRENT_2, readCurrentTwo());
-  }
+  poll_modbus();
+  set_linear_motor();
+  set_drill_motor();
+  set_rack_motor();
+  driveVertical();
+  driveDrill();
+  driveRack();
+
 }
 
 // This function will set the pinmode of all non-pothos pins (exclude 485-enable, Rx, Tx, and RGBLED pins)
 void setPinModes()
 {
+  pinMode(PIN::EN485, OUTPUT); //enable RS485
+
   pinMode(PIN::BLUE_LED, OUTPUT); // Sets the blue LED on pin 13 to an output
 
   // First motor controller to LARY (VNH7100AS)

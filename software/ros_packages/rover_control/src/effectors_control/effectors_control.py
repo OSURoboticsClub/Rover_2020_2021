@@ -266,7 +266,7 @@ class EffectorsControl(object):
         self.gripper_node = None  # type:minimalmodbus.Instrument
         #self.mining_node = None  # type:minimalmodbus.Instrument
         #self.drill_node = None  # type:minimalmodbus.Instrument
-        self.science_node = None #type:minimalmodbus.Instrument
+        self.science_mech_node = None #type:minimalmodbus.Instrument
 
         self.gripper_node_present = False
         #self.mining_node_present = True
@@ -388,7 +388,7 @@ class EffectorsControl(object):
             # Read around half of registers first to avoid reading 32 registers at a time. 
             # This seems to prevent CRC errors.
             self.mining_registers = self.mining_node.read_registers(0, MINING_HALF_REG_LIMIT)   
-            #self.mining_registers_part_2 = self.mining_node.read_registers(MINING_HALF_REG_LIMIT, MINING_REMAINING_REGS)
+            self.mining_registers_part_2 = self.mining_node.read_registers(MINING_HALF_REG_LIMIT, MINING_REMAINING_REGS)
         """
         #not using pothos for comp
         comms.read(mining_nodes["ScienceMech"], mining_pothos_registers["SPEED_1"])
@@ -412,7 +412,6 @@ class EffectorsControl(object):
             using_linear = self.mining_control_message.using_linear
             using_rack = self.mining_control_message.using_rack
             linear_pos_target = self.mining_control_message.linear_target
-            linear_current_pos = self.mining_control_message.linear_current_pos
             linear_at_base = self.mining_control_message.linear_at_base
             linear_homed = self.mining_control_message.linear_homed
 
@@ -437,6 +436,26 @@ class EffectorsControl(object):
                     new_linear_target = 0
 
                 linear_stop = self.mining_control_message.linear_stop
+
+                if motor_go_home:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["MOTOR_GO_HOME"]] = 1
+                    print("MOTOR_GO_HOME is TRUE")
+                    self.science_mech_node.write_registers(0, self.mining_registers)
+
+                if linear_pos_target != 0 
+                    self.mining_registers[MINING_MODBUS_REGISTERS["LINEAR_SET_POSITION_TARGET"]] = new_linear_target
+                
+                if linear_set_direction = 0:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["DIR_2"]] = linear_set_direction
+                elif linear_set_direction = 1
+                    self.mining_registers[MINING_MODBUS_REGISTERS["DIR_2"]] = linear_set_direction
+            
+            if using_rack is True:
+            
+                
+
+                
+
 
             #print(self.mining_registers_part_2)
             self.mining_node.write_registers(0, self.mining_registers)

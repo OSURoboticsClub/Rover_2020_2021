@@ -1,7 +1,6 @@
 bool linear_go_home
 int32 linear_set_direction
 int32 linear_target
-int32 linear_current_pos
 bool linear_stop
 
 int32 rack_set_step_number 

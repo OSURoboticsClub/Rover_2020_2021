@@ -5,3 +5,4 @@ float32 motor_current
 float32 linear_current
 
 int32 linear_current_pos
+bool rack_at_end

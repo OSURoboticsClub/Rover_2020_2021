@@ -167,7 +167,7 @@ MINING_MODBUS_REGISTERS = {
     "CAM_MUX": 8,
 
     ### Registers for Stepper Motor ###
-    "INCREMENT_STEP": 9,
+    "SET_STEP_NUMBER": 9,
     "SET_DIRECTION": 10,
 
     ### Registers for Limit Switches ###
@@ -321,9 +321,9 @@ class EffectorsControl(object):
 
         self.gripper_position_status = 0
 
-        self.linear_curr_position = 0
-        self.motor_curr_position = 0
+        self.linear_current_pos = 0
         self.rack_number_steps = 0
+        self.rack_at_end = False
 
         self.run()
 
@@ -408,12 +408,14 @@ class EffectorsControl(object):
             print(self.mining_control_message)
             motor_go_home = self.mining_control_message.linear_go_home
             linear_set_direction = self.mining_control_message.linear_set_direction
-            rack_set_direction = self.mining_control_message.rack_set_direction
             using_linear = self.mining_control_message.using_linear
             using_rack = self.mining_control_message.using_rack
             linear_pos_target = self.mining_control_message.linear_target
             linear_at_base = self.mining_control_message.linear_at_base
             linear_homed = self.mining_control_message.linear_homed
+            rack_set_direction = self.mining_control_message.rack_set_direction
+            rack_move_one = self.mining_control_message.rack_move_one
+            rack_set_step_number = self.mining_control_message.rack_set_step_number
 
             ### Linear actuator controls ###
             if using_linear is True:
@@ -442,7 +444,7 @@ class EffectorsControl(object):
                     print("MOTOR_GO_HOME is TRUE")
                     self.science_mech_node.write_registers(0, self.mining_registers)
 
-                if linear_pos_target != 0 
+                if linear_pos_target != 0:
                     self.mining_registers[MINING_MODBUS_REGISTERS["LINEAR_SET_POSITION_TARGET"]] = new_linear_target
                 
                 if linear_set_direction = 0:
@@ -451,11 +453,37 @@ class EffectorsControl(object):
                     self.mining_registers[MINING_MODBUS_REGISTERS["DIR_2"]] = linear_set_direction
             
             if using_rack is True:
+
+               ## Manual control of rack ##
+               if rack_set_step_number >= 0 && rack_at_end == False && rack_set_direction = 0: 
+                   new_rack_step_target = rack_number_steps + rack_set_step_number
+               elif rack_set_step_number && rack_at_end == True && rack_set_direction = 1:
+                   print("Rack is already at end of the distance!")
+                   new_rack_step_target = 0
+               elif rack_set_step_number && rack_set_direction = 0:
+                   new_rack_step_target = rack_number_steps + rack_set_step_number
+               else 
+                   new_rack_step_target = 0
             
-                
+              ## Move rack by 1 space ##
+                if rack_move_one:
+                    if rack_set_step_number >= 0 && rack_at_end == False && rack_set_direction = 0: 
+                        new_rack_step_target = rack_number_steps + rack_set_step_number
+                    elif rack_set_step_number && rack_at_end == True && rack_set_direction = 1:
+                        print("Rack is already at end of the distance!")
+                        new_rack_step_target = 0
+                    elif rack_set_step_number && rack_set_direction = 0:
+                        new_rack_step_target = rack_number_steps + rack_set_step_number
+                    else 
+                        new_rack_step_target = 0
 
-                
+                if rack_set_step_number != 0:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["SET_STEP_NUMBER"]] = new_rack_step_target
 
+                if rack_set_direction = 0:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["SET_DIRECTION"]] = rack_set_direction
+                elif rack_set_direction = 1:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["SET_DIRECTION"]] = rack_set_direction
 
             #print(self.mining_registers_part_2)
             self.mining_node.write_registers(0, self.mining_registers)

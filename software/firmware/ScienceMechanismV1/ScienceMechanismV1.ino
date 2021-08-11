@@ -1,7 +1,6 @@
 #define RS485 Serial1 //Select RS-485 Serial Port.                //This needs to be changed based on the design
 //#define POTHOS_DEBUG  //Comment this out for extra efficiency. Leave as is for verbose debug statements over USB.
 //#include <pothos.h> //Include pothos library
-#include "HX711.h"
 #include <ModbusRtu.h>
 
 enum PIN // Enum of pinouts
@@ -58,13 +57,13 @@ enum PIN // Enum of pinouts
 
 enum MODBUS_REGISTERS // Enum of register addresses
 {
-  // First motor controller registers (for drill)
+  // First motor controller registers (for linear actuator)
   SPEED_1 = 0,
   DIR_1 = 1,
   TMP_1 = 2,
   CURRENT_1 = 3,
 
-  // Second motor controller registers (for linear actuator)
+  // Second motor controller registers (for drill)
   SPEED_2 = 4,
   DIR_2 = 5,
   TMP_2 = 6,
@@ -78,12 +77,12 @@ enum MODBUS_REGISTERS // Enum of register addresses
   SET_DIRECTION = 10
 
   //Limit Switch Registers
-  LINEAR_LIM_1 = 11 //top
-  LINEAR_LIM_2 = 12 //base
+  LINEAR_LIM_1 = 11 //base
+  LINEAR_LIM_2 = 12 //top
 
   //Additional Registers for Linear Control
-  LINEAR_SET_POSITION = 13
-  LINEAR_CURR_POS = 14
+  //LINEAR_SET_POSITION = 13
+  //LINEAR_CURR_POS = 14
 };
 
 /* Commenting out Pothos stuff *
@@ -97,7 +96,6 @@ pothos comms(slaveID, PIN::EN485, pothosTimeout); // Init the pothos library w/o
 */
 
 // ***** Global Variables ***** /
-int linear_current_pos = 0;
 int rack_current_step = 0;
 int tolerance = 20;
 
@@ -111,7 +109,6 @@ bool communication_good = false;
 uint8_t message_count = 0;
 
 // Class instantiation
-HX711 scale(HARDWARE::SCALE_DOUT, HARDWARE::SCALE_CLK);
 Modbus slave(node_id, mobus_serial_port_number, HARDWARE::RS485_EN);
 
 void setup()
@@ -170,8 +167,6 @@ void setPinModes()
   // Limit switches (directly to connector, externally pulled low)
   pinMode(PIN::LIM_1, INPUT); // Limit switch 1 (I)
   pinMode(PIN::LIM_2, INPUT); // Limit switch 2 (I)
-  pinMode(PIN::LIM_3, INPUT); // Limit switch 3 (I)
-  pinMode(PIN::LIM_4, INPUT); // Limit switch 4 (I)
 
   // Video mux (CD74HC4052M96, externally pulled low)
   pinMode(PIN::VID_SELECT_1, OUTPUT); // Select bit 0 (O)
@@ -182,7 +177,7 @@ void setPinModes()
   pinMode(PIN::STEP, OUTPUT); // Increment one step (LOW -> HIGH) (O)
 
   //Lazer MOS (lowside NMOS gate) NOT USED
-  pinMode(PIN::LAZ_EN, OUTPUT); // Lazer enable (O)
+  //pinMode(PIN::LAZ_EN, OUTPUT); // Lazer enable (O)
 
   // Servos (directly to connector)
   pinMode(PIN::SERVO_1, OUTPUT); // Servo 1 (O)
@@ -198,23 +193,17 @@ void setPinModes()
   pinMode(PIN::PUMP_SELECT_3, OUTPUT); // Select bit C (O)
 }
 
-void setDataTypes()
-{ // This function is for setting the data type of each register
-  // comms.data.set_type(REGISTER::LED, "char");           // Chars are actually unsigned 8bit integers in disquise and are the closest thing to a bool that's supported by pothos
-  // comms.data.set_type(REGISTER::TMP, "int");            // The temperature data is an int
-  // comms.data.set_type(REGISTER::TIME_DATA, "long");     // Longs are also supported. time is often a long.
-  // comms.data.set_type(REGISTER::TMP_DATA, "float");     // Floats are also supported
-}
-
 void driveVertical(){
-    bool direct = (comms.data.get_char_data(REGISTER::DIR_1) != '\0');
-    uint8_t motorSpeed = int(comms.data.get_char_data(REGISTER::SPEED_1));
+    bool direct = (modbus_data[MODBUS_REGISTERS::DIR_1] != '\0');
+    uint8_t motorSpeed = int(modbus_data[MODBUS_REGISTERS::SPEED_1]);
 
     // Check limit switches
     if(digitalRead(PIN::LIM_1) && direct){
+      Serial.println("Limit switch at bottom")
       motorSpeed = 0;
       
     }else if(digitalRead(PIN::LIM_2) && !direct){
+      Serial.println("Limit switch at top")
       motorSpeed = 0;
       
     }
@@ -226,8 +215,8 @@ void driveVertical(){
 }
 
 void driveDrill(){
-    bool direct = (comms.data.get_char_data(REGISTER::DIR_2) != '\0');
-    uint8_t motorSpeed = int(comms.data.get_char_data(REGISTER::SPEED_2));
+    bool direct = (modbus_data[MODBUS_REGISTERS::DIR_2] != '\0');
+    uint8_t motorSpeed = int(modbus_data[MODBUS_REGISTERS::SPEED_2]);
     digitalWrite(PIN::INA_2, direct);
     digitalWrite(PIN::SEL_2, direct);
     digitalWrite(PIN::INB_2, !direct);
@@ -235,7 +224,7 @@ void driveDrill(){
 }
 
 void setVideoSelect(){
-  uint8_t selected = int(comms.data.get_char_data(REGISTER::VID_SELECT));
+  uint8_t selected = int(modbus_data[MODBUS_REGISTERS::VID_SELECT]);
   digitalWrite(PIN::VID_SELECT_1, (selected & 0x1)); // Get first bit of selected
   digitalWrite(PIN::VID_SELECT_2, (selected & 0x2)); // Get second bit of selected
 }

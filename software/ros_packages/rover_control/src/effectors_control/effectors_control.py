@@ -173,6 +173,8 @@ MINING_MODBUS_REGISTERS = {
     ### Registers for Limit Switches ###
     "LINEAR_LIM_TOP": 11,
     "LINEAR_LIM_BASE": 12,
+    "RACK_LIM_END": 13
+    "RACK_LIM_START": 14
 
     """
     These are commented out bc we can't use encoders
@@ -323,9 +325,10 @@ class EffectorsControl(object):
 
         self.gripper_position_status = 0
 
-        self.linear_current_pos = 0
+        #self.linear_current_pos = 0
         self.rack_number_steps = 0
         self.rack_at_end = False
+        self.rack_at_start = True
 
         self.run()
 
@@ -415,7 +418,7 @@ class EffectorsControl(object):
             linear_at_base = self.mining_control_message.linear_at_base
             linear_homed = self.mining_control_message.linear_homed
             rack_set_direction = self.mining_control_message.rack_set_direction
-            rack_move_one = self.mining_control_message.rack_move_one
+            #rack_move_one = self.mining_control_message.rack_move_one
             rack_set_step_number = self.mining_control_message.rack_set_step_number
 
             ### Linear actuator controls ###
@@ -434,16 +437,17 @@ class EffectorsControl(object):
             if using_rack is True:
 
                ## Manual control of rack ##
-               if rack_set_step_number >= 0 && rack_at_end == False && rack_set_direction = 0: 
+               if rack_at_end == False && rack_set_direction = 1: 
                    new_rack_step_target = rack_number_steps + rack_set_step_number
-               elif rack_set_step_number && rack_at_end == True && rack_set_direction = 1:
+               elif rack_at_end == True && rack_set_direction = 0:
                    print("Rack is already at end of the distance!")
                    new_rack_step_target = 0
-               elif rack_set_step_number && rack_set_direction = 0:
+               elif rack_at_start == False && rack_set_direction = 0:
                    new_rack_step_target = rack_number_steps + rack_set_step_number
-               else 
-                   new_rack_step_target = 0
+               elif rack at start == True && rack_set_direction = 1:
+                   new_rack_step_target = rack_number_steps + rack_set_step_number
             
+            """
               ## Move rack by 1 space ##
                 if rack_move_one:
                     if rack_set_step_number >= 0 && rack_at_end == False && rack_set_direction = 0: 
@@ -455,6 +459,7 @@ class EffectorsControl(object):
                         new_rack_step_target = rack_number_steps + rack_set_step_number
                     else 
                         new_rack_step_target = 0
+            """
 
                 if rack_set_step_number != 0:
                     self.mining_registers[MINING_MODBUS_REGISTERS["SET_STEP_NUMBER"]] = new_rack_step_target
@@ -494,29 +499,17 @@ class EffectorsControl(object):
         print("send mining statuses entered")
         if self.mining_node_present:
             self.mining_registers = self.mining_node.read_registers(0, MINING_HALF_REG_LIMIT)
-            self.mining_registers_part_2 = self.mining_node.read_registers(MINING_HALF_REG_LIMIT, MINING_REMAINING_REGS)
+            #self.mining_registers_part_2 = self.mining_node.read_registers(MINING_HALF_REG_LIMIT, MINING_REMAINING_REGS)
             print("read mining registers")
             
             print("making status message")
             message = MiningStatusMessage()
             print("made status message")
 
-            self.linear_curr_position = message.linear_current_position
-            self.motor_curr_position = message.motor_current_position
+            message.linear_current_temp = self.mining_registers[MINING_MODBUS_REGISTERS["TMP_1"]]
+            message.linear_current = self.mining_registers[MINING_MODBUS_REGISTERS["CURRENT_1"]]
 
-            message.linear_current_position = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_CURRENT_POSITION"]]
-
-            message.motor_current_position = self.mining_registers[MINING_MODBUS_REGISTERS_PART_2["MOTOR_CURRENT_POSITION"]]
-
-            message.temp1 = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["TEMP1"]]
-            message.temp2 = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["TEMP2"]]
-
-            message.motor_current = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["MOTOR_CURRENT"]]
-            message.linear_current = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["LINEAR_CURRENT"]]
-
-            message.switch1_out = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["SWITCH1_OUT"]]
-            message.switch2_out = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["SWITCH2_OUT"]]
-            message.homing_needed = self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["HOMING_NEEDED"]]
+            message.rack_at_end = 
 
             print(message)
             print("publishing message...")

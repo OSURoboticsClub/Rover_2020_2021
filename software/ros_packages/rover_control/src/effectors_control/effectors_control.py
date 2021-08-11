@@ -174,10 +174,12 @@ MINING_MODBUS_REGISTERS = {
     "LINEAR_LIM_TOP": 11,
     "LINEAR_LIM_BASE": 12,
 
+    """
+    These are commented out bc we can't use encoders
     ### Additional Registers for Linear Motor ###
     "LINEAR_SET_POSITION_TARGET": 13
     "LINEAR_CURRENT_POSITION": 14
-
+    """
 }
 
 """
@@ -410,7 +412,6 @@ class EffectorsControl(object):
             linear_set_direction = self.mining_control_message.linear_set_direction
             using_linear = self.mining_control_message.using_linear
             using_rack = self.mining_control_message.using_rack
-            linear_pos_target = self.mining_control_message.linear_target
             linear_at_base = self.mining_control_message.linear_at_base
             linear_homed = self.mining_control_message.linear_homed
             rack_set_direction = self.mining_control_message.rack_set_direction
@@ -420,37 +421,15 @@ class EffectorsControl(object):
             ### Linear actuator controls ###
             if using_linear is True:
                 
-                ### Manual control of linear actuator ###
-                if linear_pos_target >= 0 && linear_at_base == False && linear_set_direction = 0:
-                    new_linear_target = linear_current_pos + linear_pos_target
-                elif linear_pos_target >= 0 && linear_at_base == True && linear_set_direction = 0:
-                    print("motor needs to go home, it is at the base")
-                    motor_go_home = True
-                else 
-                    new_linear_target = 0
-
-                if linear_pos_target >= 0 && linear_homed == False && linear_set_direction = 1:
-                    new_linear_target = linear_current_pos + linear_pos_target
-                elif linear_pos_target >= 0 && linear_homed == True && linear_set_direction = 1
-                    print("Motor is already at the top of the actuator!")
-                    new_linear_target = 0
-                else 
-                    new_linear_target = 0
-
-                linear_stop = self.mining_control_message.linear_stop
-
                 if motor_go_home:
                     self.mining_registers[MINING_MODBUS_REGISTERS["MOTOR_GO_HOME"]] = 1
                     print("MOTOR_GO_HOME is TRUE")
                     self.science_mech_node.write_registers(0, self.mining_registers)
 
-                if linear_pos_target != 0:
-                    self.mining_registers[MINING_MODBUS_REGISTERS["LINEAR_SET_POSITION_TARGET"]] = new_linear_target
-                
                 if linear_set_direction = 0:
-                    self.mining_registers[MINING_MODBUS_REGISTERS["DIR_2"]] = linear_set_direction
+                    self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
                 elif linear_set_direction = 1
-                    self.mining_registers[MINING_MODBUS_REGISTERS["DIR_2"]] = linear_set_direction
+                    self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
             
             if using_rack is True:
 

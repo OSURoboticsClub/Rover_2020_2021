@@ -132,9 +132,6 @@ void setup()
 void loop()
 {
   poll_modbus();
-  set_linear_motor();
-  set_drill_motor();
-  set_rack_motor();
   driveVertical();
   driveDrill();
   driveRack();

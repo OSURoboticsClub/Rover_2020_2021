@@ -70,15 +70,17 @@ enum MODBUS_REGISTERS // Enum of register addresses
   CURRENT_2 = 7,
 
   // Video selection register (0 - 3)
-  VID_SELECT = 8
+  VID_SELECT = 8,
 
   //Registers for Stepper Motor Driver
-  SET_STEP_NUMBER = 9
-  SET_DIRECTION = 10
+  SET_STEP_NUMBER = 9,
+  SET_DIRECTION = 10,
 
   //Limit Switch Registers
-  LINEAR_LIM_1 = 11 //base
-  LINEAR_LIM_2 = 12 //top
+  LINEAR_LIM_1 = 11, //base
+  LINEAR_LIM_2 = 12, //top
+  RACK_LIM_3 = 13,   // limit switches for dirt cup rack
+  RACK_LIM_4 = 14   //
 
   //Additional Registers for Linear Control
   //LINEAR_SET_POSITION = 13
@@ -102,14 +104,14 @@ int tolerance = 20;
 // modbus stuff
 const uint8_t node_id = 2;
 const uint8_t mobus_serial_port_number = 2;
-uint16_t modbus_data[] = {0, 0, 0, 0, 9999, 9999, 0, 0, 895, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+uint16_t modbus_data[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 uint8_t num_modbus_registers = 0;
 int8_t poll_state = 0;
 bool communication_good = false;
 uint8_t message_count = 0;
 
 // Class instantiation
-Modbus slave(node_id, mobus_serial_port_number, HARDWARE::RS485_EN);
+Modbus slave(node_id, mobus_serial_port_number, PIN::EN485);
 
 void setup()
 {
@@ -120,7 +122,7 @@ void setup()
   Serial.begin(115200);
 #endif
 */
-  Serial.begin(9600)
+  Serial.begin(9600);
 
   setPinModes();  // Sets all pinmodes
   num_modbus_registers = sizeof(modbus_data) / sizeof(modbus_data[0]);
@@ -131,10 +133,11 @@ void setup()
 
 void loop()
 {
-  poll_modbus();
-  driveVertical();
-  driveDrill();
-  driveRack();
+  slave.poll(modbus_data, num_modbus_registers);
+  communication_good = !slave.getTimeOutState();
+  //driveVertical();
+  //driveDrill();
+  ssdriveRack();
 
 }
 
@@ -196,11 +199,11 @@ void driveVertical(){
 
     // Check limit switches
     if(digitalRead(PIN::LIM_1) && direct){
-      Serial.println("Limit switch at bottom")
+      Serial.println("Limit switch at bottom");
       motorSpeed = 0;
       
     }else if(digitalRead(PIN::LIM_2) && !direct){
-      Serial.println("Limit switch at top")
+      Serial.println("Limit switch at top");
       motorSpeed = 0;
       
     }

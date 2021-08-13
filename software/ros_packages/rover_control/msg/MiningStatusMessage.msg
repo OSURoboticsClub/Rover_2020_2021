@@ -1,5 +1,8 @@
 uint16 linear_current_temp
 float32 linear_current
 
-bool rack_at_end
-bool rack_at_start
+bool linear_homed
+bool linear_lowered
+
+bool rack_start 
+bool rack_end

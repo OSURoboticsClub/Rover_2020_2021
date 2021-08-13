@@ -100,8 +100,8 @@ GRIPPER_NODE_ID = 1
 SCIENCE_MECH_NODE_ID = 2 #mining_nodes.get("ScienceMech")
 
 # ##### Setup for pothos comms ##### #
-dataTypes = [['chr', 'chr', 'float', 'float'], ['chr', 'int', 'int', 'float']] # data types for pothos
-comms = pothos(len(dataTypes), dataTypes, 'COM25', 0.030, 500000)
+#dataTypes = [['chr', 'chr', 'float', 'float'], ['chr', 'int', 'int', 'float']] # data types for pothos
+#comms = pothos(len(dataTypes), dataTypes, 'COM25', 0.030, 500000)
 
 # ##### Gripper Defines #####
 GRIPPER_MODBUS_REGISTERS = {
@@ -328,7 +328,9 @@ class EffectorsControl(object):
         #self.linear_current_pos = 0
         self.rack_number_steps = 0
         self.rack_at_end = False
-        self.rack_at_start = True
+        self.rack_at_start = False
+        self.linear_homed = False
+        self.linear_lowered = False
 
         self.run()
 
@@ -411,27 +413,26 @@ class EffectorsControl(object):
         print("mining registers read")
         if self.new_mining_control_message: # and self.mining_node_present :
             print(self.mining_control_message)
-            motor_go_home = self.mining_control_message.linear_go_home
             linear_set_direction = self.mining_control_message.linear_set_direction
             using_linear = self.mining_control_message.using_linear
             using_rack = self.mining_control_message.using_rack
+            linear_at_top = self.mining_control_message.linear_at_top
             linear_at_base = self.mining_control_message.linear_at_base
-            linear_homed = self.mining_control_message.linear_homed
             rack_set_direction = self.mining_control_message.rack_set_direction
-            #rack_move_one = self.mining_control_message.rack_move_one
             rack_set_step_number = self.mining_control_message.rack_set_step_number
 
             ### Linear actuator controls ###
             if using_linear is True:
-                
-                if motor_go_home:
-                    self.mining_registers[MINING_MODBUS_REGISTERS["MOTOR_GO_HOME"]] = 1
-                    print("MOTOR_GO_HOME is TRUE")
-                    self.science_mech_node.write_registers(0, self.mining_registers)
+
+                if linear_at_base is True:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 0
+
+                if linear_at_top is True:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 0
 
                 if linear_set_direction = 0:
                     self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
-                elif linear_set_direction = 1
+                elif linear_set_direction = 1:
                     self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
             
             if using_rack is True:
@@ -446,7 +447,15 @@ class EffectorsControl(object):
                    new_rack_step_target = rack_number_steps + rack_set_step_number
                elif rack at start == True && rack_set_direction = 1:
                    new_rack_step_target = rack_number_steps + rack_set_step_number
-            
+
+                if rack_set_step_number != 0:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["SET_STEP_NUMBER"]] = new_rack_step_target
+
+                if rack_set_direction = 0:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["SET_DIRECTION"]] = rack_set_direction
+                elif rack_set_direction = 1:
+                    self.mining_registers[MINING_MODBUS_REGISTERS["SET_DIRECTION"]] = rack_set_direction
+   
             """
               ## Move rack by 1 space ##
                 if rack_move_one:
@@ -460,15 +469,6 @@ class EffectorsControl(object):
                     else 
                         new_rack_step_target = 0
             """
-
-                if rack_set_step_number != 0:
-                    self.mining_registers[MINING_MODBUS_REGISTERS["SET_STEP_NUMBER"]] = new_rack_step_target
-
-                if rack_set_direction = 0:
-                    self.mining_registers[MINING_MODBUS_REGISTERS["SET_DIRECTION"]] = rack_set_direction
-                elif rack_set_direction = 1:
-                    self.mining_registers[MINING_MODBUS_REGISTERS["SET_DIRECTION"]] = rack_set_direction
-
             #print(self.mining_registers_part_2)
             self.mining_node.write_registers(0, self.mining_registers)
             #self.mining_node.write_registers(MINING_HALF_REG_LIMIT, self.mining_registers_part_2)
@@ -506,10 +506,19 @@ class EffectorsControl(object):
             message = MiningStatusMessage()
             print("made status message")
 
+            self.rack_at_end = message.rack_end
+            self.rack_at_start = message.rack_start
+            self.linear_homed = message.linear_homed
+            self.linear_lowered = message.linear_lowered
+
             message.linear_current_temp = self.mining_registers[MINING_MODBUS_REGISTERS["TMP_1"]]
             message.linear_current = self.mining_registers[MINING_MODBUS_REGISTERS["CURRENT_1"]]
 
-            message.rack_at_end = 
+            message.rack_at_end = self.mining_registers[MINING_MODBUS_REGISTERS["RACK_LIM_END"]]
+            message.rack_at_top = self.mining_registers[MINING_MODBUS_REGISTERS["RACK_LIM_START"]]
+
+            message.linear_homed = self.mining_registers[MINING_MODBUS_REGISTERS["LINEAR_LIM_TOP"]]
+            message.linear_lowered = self.mining_registers[MINING_MODBUS_REGISTERS["LINEAR_LIM_BASE"]]
 
             print(message)
             print("publishing message...")

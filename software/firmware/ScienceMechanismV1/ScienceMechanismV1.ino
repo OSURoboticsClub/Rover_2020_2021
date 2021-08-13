@@ -2,6 +2,8 @@
 //#define POTHOS_DEBUG  //Comment this out for extra efficiency. Leave as is for verbose debug statements over USB.
 //#include <pothos.h> //Include pothos library
 #include <ModbusRtu.h>
+#include "DRV8825.h"
+#define MOTOR_STEPS 200
 
 enum PIN // Enum of pinouts
 {
@@ -112,6 +114,7 @@ uint8_t message_count = 0;
 
 // Class instantiation
 Modbus slave(node_id, mobus_serial_port_number, PIN::EN485);
+DRV8825 stepper(MOTOR_STEPS, PIN::DIR, PIN::STEP)
 
 void setup()
 {
@@ -129,6 +132,7 @@ void setup()
   slave.begin(115200); // baud-rate at 19200
   slave.setTimeOut(200);
   //setDataTypes(); // Sets all pothos data types
+  stepper.begin(1, 1);
 }
 
 void loop()
@@ -137,7 +141,7 @@ void loop()
   communication_good = !slave.getTimeOutState();
   //driveVertical();
   //driveDrill();
-  ssdriveRack();
+  driveRack();
 
 }
 
@@ -221,6 +225,10 @@ void driveDrill(){
     digitalWrite(PIN::SEL_2, direct);
     digitalWrite(PIN::INB_2, !direct);
     analogWrite(PIN::PWM_2, motorSpeed);
+}
+
+void driveRack(){
+
 }
 
 void setVideoSelect(){

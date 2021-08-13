@@ -114,7 +114,7 @@ uint8_t message_count = 0;
 
 // Class instantiation
 Modbus slave(node_id, mobus_serial_port_number, PIN::EN485);
-DRV8825 stepper(MOTOR_STEPS, PIN::DIR, PIN::STEP)
+DRV8825 stepper(MOTOR_STEPS, PIN::DIR, PIN::STEP);
 
 void setup()
 {
@@ -142,7 +142,7 @@ void loop()
   //driveVertical();
   //driveDrill();
   driveRack();
-
+  setVideoSelect();
 }
 
 // This function will set the pinmode of all non-pothos pins (exclude 485-enable, Rx, Tx, and RGBLED pins)
@@ -229,6 +229,34 @@ void driveDrill(){
 
 void driveRack(){
 
+  // local variables: shorthand for modbus register data
+  uint16_t steps = modbus_data[MODBUS_REGISTERS::SET_STEP_NUMBER];
+  uint16_t dir = modbus_data[MODBUS_REGISTERS::SET_DIRECTION];
+  uint16_t lim1 = modbus_data[MODBUS_REGISTERS::RACK_LIM_3];
+  uint16_t lim2 = modbus_data[MODBUS_REGISTERS::RACK_LIM_4];
+
+  if (lim1 > 0 || lim2 > 0) {  // if either limit switch active
+    steps = 0;  // stop stepping
+
+    //swap step direction
+    if (dir == 0) {
+      dir = 1;
+    }
+    else if (dir == 1) {
+      dir = 0;
+    }
+  }
+
+  // if no limit switches active, and steps are buffered, step each time this function executes
+  else if(modbus_data[MODBUS_REGISTERS::SET_STEP_NUMBER] > 0) {
+    stepper.rotate(1);
+    --steps;
+  }
+
+  // set new modbus data values for step and direction
+  modbus_data[MODBUS_REGISTERS::SET_STEP_NUMBER] = steps;
+  modbus_data[MODBUS_REGISTERS::SET_DIRECTION] = dir;
+  
 }
 
 void setVideoSelect(){

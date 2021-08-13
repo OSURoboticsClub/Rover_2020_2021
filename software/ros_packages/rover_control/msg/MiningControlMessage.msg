@@ -15,3 +15,8 @@ bool linear_at_top
 
 bool rack_at_end
 bool rack_at_start
+
+int32 linear_set_speed
+
+bool linear_go_home
+bool linear_go_lower

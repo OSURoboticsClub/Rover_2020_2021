@@ -332,6 +332,7 @@ class EffectorsControl(object):
         self.linear_homed = False
         self.linear_lowered = False
 
+
         self.run()
 
     def __setup_minimalmodbus_for_485(self):
@@ -420,12 +421,19 @@ class EffectorsControl(object):
             linear_at_base = self.mining_control_message.linear_at_base
             rack_set_direction = self.mining_control_message.rack_set_direction
             rack_set_step_number = self.mining_control_message.rack_set_step_number
+            linear_go_home = self.mining_control_mnumber.message.linear_go_home
+            linear_go_lower = self.mining_control.message.linear_go_lower
 
             ### Linear actuator controls ###
             if using_linear is True:
 
-                if linear_at_base is True:
-                    self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 0
+                if linear_go_home:
+                    if linear_at_top is False:
+                        #set motors to move
+
+                if linear_go_lower:
+                    if linear_at_base is False:
+                        #set motors to move
 
                 if linear_at_top is True:
                     self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 0

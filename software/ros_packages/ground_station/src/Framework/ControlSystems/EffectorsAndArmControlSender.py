@@ -165,6 +165,7 @@ class EffectorsAndArmControlSender(QtCore.QThread):
     xbox_control_arm_stylesheet_update_ready__signal = QtCore.pyqtSignal(str)
     xbox_control_mining_stylesheet_update_ready__signal = QtCore.pyqtSignal(str)
 
+
     XBOX_CONTROL_STATES = [
         "ARM",
         "MINING"
@@ -329,13 +330,16 @@ class EffectorsAndArmControlSender(QtCore.QThread):
         message = MiningControlMessage()
 
         if left_y_axis:
-            message.linear_set_position_absolute = ((left_y_axis / THUMB_STICK_MAX) * MINING_LINEAR_SCALAR)
+            message. = ((left_y_axis / THUMB_STICK_MAX) * MINING_LINEAR_SCALAR)
             self.mining_control_publisher.publish(message)
 
+    """
         if right_y_axis:
             message.motor_set_position_absolute = ((right_y_axis / THUMB_STICK_MAX) * MINING_MOTOR_SCALAR)
             self.mining_control_publisher.publish(message)
+    """
 
+    """
     def send_mining_home_on_back_press(self):
         message = MiningControlMessage()
         back_state = self.controller.controller_states["back_button"]
@@ -346,6 +350,7 @@ class EffectorsAndArmControlSender(QtCore.QThread):
             self.last_back_button_state = 1
         elif self.last_back_button_state == 1 and back_state == 0:
             self.last_back_button_state = 0
+    """
 
     def send_hitch_commands(self):
         y_button_state = self.controller.controller_states["y_button"]

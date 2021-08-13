@@ -48,6 +48,10 @@ class Mining(QtCore.QObject):
     real_dielectric_update_ready__signal = QtCore.pyqtSignal(float)
     imaginary_dielectric_update_ready__signal = QtCore.pyqtSignal(float)
 
+    mining_linear_lowered_label_stylesheet_change_ready__signal = QtCore.pyqtSignal(int)
+    mining_linear_raised_label_stylesheet_change_ready__signal = QtCore.pyqtSignal(int)
+
+
     def __init__(self, shared_objects):
         super(Mining, self).__init__()
 
@@ -59,13 +63,17 @@ class Mining(QtCore.QObject):
         self.mining_4bar_current_lcd_number = self.left_screen.mining_4bar_current_lcd_number  # type:QtWidgets.QLCDNumber
         self.mining_linear_temp_lcd_number = self.left_screen.mining_linear_temp_lcd_number  # type:QtWidgets.QLCDNumber
         self.mining_linear_current_lcd_number = self.left_screen.mining_linear_current_lcd_number  # type:QtWidgets.QLCDNumber
-        self.mining_open_button = self.left_screen.mining_open_button  # type:QtWidgets.QPushButton
-        self.mining_close_button = self.left_screen.mining_close_button  # type:QtWidgets.QPushButton
+       # self.mining_open_button = self.left_screen.mining_open_button  # type:QtWidgets.QPushButton
+       # self.mining_close_button = self.left_screen.mining_close_button  # type:QtWidgets.QPushButton
         self.mining_home_linear_button = self.left_screen.mining_home_linear_button  # type:QtWidgets.QPushButton
-        self.mining_toggle_overtravel_button = self.left_screen.mining_toggle_overtravel_button  # type:QtWidgets.QPushButton
-        self.mining_rack_move_space_button = self.left_screen.mining_rack_move_space_button # type:QtWidgets.QPushButton
+        self.mining_lower_linear_button = self.left_screen.mining_lower_linear_button #type:QtWidgets.QPushButton
+       # self.mining_toggle_overtravel_button = self.left_screen.mining_toggle_overtravel_button  # type:QtWidgets.QPushButton
         self.mining_toggle_linear_button = self.left_screen.mining_toggle_linear_button # type:QtWidgets.QPushButton
         self.mining_toggle_rack_button = self.left_screen.mining_toggle_rack_button # type:QtWidgets.QPushButton
+        self.mining_linear_lowered_label = self.left_screen.mining_linear_lowered_label #type:QtWidgets.QLabel
+        self.mining_linear_raised_label = self.left_screen.mining_linear_raised_label #type:QtWidgets.QLabel
+        self.mining_rack_set_step_input = self.left_screen.mining_rack_set_step_input #type:QtWidgets.QLineEdit
+        self.mining_rack_send_step_value = self.left_screen.mining_rack_send_step_value #type:QtWidgets.QPushButton
         self.drill_turn_clockwise_button = self.left_screen.drill_turn_clockwise_button  # type:QtWidgets.QPushButton
         self.drill_turn_counter_clockwise_button = self.left_screen.drill_turn_counter_clockwise_button  # type:QtWidgets.QPushButton
         self.drill_stop_button = self.left_screen.drill_stop_button  # type:QtWidgets.QPushButton
@@ -93,6 +101,9 @@ class Mining(QtCore.QObject):
 
         self.cam_shoot_button = self.left_screen.cam_shoot_button  # type:QtWidgets.QPushButton
 
+        self.cam_toggle_1 = self.left_screen.cam_toggle_1 # type:QtWidgets.QPushButton
+        self.cam_toggle_2 = self.left_screen.cam_toggle_2 # type:QtWidgets.QPushButton
+
         # ########## Get the settings instance ##########
         self.settings = QtCore.QSettings()
 
@@ -117,12 +128,14 @@ class Mining(QtCore.QObject):
         self.mining_linear_temp_update_ready__signal.connect(self.mining_linear_temp_lcd_number.display)
         self.mining_linear_current_update_ready__signal.connect(self.mining_linear_current_lcd_number.display)
 
-        self.mining_open_button.clicked.connect(self.on_mining_open_clicked__slot)
-        self.mining_close_button.clicked.connect(self.on_mining_close_clicked__slot)
+        #self.mining_open_button.clicked.connect(self.on_mining_open_clicked__slot)
+        #self.mining_close_button.clicked.connect(self.on_mining_close_clicked__slot)
         self.mining_home_linear_button.clicked.connect(self.on_mining_home_linear_clicked__slot)
-        self.mining_toggle_overtravel_button.clicked.connect(self.on_mining_toggle_overtravel_clicked__slot)
+        self.mining_lower_linear_button.clicked.connect(self.on_mining_lower_linear_clicked_slot)
+    #   self.mining_toggle_overtravel_button.clicked.connect(self.on_mining_toggle_overtravel_clicked__slot)
         self.mining_toggle_linear_button.clicked.connect(self.on_mining_toggle_linear_clicked__slot)
         self.mining_toggle_rack_button.clicked.connect(self.on_mining_toggle_rack_clicked__slot)
+        self.mining_rack_send_step_value.clicked.connect(self.on_mining_rack_send_step_clicked__slot)
         self.drill_turn_clockwise_button.clicked.connect(self.on_drill_clockwise_clocked__slot)
         self.drill_turn_counter_clockwise_button.clicked.connect(self.on_drill_counter_clockwise_clicked__slot)
         self.drill_stop_button.clicked.connect(self.on_drill_stop_clicked__slot)
@@ -140,14 +153,21 @@ class Mining(QtCore.QObject):
         self.real_dielectric_update_ready__signal.connect(self.science_real_dielectric_lcd_number.display)
         self.imaginary_dielectric_update_ready__signal.connect(self.science_imaginary_dielectric_lcd_number.display)
 
+
+        self.mining_linear_lowered_label_stylesheet_change_ready__signal(self.mining_linear_lowered_label.setStyleSheet)
+        self.mining_linear_raised_label_stylesheet_change_ready__signal(self.mining_linear_raised_label.setStyleSheet)
+
         self.cam_lcd_output_button.clicked.connect(self.on_cam_lcd_button_clicked__slot)
         self.cam_network_output_button.clicked.connect(self.on_cam_network_button_clicked__slot)
+
 
         self.cam_zoom_in_button.clicked.connect(self.on_cam_zoom_in_button_clicked__slot)
         self.cam_zoom_out_button.clicked.connect(self.on_cam_zoom_out_button_clicked__slot)
         self.cam_full_zoom_in_button.clicked.connect(self.on_cam_full_zoom_in_button_clicked__slot)
         self.cam_full_zoom_out_button.clicked.connect(self.on_cam_full_zoom_out_button_clicked__slot)
         self.cam_shoot_button.clicked.connect(self.on_cam_shoot_button_clicked__slot)
+        self.cam_toggle_1.clicked.connect(self.on_cam_1_toggle_button_clicked__slot)
+        self.cam_toggle_2.clicked.connect(self.on_cam_2_toggle_button_clicked__slot)
 
     def fourbar_position_slider__slot(self):
         message = MiningControlMessage()
@@ -158,7 +178,8 @@ class Mining(QtCore.QObject):
         #message = MiningControlMessage()
         #message.
         pass
-
+    
+    """
     def on_mining_open_clicked__slot(self):
         message = MiningControlMessage()
         message.servo1_target = MINING_COLLECTION_CUP_OPEN
@@ -169,15 +190,11 @@ class Mining(QtCore.QObject):
         message.servo1_target = MINING_COLLECTION_CUP_CLOSED
         self.mining_control_publisher.publish(message)
 
-    def on_mining_home_linear_clicked__slot(self):
-        message = MiningControlMessage()
-        message.motor_go_home = True
-        self.mining_control_publisher.publish(message)
-
     def on_mining_toggle_overtravel_clicked__slot(self):
         message = MiningControlMessage()
         message.overtravel = True
         self.mining_control_publisher.publish(message)
+    """
 
     def on_mining_toggle_linear_clicked__slot(self):
         message = MiningControlMessage()
@@ -187,6 +204,16 @@ class Mining(QtCore.QObject):
     def on_mining_toggle_rack_clicked__slot(self):
         message = MiningControlMessage()
         message.using_rack = True
+        self.mining_control_publisher.publish(message)
+
+    def on_mining_home_linear_clicked__slot(self):
+        message = MiningControlMessage()
+        message.linear_go_home = True
+        self.mining_control_publisher.publish(message)
+
+    def on_mining_lower_linear_clicked_slot(self):
+        message = MiningControlMessage()
+        message.linear_go_lower = True
         self.mining_control_publisher.publish(message)
 
     def on_drill_clockwise_clocked__slot(self):
@@ -205,6 +232,9 @@ class Mining(QtCore.QObject):
         message = DrillControlMessage()
         message.speed = 0
         self.drill_control_publisher.publish(message)
+
+    def text_readout_updated__slot(self):
+        message = MiningControlMessage()
 
 
     def on_science_scoop_down_clicked__slot(self):

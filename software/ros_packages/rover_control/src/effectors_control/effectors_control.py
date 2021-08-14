@@ -433,13 +433,13 @@ class EffectorsControl(object):
 
                 elif:
                     if linear_go_home is False:
-                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 25
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 100
                         linear_set_direction = 1
                         self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
 
                     if linear_go_lower:
                         if linear_at_base is False:
-                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 25
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 100
                         linear_set_direction = 0
                         self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
 

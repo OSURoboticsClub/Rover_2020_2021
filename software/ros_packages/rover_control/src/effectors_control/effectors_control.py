@@ -433,13 +433,13 @@ class EffectorsControl(object):
 
                 elif:
                     if linear_go_home is False:
-                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 100
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 150
                         linear_set_direction = 1
                         self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
 
                     if linear_go_lower:
                         if linear_at_base is False:
-                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 100
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 150
                         linear_set_direction = 0
                         self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
 
@@ -450,7 +450,7 @@ class EffectorsControl(object):
                         self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 0
                     elif linear_at_base is True && manual_override is False:
                         self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
-                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 25 #set to quater speed as a placeholder, will change if need be
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 150 #set to quater speed as a placeholder, will change if need be
             
             if using_rack is True:
 
@@ -463,7 +463,7 @@ class EffectorsControl(object):
                elif rack_at_start == False && rack_set_direction = 0:
                    new_rack_step_target = rack_number_steps + rack_set_step_number
                elif rack at start == True && rack_set_direction = 1:
-                   new_rack_step_target = rack_number_steps + rack_set_step_number
+                   new_rack_step_target = 0
 
                 if rack_set_step_number != 0:
                     self.mining_registers[MINING_MODBUS_REGISTERS["SET_STEP_NUMBER"]] = new_rack_step_target
@@ -510,7 +510,7 @@ class EffectorsControl(object):
 
             if self.camera_control_message.sci_cam_1 is True:
                 sci_cam_select = 0
-            elif self.camera_control_message.camera_control_message.sci_came 2 is True:
+            elif self.camera_control_message.camera_control_message.sci_cam_2 is True:
                 sci_cam_select = 1
 
             self.mining_registers[MINING_MODBUS_REGISTERS["CAM_MUX"]] = self.camera_control_message.sci_cam_select

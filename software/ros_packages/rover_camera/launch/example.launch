@@ -17,8 +17,17 @@
       <param name="device_path" value="/dev/rover/camera_zed_left" />
     </node>
 
-    <node name="point_cloud" pkg="rover_camera" type="rover_camera" launch_prefix="taskset -c 5" output="screen" >
+    <node name="point_cloud" pkg="rover_camera" type="rover_camera" launch-prefix="taskset -c 5" output="screen" >
       <param name="device_path" value="/dev/rover/camera_point_cloud" />
+    </node>
+
+    <node name="sci_cam_1" pkg="rover_camera" type="rover_camera" launch-prefix="taskset -c 6" output="screen" >
+      <param name="device_path" value="/dev/rover/camera_sci_cam_1" />
+    </node>
+
+    <node name="sci_cam_2" pkg="rover_camera" type="rover_camera" launch-prefix="taskset -c 7" output="screen" >
+      <param name="device_path" value="dev/rover_camera_sci_cam_2" />
+    </node>
 
   </group>
 </launch>

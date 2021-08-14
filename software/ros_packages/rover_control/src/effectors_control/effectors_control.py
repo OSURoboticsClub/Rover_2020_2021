@@ -423,25 +423,35 @@ class EffectorsControl(object):
             rack_set_step_number = self.mining_control_message.rack_set_step_number
             linear_go_home = self.mining_control_mnumber.message.linear_go_home
             linear_go_lower = self.mining_control.message.linear_go_lower
+            manual_override = self.mining_control_message.manual_override
 
             ### Linear actuator controls ###
             if using_linear is True:
 
-                if linear_go_home:
-                    if linear_at_top is False:
-                        #set motors to move
-
-                if linear_go_lower:
-                    if linear_at_base is False:
-                        #set motors to move
-
-                if linear_at_top is True:
-                    self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 0
-
-                if linear_set_direction = 0:
+                if manual_override is True:
                     self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
-                elif linear_set_direction = 1:
-                    self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
+
+                elif:
+                    if linear_go_home:
+                        if linear_at_top is False:
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 25
+                        linear_set_direction = 1
+                        self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
+
+                    if linear_go_lower:
+                        if linear_at_base is False:
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 25
+                        linear_set_direction = 0
+                        self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
+
+                    if linear_at_top is True:
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 0
+
+                    if linear_at_base is True && manual_override is False:
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 0
+                    elif linear_at_base is True && manual_override is False:
+                        self.mining_registers[MINING_MODBUS_REGISTERS["DIR_1"]] = linear_set_direction
+                        self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_1"]] = 25 #set to quater speed as a placeholder, will change if need be
             
             if using_rack is True:
 
@@ -610,10 +620,10 @@ class EffectorsControl(object):
 
     def process_drill_control_messages(self):
         if self.new_drill_control_message and self.drill_node_present:
-            self.drill_registers[DRILL_MODBUS_REGISTERS["DIRECTION"]] = self.drill_control_message.direction
-            self.drill_registers[DRILL_MODBUS_REGISTERS["SPEED"]] = self.drill_control_message.speed
+            self.mining_registers[MINING_MODBUS_REGISTERS["DIR_2"]] = self.drill_control_message.direction
+            self.mining_registers[MINING_MODBUS_REGISTERS["SPEED_2"]] = self.drill_control_message.speed
  
-            self.drill_node.write_registers(0, self.drill_registers)
+            self.drill_node.write_registers(0, self.mining_registers)
             self.gripper_control_message = None
             self.modbus_nodes_seen_time = time()
             self.new_drill_control_message = False

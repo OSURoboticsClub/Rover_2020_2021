@@ -91,6 +91,8 @@ class RoverVideoCoordinator(QtCore.QThread):
         rospy.Publisher("/cameras/end_effector/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
         rospy.Publisher("/cameras/zed_left/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
         rospy.Publisher("/cameras/point_cloud/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
+        rospy.Publisher("/cameras/sci_cam_1/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
+        rospy.Publisher("/cameras/sci_cam_2/camera_control", CameraControlMessage, queue_size=1).publish(reset_camera_message)
 
         self.msleep(3000)
 

@@ -496,6 +496,7 @@ class EffectorsControl(object):
 
     def process_camera_control_message(self):
         if self.new_camera_control_message:
+            """
             self.mining_registers[MINING_MODBUS_REGISTERS_PART_2["MOTOR_GO_HOME"]] = 0
             self.mining_registers_part_2[MINING_MODBUS_REGISTERS_PART_2["OVERTRAVEL"]] = 0
 
@@ -505,10 +506,20 @@ class EffectorsControl(object):
             self.mining_registers[MINING_MODBUS_REGISTERS["CAM_ZOOM_IN_FULL"]] = self.camera_control_message.cam_zoom_in_full
             self.mining_registers[MINING_MODBUS_REGISTERS["CAM_ZOOM_OUT_FULL"]] = self.camera_control_message.cam_zoom_out_full
             self.mining_registers[MINING_MODBUS_REGISTERS["CAM_SHOOT"]] = self.camera_control_message.cam_shoot
+            """
+
+            if self.camera_control_message.sci_cam_1 is True:
+                sci_cam_select = 0
+            elif self.camera_control_message.camera_control_message.sci_came 2 is True:
+                sci_cam_select = 1
+
+            self.mining_registers[MINING_MODBUS_REGISTERS["CAM_MUX"]] = self.camera_control_message.sci_cam_select
+
 
             self.mining_node.write_registers(0, self.mining_registers)
             self.mining_node.write_registers(MINING_HALF_REG_LIMIT, self.mining_registers_part_2)
             self.modbus_nodes_seen_time = time()
+        
 
             self.new_camera_control_message = False
 

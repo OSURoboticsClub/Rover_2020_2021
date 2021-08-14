@@ -237,6 +237,12 @@ class RoverVideoCoordinator(QtCore.QThread):
         if "end_effector" in names:
             self.valid_cameras.append("end_effector")
 
+        if "sci_cam_1" in names:
+            self.valid_cameras.append("sci_cam_1")
+
+        if "sci_cam_2" in names:
+            self.valid_cameras.append("sci_cam_2")
+
     def __setup_video_threads(self):
         for camera in self.valid_cameras:
             self.camera_threads[camera] = RoverVideoReceiver.RoverVideoReceiver(camera)

@@ -291,6 +291,16 @@ class Mining(QtCore.QObject):
         message.cam_shoot = 1
         self.camera_control_publisher.publish(message)
 
+    def on_cam_1_toggle_button_clicked__slot(self):
+        message = CameraControlMessage()
+        message.select_cam_1 = True
+        self.camera_control_publisher.publish(message)
+
+    def on_cam_2_toggle_button_clicked__slot(self):
+        message = CameraControlMessage
+        message.select_cam_2 = True
+        self.camera_control_publisher.publish(message)
+
     def mining_status_message_received__callback(self, status):
         status = status  # type:MiningStatusMessage
         message = MiningStatusMessage()

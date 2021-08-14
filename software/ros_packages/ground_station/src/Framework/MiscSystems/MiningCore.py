@@ -77,9 +77,9 @@ class Mining(QtCore.QObject):
         self.drill_turn_clockwise_button = self.left_screen.drill_turn_clockwise_button  # type:QtWidgets.QPushButton
         self.drill_turn_counter_clockwise_button = self.left_screen.drill_turn_counter_clockwise_button  # type:QtWidgets.QPushButton
         self.drill_stop_button = self.left_screen.drill_stop_button  # type:QtWidgets.QPushButton
-        self.science_scoop_down_button = self.left_screen.science_scoop_down_button  # type:QtWidgets.QPushButton
-        self.science_container_open_button = self.left_screen.science_container_open_button  # type:QtWidgets.QPushButton
-        self.science_container_close_button = self.left_screen.science_container_close_button  # type:QtWidgets.QPushButton
+        #self.science_scoop_down_button = self.left_screen.science_scoop_down_button  # type:QtWidgets.QPushButton
+        #self.science_container_open_button = self.left_screen.science_container_open_button  # type:QtWidgets.QPushButton
+        #self.science_container_close_button = self.left_screen.science_container_close_button  # type:QtWidgets.QPushButton
 
         # self.fourbar_position_slider = self.left_screen.fourbar_position_slider  # type:QtWidgets.QProgressBar
         # self.linear_position_slider = self.left_screen.linear_position_slider  # type:QtWidgets.QProgressBar
@@ -139,9 +139,9 @@ class Mining(QtCore.QObject):
         self.drill_turn_clockwise_button.clicked.connect(self.on_drill_clockwise_clocked__slot)
         self.drill_turn_counter_clockwise_button.clicked.connect(self.on_drill_counter_clockwise_clicked__slot)
         self.drill_stop_button.clicked.connect(self.on_drill_stop_clicked__slot)
-        self.science_scoop_down_button.clicked.connect(self.on_science_scoop_down_clicked__slot)
-        self.science_container_open_button.clicked.connect(self.on_science_container_open_clicked__slot)
-        self.science_container_close_button.clicked.connect(self.on_science_container_close_clicked__slot)
+        #self.science_scoop_down_button.clicked.connect(self.on_science_scoop_down_clicked__slot)
+        #self.science_container_open_button.clicked.connect(self.on_science_container_open_clicked__slot)
+        #self.science_container_close_button.clicked.connect(self.on_science_container_close_clicked__slot)
 
         #self.fourbar_position_slider.valueChanged.connect(self.fourbar_position_slider__slot)
         #self.linear_position_slider.valueChanged.connect(self.linear_position_slider__slot)
@@ -154,8 +154,8 @@ class Mining(QtCore.QObject):
         self.imaginary_dielectric_update_ready__signal.connect(self.science_imaginary_dielectric_lcd_number.display)
 
 
-        self.mining_linear_lowered_label_stylesheet_change_ready__signal(self.mining_linear_lowered_label.setStyleSheet)
-        self.mining_linear_raised_label_stylesheet_change_ready__signal(self.mining_linear_raised_label.setStyleSheet)
+        self.mining_linear_lowered_label_stylesheet_change_ready__signal.connect(self.mining_linear_lowered_label.setStyleSheet)
+        self.mining_linear_raised_label_stylesheet_change_ready__signal.connect(self.mining_linear_raised_label.setStyleSheet)
 
         self.cam_lcd_output_button.clicked.connect(self.on_cam_lcd_button_clicked__slot)
         self.cam_network_output_button.clicked.connect(self.on_cam_network_button_clicked__slot)
@@ -239,6 +239,7 @@ class Mining(QtCore.QObject):
         message.speed = 0
         self.drill_control_publisher.publish(message)
 
+    """
     def on_science_scoop_down_clicked__slot(self):
         message = MiningControlMessage()
         message.servo1_target = SCOOP_DROP_POSITION
@@ -255,6 +256,7 @@ class Mining(QtCore.QObject):
         message.servo2_target = CONTAINER_CLOSED
         message.servo1_target = SCOOP_DROP_POSITION
         self.mining_control_publisher.publish(message)
+    """
 
     def on_cam_lcd_button_clicked__slot(self):
         message = CameraControlMessage()

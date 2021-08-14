@@ -333,7 +333,7 @@ class EffectorsAndArmControlSender(QtCore.QThread):
             message.manual_override = True
             if left_y_axis > 0:
                 message.linear_set_direction = 0
-            if left_y_axis < 0
+            if left_y_axis < 0:
                 message.linear_set_direction = 1
             self.mining_control_publisher.publish(message)
 

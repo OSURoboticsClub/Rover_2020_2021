@@ -2328,7 +2328,7 @@ Connected</string>
                  <string notr="true">border: 0.5px solid black;  background-color: pink</string>
                 </property>
                 <property name="text">
-                 <string>Drill Lowered Completely</string>
+                 <string>Drill Lowered to Rack</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -2522,14 +2522,14 @@ Connected</string>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="mining_toggle_linear_button">
               <property name="text">
                <string>Toggle Linear Control</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="mining_toggle_rack_button">
               <property name="text">
                <string>Toggle Rack Control</string>
               </property>
@@ -2719,14 +2719,14 @@ Connected</string>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_4">
+                 <widget class="QPushButton" name="cam_toggle_1">
                   <property name="text">
                    <string>Toggle Camera 1</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_5">
+                 <widget class="QPushButton" name="cam_toggle_2">
                   <property name="text">
                    <string>Toggle Camera 2</string>
                   </property>
@@ -2770,10 +2770,10 @@ Connected</string>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit"/>
+             <widget class="QLineEdit" name="mining_rack_set_step_input"/>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_3">
+             <widget class="QPushButton" name="mining_rack_send_step_value">
               <property name="text">
                <string>Send</string>
               </property>

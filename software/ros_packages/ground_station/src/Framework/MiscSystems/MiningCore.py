@@ -216,6 +216,12 @@ class Mining(QtCore.QObject):
         message.linear_go_lower = True
         self.mining_control_publisher.publish(message)
 
+    def on_mining_rack_send_step_clicked__slot(self):
+        message = MiningControlMessage()
+        step_input = self.mining_rack_set_step_input.text()
+        message.rack_set_step_number = step_input.toInt()
+        self.mining_control_publisher.publish(message)
+
     def on_drill_clockwise_clocked__slot(self):
         message = DrillControlMessage()
         message.direction = True
@@ -232,10 +238,6 @@ class Mining(QtCore.QObject):
         message = DrillControlMessage()
         message.speed = 0
         self.drill_control_publisher.publish(message)
-
-    def text_readout_updated__slot(self):
-        message = MiningControlMessage()
-
 
     def on_science_scoop_down_clicked__slot(self):
         message = MiningControlMessage()
@@ -291,10 +293,19 @@ class Mining(QtCore.QObject):
 
     def mining_status_message_received__callback(self, status):
         status = status  # type:MiningStatusMessage
+        message = MiningStatusMessage()
         
         self.mining_4bar_temp_update_ready__signal.emit(status.temp2)
         self.mining_linear_temp_update_ready__signal.emit(status.temp1)
 
         self.mining_4bar_current_update_ready__signal.emit(status.linear_current)
         self.mining_linear_current_update_ready__signal.emit(status.motor_current)
+
+        if message.linear_homed is True:
+            self.mining_linear_raised_label_stylesheet_change_ready__signal.emit("background-color: lightgreen;")
+
+        if message.linear_lowered is True:
+            self.mining_linear_lowered_label_stylesheet_change_ready__signal.emit("background-color: lightgreen")
+
+        
 

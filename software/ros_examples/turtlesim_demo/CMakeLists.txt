@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(simple_ps)
+project(turtlesim_demo)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -8,10 +8,8 @@ project(simple_ps)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  message_generation
-  message_runtime
+  geometry_msgs
   rospy
-  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -48,10 +46,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-  FILES
-  SimpleMessage.msg
- )
+# add_message_files(
+#   FILES
+#   Message1.msg
+#   Message2.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -68,10 +67,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   std_msgs  # Or other packages containing msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+#   geometry_msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -104,19 +103,14 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES simple_ps
-#  CATKIN_DEPENDS message_generation message_runtime rospy
+#  LIBRARIES turtlesim_demo
+#  CATKIN_DEPENDS geometry_msgs rospy
 #  DEPENDS system_lib
 )
 
 ###########
 ## Build ##
 ###########
-
-catkin_install_python(PROGRAMS src/simple_publisher.py src/simple_subscriber.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -127,7 +121,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/simple_ps.cpp
+#   src/${PROJECT_NAME}/turtlesim_demo.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -138,7 +132,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/simple_ps_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/turtlesim_demo_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -202,7 +196,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_simple_ps.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_turtlesim_demo.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
